@@ -1,12 +1,17 @@
 /// <reference types="node" />
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   computeDesktopParallaxOffset,
   shouldUseStaticReveal,
   isElementInOrNearViewport,
   clampLoadingTimings,
   resolveRouteBreadcrumbLabel,
+  isTabletLandscapeViewport,
+  isHeroVideoFrameReady,
+  evaluateNetlifyRedirectStatus,
   DESKTOP_MIN_WIDTH_PX,
 } from './uxPolish';
 
@@ -142,4 +147,84 @@ test('resolveRouteBreadcrumbLabel maps known routes and labels unknown routes as
     resolveRouteBreadcrumbLabel('rota-inexistente-123', map),
     'Página Não Encontrada'
   );
+});
+
+test('isTabletLandscapeViewport matches tablet horizontal viewports only and excludes portrait, mobile, and desktop', () => {
+  // Tablet landscape (iPad, iPad Air, Android Tablet, iPad Pro)
+  assert.equal(isTabletLandscapeViewport({ width: 1024, height: 768 }), true);
+  assert.equal(isTabletLandscapeViewport({ width: 1180, height: 820 }), true);
+  assert.equal(isTabletLandscapeViewport({ width: 1280, height: 800 }), true);
+  assert.equal(isTabletLandscapeViewport({ width: 1366, height: 1024 }), true);
+
+  // Tablet portrait (must NOT match)
+  assert.equal(isTabletLandscapeViewport({ width: 768, height: 1024 }), false);
+  assert.equal(isTabletLandscapeViewport({ width: 820, height: 1180 }), false);
+  assert.equal(isTabletLandscapeViewport({ width: 1024, height: 1366 }), false);
+
+  // Mobile portrait & landscape (must NOT match)
+  assert.equal(isTabletLandscapeViewport({ width: 390, height: 844 }), false);
+  assert.equal(isTabletLandscapeViewport({ width: 844, height: 390, isCoarsePointer: true }), false);
+
+  // Desktop & 16:9 widescreen laptops (must NOT match)
+  assert.equal(isTabletLandscapeViewport({ width: 1280, height: 720 }), false);
+  assert.equal(isTabletLandscapeViewport({ width: 1366, height: 768 }), false);
+  assert.equal(isTabletLandscapeViewport({ width: 1440, height: 900 }), false);
+  assert.equal(isTabletLandscapeViewport({ width: 1920, height: 1080 }), false);
+});
+
+test('isHeroVideoFrameReady requires readyState >= 2 and rejects metadata-only readyState === 1', () => {
+  assert.equal(isHeroVideoFrameReady(0), false);
+  assert.equal(isHeroVideoFrameReady(1), false);
+  assert.equal(isHeroVideoFrameReady(2), true);
+  assert.equal(isHeroVideoFrameReady(3), true);
+  assert.equal(isHeroVideoFrameReady(4), true);
+  assert.equal(isHeroVideoFrameReady(null), false);
+  assert.equal(isHeroVideoFrameReady(undefined), false);
+  assert.equal(isHeroVideoFrameReady(Number.NaN), false);
+});
+
+test('public/_redirects preserves HTTP 200 for all valid SPA routes and returns HTTP 404 for unknown URLs', () => {
+  const redirectsPath = path.resolve(process.cwd(), 'public/_redirects');
+  const content = fs.readFileSync(redirectsPath, 'utf8');
+
+  const validSpaRoutes = [
+    '/',
+    '/empresa',
+    '/empresa/',
+    '/servicos',
+    '/servicos/',
+    '/servicos/remocao-veiculos-leves',
+    '/servicos/remocao-veiculos-pesados',
+    '/servicos/solucoes-em-remocao',
+    '/frota',
+    '/perguntas-frequentes',
+    '/trabalhe-conosco',
+    '/contato',
+    '/politica-de-privacidade',
+    '/termos-de-uso',
+  ];
+
+  for (const route of validSpaRoutes) {
+    assert.equal(
+      evaluateNetlifyRedirectStatus(route, content),
+      200,
+      `Expected HTTP 200 rewrite for valid SPA route ${route}`
+    );
+  }
+
+  const notFoundPaths = [
+    '/404',
+    '/404/',
+    '/pagina-inexistente',
+    '/rota/desconhecida/123',
+    '/servicos/servico-inexistente',
+  ];
+
+  for (const path404 of notFoundPaths) {
+    assert.equal(
+      evaluateNetlifyRedirectStatus(path404, content),
+      404,
+      `Expected HTTP 404 status for unknown/404 path ${path404}`
+    );
+  }
 });

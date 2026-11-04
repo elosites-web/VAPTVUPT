@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Eye, CheckCircle2, X, ChevronRight, AlertTriangle } from 'lucide-react';
 import { COMPANY_CONFIG, FleetItem } from '../data/companyData';
 import { FleetViewer3D } from '../components/FleetViewer3D';
@@ -10,17 +10,31 @@ export const FleetPage: React.FC = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<FleetItem | null>(null);
   const [modalImgLoading, setModalImgLoading] = useState<boolean>(false);
   const [modalImgError, setModalImgError] = useState<boolean>(false);
+  const [modalAttempt, setModalAttempt] = useState<number>(0);
+
+  const selectedPhotoRef = useRef<FleetItem | null>(null);
+  selectedPhotoRef.current = selectedPhoto;
+  const modalImgRef = useRef<HTMLImageElement | null>(null);
 
   const openPhotoModal = useCallback((item: FleetItem) => {
     setSelectedPhoto(item);
-    setModalImgLoading(true);
     setModalImgError(false);
+    setModalImgLoading(true);
+    setModalAttempt((prev) => prev + 1);
   }, []);
 
   const closePhotoModal = useCallback(() => {
     setSelectedPhoto(null);
     setModalImgLoading(false);
     setModalImgError(false);
+    setModalAttempt(0);
+  }, []);
+
+  const retryModalImage = useCallback(() => {
+    if (!selectedPhotoRef.current) return;
+    setModalImgError(false);
+    setModalImgLoading(true);
+    setModalAttempt((prev) => prev + 1);
   }, []);
 
   const { visible: showModalSpinner } = useDelayedLoadingState(
@@ -28,9 +42,23 @@ export const FleetPage: React.FC = () => {
     {
       delayMs: 180,
       maxWaitMs: 10000,
-      onTimeout: () => setModalImgLoading(false),
+      resetKey: `${selectedPhoto?.id ?? 'closed'}-${modalAttempt}`,
+      onTimeout: () => {
+        if (!selectedPhotoRef.current) return;
+        setModalImgLoading(false);
+        setModalImgError(true);
+      },
     }
   );
+
+  // Immediately clear loading if the browser already has the decoded image cached
+  useEffect(() => {
+    if (!selectedPhoto || modalImgError || !modalImgLoading) return;
+    const img = modalImgRef.current;
+    if (img && img.complete && img.naturalWidth > 0) {
+      setModalImgLoading(false);
+    }
+  }, [selectedPhoto, modalAttempt, modalImgError, modalImgLoading]);
 
   useEffect(() => {
     if (!selectedPhoto) return;
@@ -217,6 +245,8 @@ export const FleetPage: React.FC = () => {
 
               {!modalImgError ? (
                 <img
+                  key={`${selectedPhoto.id}-${modalAttempt}`}
+                  ref={modalImgRef}
                   src={selectedPhoto.image}
                   srcSet={`${selectedPhoto.image} 480w, ${selectedPhoto.image} 800w, ${selectedPhoto.image} 1200w`}
                   sizes="(max-width: 1024px) 95vw, 896px"
@@ -237,10 +267,7 @@ export const FleetPage: React.FC = () => {
                   </p>
                   <button
                     type="button"
-                    onClick={() => {
-                      setModalImgError(false);
-                      setModalImgLoading(true);
-                    }}
+                    onClick={retryModalImage}
                     className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider cursor-pointer"
                   >
                     Tentar novamente

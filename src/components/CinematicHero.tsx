@@ -4,7 +4,7 @@ import { ArrowRight, Car, Truck, CheckCircle2, ChevronDown, RotateCcw } from 'lu
 import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { BrandSpinner, useDelayedLoadingState } from './BrandSpinner';
-import { computeDesktopParallaxOffset } from '../utils/uxPolish';
+import { computeDesktopParallaxOffset, isHeroVideoFrameReady } from '../utils/uxPolish';
 
 interface CinematicHeroProps {
   onScrollToForm?: () => void;
@@ -49,9 +49,16 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     delayMs: 240,
     maxWaitMs: 10000,
     onTimeout: () => {
-      if (!videoRef.current || videoRef.current.readyState < 1) {
-        setVideoFailed(true);
+      if (isHeroVideoFrameReady(videoRef.current?.readyState)) {
+        setVideoReady(true);
+        return;
       }
+      setVideoFailed(true);
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      pendingSeekRef.current = null;
     },
   });
 
@@ -411,7 +418,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
     // If frames are already decoded (readyState >= 2), seek and reveal video.
     // Otherwise buffer timestamp in pendingSeekRef so handleMediaReady executes it on loadeddata/canplay.
-    if (video.readyState >= 2) {
+    if (isHeroVideoFrameReady(video.readyState)) {
       setVideoReady(true);
       performSeek(initialTime);
     } else {
@@ -422,7 +429,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   // Video media readiness handler: runs on loadeddata / canplay when first frame is guaranteed available
   const handleMediaReady = useCallback(() => {
     const video = videoRef.current;
-    if (!video || videoFailed) return;
+    if (!video || videoFailed || !isHeroVideoFrameReady(video.readyState)) return;
 
     // Enforce pause so video never autoplays independently
     if (!video.paused) {
@@ -457,7 +464,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    if (video.readyState >= 2) {
+    if (isHeroVideoFrameReady(video.readyState)) {
       handleMediaReady();
     } else if (video.readyState >= 1) {
       handleLoadedMetadata();

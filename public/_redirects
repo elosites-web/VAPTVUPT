@@ -1,0 +1,31 @@
+# Rotas válidas da SPA -> reescrita interna para /index.html mantendo status HTTP 200
+/ /index.html 200
+/empresa /index.html 200
+/empresa/ /index.html 200
+/servicos /index.html 200
+/servicos/ /index.html 200
+/servicos/remocao-veiculos-leves /index.html 200
+/servicos/remocao-veiculos-leves/ /index.html 200
+/servicos/remocao-veiculos-pesados /index.html 200
+/servicos/remocao-veiculos-pesados/ /index.html 200
+/servicos/solucoes-em-remocao /index.html 200
+/servicos/solucoes-em-remocao/ /index.html 200
+/servicos/guarda-e-hospedagem /index.html 200
+/servicos/guarda-e-hospedagem/ /index.html 200
+/frota /index.html 200
+/frota/ /index.html 200
+/perguntas-frequentes /index.html 200
+/perguntas-frequentes/ /index.html 200
+/trabalhe-conosco /index.html 200
+/trabalhe-conosco/ /index.html 200
+/contato /index.html 200
+/contato/ /index.html 200
+/politica-de-privacidade /index.html 200
+/politica-de-privacidade/ /index.html 200
+/termos-de-uso /index.html 200
+/termos-de-uso/ /index.html 200
+
+# Rota /404 e quaisquer URLs desconhecidas -> entrega a SPA com status HTTP 404 real
+/404 /index.html 404
+/404/ /index.html 404
+/* /index.html 404

@@ -137,3 +137,88 @@ export function resolveRouteBreadcrumbLabel(
     ? routeMap[clean]
     : fallbackUnknownLabel;
 }
+
+/**
+ * Determines whether the viewport corresponds to a tablet in horizontal (landscape)
+ * orientation rather than portrait tablet, mobile, or standard widescreen desktop.
+ */
+export function isTabletLandscapeViewport(params: {
+  width: number;
+  height: number;
+  isCoarsePointer?: boolean;
+}): boolean {
+  const { width, height, isCoarsePointer = false } = params;
+  if (
+    !Number.isFinite(width) ||
+    !Number.isFinite(height) ||
+    width <= 0 ||
+    height <= 0
+  ) {
+    return false;
+  }
+
+  const isLandscape = width > height;
+  if (!isLandscape || height < 550 || width < 768 || width > 1368) {
+    return false;
+  }
+
+  if (width <= 1279) {
+    return true;
+  }
+
+  if (isCoarsePointer) {
+    return true;
+  }
+
+  return width / height <= 16 / 10;
+}
+
+/**
+ * HTMLMediaElement.readyState >= 2 (HAVE_CURRENT_DATA) guarantees at least one
+ * decoded video frame is available rather than metadata-only (readyState === 1).
+ */
+export function isHeroVideoFrameReady(readyState: number | null | undefined): boolean {
+  return typeof readyState === 'number' && Number.isFinite(readyState) && readyState >= 2;
+}
+
+/**
+ * Evaluates Netlify _redirects rules top-to-bottom for a request path
+ * to verify valid SPA routes return 200 and unknown paths return 404.
+ */
+export function evaluateNetlifyRedirectStatus(
+  requestPath: string,
+  redirectsFileContent: string
+): number | null {
+  const normalizedPath = requestPath.startsWith('/') ? requestPath : `/${requestPath}`;
+  const lines = redirectsFileContent.split(/\r?\n/);
+
+  for (const rawLine of lines) {
+    const trimmed = rawLine.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+
+    const parts = trimmed.split(/\s+/);
+    if (parts.length < 3) continue;
+
+    const [fromPattern, , statusToken] = parts;
+    const status = Number.parseInt(statusToken.replace(/!$/, ''), 10);
+    if (!Number.isFinite(status)) continue;
+
+    if (fromPattern === '/*') {
+      return status;
+    }
+
+    if (fromPattern.endsWith('/*')) {
+      const prefix = fromPattern.slice(0, -1);
+      if (normalizedPath.startsWith(prefix)) {
+        return status;
+      }
+      continue;
+    }
+
+    if (normalizedPath === fromPattern) {
+      return status;
+    }
+  }
+
+  return null;
+}

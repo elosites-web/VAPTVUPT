@@ -3,12 +3,14 @@ import { clampLoadingTimings, type LoadingTimingConfig } from '../utils/uxPolish
 
 export interface UseDelayedLoadingOptions extends Partial<LoadingTimingConfig> {
   onTimeout?: () => void;
+  resetKey?: string | number;
 }
 
 /**
  * Manages delayed spinner visibility and a bounded safety timeout:
  * - Prevents flicker on fast operations (< delayMs)
  * - Guarantees loading states cannot leave the user stuck indefinitely (> maxWaitMs)
+ * - Resets cleanly whenever isLoading or resetKey changes
  */
 export function useDelayedLoadingState(
   isLoading: boolean,
@@ -20,15 +22,15 @@ export function useDelayedLoadingState(
   onTimeoutRef.current = options?.onTimeout;
 
   const { delayMs, maxWaitMs } = clampLoadingTimings(options);
+  const resetKey = options?.resetKey;
 
   useEffect(() => {
+    setVisible(false);
+    setTimedOut(false);
+
     if (!isLoading) {
-      setVisible(false);
-      setTimedOut(false);
       return;
     }
-
-    setTimedOut(false);
 
     const showTimer = window.setTimeout(() => {
       setVisible(true);
@@ -44,7 +46,7 @@ export function useDelayedLoadingState(
       window.clearTimeout(showTimer);
       window.clearTimeout(safetyTimer);
     };
-  }, [isLoading, delayMs, maxWaitMs]);
+  }, [isLoading, delayMs, maxWaitMs, resetKey]);
 
   return { visible, timedOut };
 }
