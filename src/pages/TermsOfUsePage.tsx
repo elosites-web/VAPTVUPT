@@ -35,48 +35,48 @@ export const TermsOfUsePage: React.FC = () => {
       </section>
 
       {/* Main Legal Content */}
-      <section className="py-16 bg-white dark:bg-[#141416] text-slate-700 dark:text-neutral-300">
+      <section className="py-16 bg-white dark:bg-[#141416] text-slate-700 dark:text-neutral-300 transition-colors">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 leading-relaxed text-sm sm:text-base">
           
           {/* 1. Objeto e Escopo */}
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-2 font-heading">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
               1. Objeto e Escopo do Website
             </h2>
-            <p>
-              Estes Termos de Uso regulam o acesso e a navegação no endereço eletrônico disponibilizado pela <strong>{COMPANY_CONFIG.legalName}</strong>. Este ambiente possui finalidade puramente institucional e informativa, apresentando as capacidades operacionais, estrutura e canais oficiais de contato da empresa.
+            <p className="text-slate-700 dark:text-neutral-300">
+              Estes Termos de Uso regulam o acesso e a navegação no endereço eletrônico disponibilizado pela <strong className="text-slate-900 dark:text-white">{COMPANY_CONFIG.legalName}</strong>. Este ambiente possui finalidade puramente institucional e informativa, apresentando as capacidades operacionais, estrutura e canais oficiais de contato da empresa.
             </p>
-            <div className="p-4 rounded-xl bg-neutral-900 border border-neutral-800 text-xs sm:text-sm text-neutral-300">
-              <strong className="text-white block mb-1">Distinção Importante:</strong>
+            <div className="p-4 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 text-xs sm:text-sm text-slate-700 dark:text-neutral-300">
+              <strong className="text-slate-900 dark:text-white block mb-1">Distinção Importante:</strong>
               Estes Termos de Uso aplicam-se exclusivamente à navegação neste website. A efetiva contratação dos serviços de guincho, transporte ou remoção de veículos rege-se pelos termos, ordens de serviço e condições operacionais e fiscais pactuadas diretamente entre a empresa e o contratante no momento do acionamento formal.
             </div>
           </div>
 
           {/* 2. Propriedade Intelectual */}
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-2 font-heading">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
               2. Propriedade Intelectual e Direitos Autorais
             </h2>
-            <p>
+            <p className="text-slate-700 dark:text-neutral-300">
               Todos os elementos que compõem este site — incluindo a marca comercial <em>Vapt Vupt</em>, slogans, logotipos, elementos visuais, identidade gráfica, fotografias autênticas de veículos operacionais, textos e código-fonte — são de titularidade exclusiva da empresa ou utilizados sob autorização expressa.
             </p>
-            <p>
+            <p className="text-slate-700 dark:text-neutral-300">
               É terminantemente vedada a reprodução total ou parcial, cópia, alteração, comercialização, distribuição ou engenharia reversa de qualquer conteúdo presente neste site sem prévia e expressa autorização por escrito dos titulares de direito.
             </p>
           </div>
 
           {/* 3. Regras de Utilização Adequada */}
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-2 font-heading">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
               3. Conduta e Obrigações do Usuário
             </h2>
-            <p>
+            <p className="text-slate-700 dark:text-neutral-300">
               Ao utilizar este website e suas ferramentas de contato, o visitante concorda em:
             </p>
-            <ul className="space-y-2 list-disc list-inside text-neutral-300 pl-2">
+            <ul className="space-y-2 list-disc list-inside text-slate-700 dark:text-neutral-300 pl-2">
               <li>Fornecer dados verídicos ao solicitar orçamentos e atendimentos de remoção;</li>
               <li>Não utilizar o formulário para envio de mensagens com conteúdo ilícito, difamatório, ofensivo ou spam;</li>
               <li>Não tentar violar sistemas de segurança, introduzir vírus, worms, malwares ou scripts danosos;</li>
@@ -86,28 +86,28 @@ export const TermsOfUsePage: React.FC = () => {
 
           {/* 4. Links Externos e Plataformas de Terceiros */}
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-2 font-heading">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
               4. Links Externos e Serviços de Terceiros
             </h2>
-            <p>
-              Para conveniência de atendimento, este website disponibiliza links que direcionam o visitante para plataformas operadas por terceiros, nomeadamente o <strong>WhatsApp</strong> (Meta Platforms Inc.), perfis em redes sociais (Instagram) e serviços do Google.
+            <p className="text-slate-700 dark:text-neutral-300">
+              Para conveniência de atendimento, este website disponibiliza links que direcionam o visitante para plataformas operadas por terceiros, nomeadamente o <strong className="text-slate-900 dark:text-white">WhatsApp</strong> (Meta Platforms Inc.), perfis em redes sociais (Instagram) e serviços do Google.
             </p>
-            <p>
+            <p className="text-slate-700 dark:text-neutral-300">
               A <em>{COMPANY_CONFIG.legalName}</em> não possui ingerência sobre as políticas de privacidade, termos de serviço ou segurança interna dessas plataformas externas. Ao utilizar os links, o visitante estará sujeito às diretrizes e termos vigentes dessas respectivas empresas.
             </p>
           </div>
 
           {/* 5. Limitação de Responsabilidade */}
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-2 font-heading">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
               5. Limitações de Responsabilidade Relacionadas à Navegação
             </h2>
-            <p>
+            <p className="text-slate-700 dark:text-neutral-300">
               Empregamos esforços razoáveis para manter as informações deste site sempre atualizadas e precisas. No entanto, o visitante reconhece que:
             </p>
-            <ul className="space-y-2 list-disc list-inside text-neutral-300 pl-2">
+            <ul className="space-y-2 list-disc list-inside text-slate-700 dark:text-neutral-300 pl-2">
               <li>A disponibilidade do site pode sofrer interrupções temporárias decorrentes de manutenção técnica, problemas de conexão da rede mundial de computadores ou motivos de força maior;</li>
               <li>A simulação 3D é uma demonstração técnica ilustrativa dos movimentos mecânicos de rampa hidráulica, não constituindo garantia técnica de operação idêntica para qualquer modelo específico de automóvel ou caminhão sem avaliação in loco;</li>
               <li>Orçamentos, valores e previsões de chegada são informados pontualmente e de forma transparente pelo canal do WhatsApp conforme a disponibilidade real de veículos na data e hora da solicitação.</li>
@@ -115,26 +115,26 @@ export const TermsOfUsePage: React.FC = () => {
           </div>
 
           {/* 6. Disposições Finais e Foro */}
-          <div className="space-y-4 pt-4 border-t border-neutral-800">
-            <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-2 font-heading">
+          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-neutral-800">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
               6. Disposições Gerais e Foro Aplicável
             </h2>
-            <p>
+            <p className="text-slate-700 dark:text-neutral-300">
               Estes Termos de Uso são regidos integralmente pela legislação da República Federativa do Brasil, em especial o Marco Civil da Internet (Lei nº 12.965/2014) e a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
             </p>
-            <p>
+            <p className="text-slate-700 dark:text-neutral-300">
               Fica eleito o Foro da Comarca de São Paulo - Estado de São Paulo, para dirimir eventuais litígios decorrentes da interpretação destes Termos de Uso, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
             </p>
           </div>
 
           {/* Dúvidas sobre estes Termos */}
-          <div className="p-5 rounded-xl bg-neutral-900 border border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-5 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h4 className="text-white font-bold text-sm uppercase font-heading">
+              <h4 className="text-slate-900 dark:text-white font-bold text-sm uppercase font-heading">
                 Dúvidas sobre os Termos de Uso?
               </h4>
-              <p className="text-xs text-neutral-400">
+              <p className="text-xs text-slate-600 dark:text-neutral-400">
                 Consulte nossa equipe administrativa através do WhatsApp oficial da empresa.
               </p>
             </div>

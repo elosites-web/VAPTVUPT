@@ -81,6 +81,10 @@ export const Header: React.FC = () => {
             {/* Brand Logo with adaptive theme and responsive width limit */}
             <Link
               to="/"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               className="flex items-center shrink-0 min-w-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] rounded-md transition-all duration-200 hover:opacity-95 hover:scale-[1.01]"
               aria-label="Vapt Vupt Remoção de Veículos - Início"
             >
@@ -127,12 +131,18 @@ export const Header: React.FC = () => {
             {/* Action CTAs */}
             <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-auto">
               {/* Real-time Status Badge (Desktop & Tablet) */}
-              <div className="hidden xl:flex items-center gap-1.5 text-[11px] text-neutral-400 font-medium px-2.5 py-1 rounded-full bg-neutral-900/40 border border-neutral-800/60">
+              <div className={`hidden xl:flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full ${
+                isDarkMode
+                  ? 'text-neutral-300 bg-neutral-900/40 border border-neutral-800/60'
+                  : 'text-slate-700 bg-slate-100 border border-slate-200 shadow-xs'
+              }`}>
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span className="text-neutral-300 font-semibold tracking-wide">Remoção Leve e Pesada</span>
+                <span className={`font-semibold tracking-wide ${isDarkMode ? 'text-neutral-300' : 'text-slate-800'}`}>
+                  Remoção Leve e Pesada
+                </span>
               </div>
 
               {/* Theme Toggle Component (Light / Dark / Auto) - Oculto quando menu mobile estiver aberto */}

@@ -6,7 +6,8 @@ export const Hero: React.FC = () => {
   return (
     <section
       id="inicio"
-      className="relative min-h-[92vh] lg:min-h-screen flex items-center pt-24 pb-16 lg:py-0 overflow-hidden bg-[#141416]"
+      className="relative min-h-[92vh] lg:min-h-screen flex items-center pt-24 pb-16 lg:py-0 overflow-hidden bg-[#141416] keep-dark"
+      data-keep-dark="true"
     >
       {/* Background Graphic Elements & Dynamic Diagonals */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

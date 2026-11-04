@@ -183,6 +183,8 @@
 
 /* ==========================================================================
    ESTILOS GLOBAIS PARA O MODO CLARO (☀️)
+   Regra: A cor da fonte é perfeitamente legível de acordo com a cor do fundo
+   (fundo escuro = texto claro/branco; fundo claro = texto escuro de alto contraste).
    ========================================================================== */
 
 html.light ::-webkit-scrollbar-track {
@@ -197,132 +199,142 @@ html.light ::-webkit-scrollbar-thumb:hover {
   background: #B43034;
 }
 
-/* Superfícies e Seções no Modo Claro (exceto seções que preservam fundo escuro como Hero fotográfico e Footer institucional) */
-html.light section:not(.keep-dark) .bg-\[\#141416\],
-html.light div:not(.keep-dark) .bg-\[\#141416\],
-html.light article:not(.keep-dark) .bg-\[\#141416\] {
-  background-color: #ffffff !important;
+/* 1. SEÇÕES E COMPONENTES COM FUNDO ESCURO PRESERVADO (Hero e Overlays) */
+html.light .keep-dark,
+html.light [data-keep-dark="true"],
+html.light footer.keep-dark {
+  background-color: #111113 !important;
+  color: #f1f5f9;
 }
 
-html.light section:not(.keep-dark) .bg-\[\#161618\],
-html.light div:not(.keep-dark) .bg-\[\#161618\],
-html.light section:not(.keep-dark) .bg-\[\#111113\],
-html.light div:not(.keep-dark) .bg-\[\#111113\] {
-  background-color: #f8fafc !important;
+html.light .keep-dark h1,
+html.light .keep-dark h2,
+html.light .keep-dark h3,
+html.light .keep-dark h4,
+html.light [data-keep-dark="true"] h1,
+html.light [data-keep-dark="true"] h2,
+html.light [data-keep-dark="true"] h3,
+html.light [data-keep-dark="true"] h4,
+html.light footer.keep-dark h1,
+html.light footer.keep-dark h2,
+html.light footer.keep-dark h3,
+html.light footer.keep-dark h4 {
+  color: #ffffff !important;
 }
 
-html.light section:not(.keep-dark) .bg-\[\#18181b\],
-html.light section:not(.keep-dark) .bg-\[\#1a1a1c\],
-html.light section:not(.keep-dark) .bg-\[\#1f1f23\],
-html.light div:not(.keep-dark) .bg-\[\#18181b\],
-html.light div:not(.keep-dark) .bg-\[\#1a1a1c\],
-html.light div:not(.keep-dark) .bg-\[\#1f1f23\] {
-  background-color: #ffffff !important;
+html.light .keep-dark p,
+html.light [data-keep-dark="true"] p,
+html.light footer.keep-dark p {
+  color: #e2e8f0 !important;
 }
 
-/* Tratamento de Sombras e Baixa Opacidade (Low-opacity dark shades -> #ffffff ou #f1f5f9 de alto contraste) */
-html.light section:not(.keep-dark) .bg-neutral-900\/5,
-html.light section:not(.keep-dark) .bg-neutral-900\/10,
-html.light section:not(.keep-dark) .bg-neutral-900\/20,
-html.light div:not(.keep-dark) .bg-neutral-900\/5,
-html.light div:not(.keep-dark) .bg-neutral-900\/10,
-html.light div:not(.keep-dark) .bg-neutral-900\/20,
-html.light section:not(.keep-dark) .bg-black\/5,
-html.light section:not(.keep-dark) .bg-black\/10,
-html.light div:not(.keep-dark) .bg-black\/5,
-html.light div:not(.keep-dark) .bg-black\/10 {
-  background-color: #f1f5f9 !important;
+html.light .keep-dark strong,
+html.light [data-keep-dark="true"] strong,
+html.light footer.keep-dark strong {
+  color: #ffffff !important;
 }
 
-html.light section:not(.keep-dark) .bg-neutral-900\/90,
-html.light section:not(.keep-dark) .bg-neutral-900\/80,
-html.light section:not(.keep-dark) .bg-neutral-900\/70,
-html.light section:not(.keep-dark) .bg-neutral-900\/60,
-html.light section:not(.keep-dark) .bg-neutral-900\/50,
-html.light section:not(.keep-dark) .bg-neutral-900\/40,
-html.light section:not(.keep-dark) .bg-neutral-900\/30,
-html.light section:not(.keep-dark) .bg-neutral-900,
-html.light div:not(.keep-dark) .bg-neutral-900\/90,
-html.light div:not(.keep-dark) .bg-neutral-900\/80,
-html.light div:not(.keep-dark) .bg-neutral-900\/70,
-html.light div:not(.keep-dark) .bg-neutral-900\/60,
-html.light div:not(.keep-dark) .bg-neutral-900\/50,
-html.light div:not(.keep-dark) .bg-neutral-900\/40,
-html.light div:not(.keep-dark) .bg-neutral-900 {
-  background-color: #ffffff !important;
+html.light .keep-dark .text-white,
+html.light [data-keep-dark="true"] .text-white,
+html.light footer.keep-dark .text-white {
+  color: #ffffff !important;
 }
 
-html.light section:not(.keep-dark) .bg-neutral-950,
-html.light section:not(.keep-dark) .bg-neutral-950\/90,
-html.light section:not(.keep-dark) .bg-neutral-950\/80,
-html.light section:not(.keep-dark) .bg-neutral-950\/60,
-html.light div:not(.keep-dark) .bg-neutral-950,
-html.light div:not(.keep-dark) .bg-neutral-950\/90,
-html.light div:not(.keep-dark) .bg-neutral-950\/60 {
-  background-color: #f1f5f9 !important;
+html.light .keep-dark .text-neutral-100,
+html.light .keep-dark .text-neutral-200,
+html.light [data-keep-dark="true"] .text-neutral-100,
+html.light [data-keep-dark="true"] .text-neutral-200,
+html.light footer.keep-dark .text-neutral-100,
+html.light footer.keep-dark .text-neutral-200 {
+  color: #f8fafc !important;
 }
 
-/* Bordas e Divisórias no Modo Claro */
-html.light section:not(.keep-dark) .border-neutral-800,
-html.light section:not(.keep-dark) .border-neutral-800\/60,
-html.light section:not(.keep-dark) .border-neutral-800\/70,
-html.light section:not(.keep-dark) .border-neutral-800\/80,
-html.light section:not(.keep-dark) .border-neutral-800\/90,
-html.light section:not(.keep-dark) .border-neutral-700,
-html.light section:not(.keep-dark) .border-neutral-700\/80,
-html.light section:not(.keep-dark) .border-white\/\[0\.06\],
-html.light div:not(.keep-dark) .border-neutral-800,
-html.light div:not(.keep-dark) .border-neutral-800\/80 {
-  border-color: #e2e8f0 !important;
+html.light .keep-dark .text-neutral-300,
+html.light [data-keep-dark="true"] .text-neutral-300,
+html.light footer.keep-dark .text-neutral-300 {
+  color: #e2e8f0 !important;
 }
 
-/* Tipografia e Contraste no Modo Claro (Garantia de 100% legibilidade e conformidade WCAG AA) */
-html.light section:not(.keep-dark) h1:not([class*="text-[#B43034]"]):not(.keep-white),
-html.light section:not(.keep-dark) h2:not([class*="text-[#B43034]"]):not(.keep-white),
-html.light section:not(.keep-dark) h3:not([class*="text-[#B43034]"]):not(.keep-white),
-html.light section:not(.keep-dark) h4:not([class*="text-[#B43034]"]):not(.keep-white),
-html.light div:not(.keep-dark) > h1:not([class*="text-[#B43034]"]):not(.keep-white),
-html.light div:not(.keep-dark) > h2:not([class*="text-[#B43034]"]):not(.keep-white),
-html.light div:not(.keep-dark) > h3:not([class*="text-[#B43034]"]):not(.keep-white),
-html.light div:not(.keep-dark) > h4:not([class*="text-[#B43034]"]):not(.keep-white) {
-  color: #0f172a !important;
+html.light .keep-dark .text-neutral-400,
+html.light [data-keep-dark="true"] .text-neutral-400,
+html.light footer.keep-dark .text-neutral-400 {
+  color: #cbd5e1 !important;
 }
 
-/* Converte text-white em superfícies claras para slate escuro, preservando botões vermelhos */
-html.light section:not(.keep-dark) .text-white:not(.keep-white):not([data-keep-white]):not(.btn-keep-white):not(.bg-\[\#B43034\]):not(.bg-\[\#B43034\] *):not(.bg-\[\#8F2428\] *):not(.bg-red-600 *):not(.bg-red-700 *):not(.bg-red-950 *),
-html.light div:not(.keep-dark) .text-white:not(.keep-white):not([data-keep-white]):not(.btn-keep-white):not(.bg-\[\#B43034\]):not(.bg-\[\#B43034\] *):not(.bg-\[\#8F2428\] *):not(.bg-red-600 *):not(.bg-red-700 *):not(.bg-red-950 *) {
-  color: #0f172a !important;
+html.light footer.keep-dark a:not([class*="bg-"]):not([class*="text-[#B43034]"]) {
+  color: #cbd5e1 !important;
 }
 
-html.light section:not(.keep-dark) .text-neutral-100,
-html.light section:not(.keep-dark) .text-neutral-200,
-html.light div:not(.keep-dark) .text-neutral-100,
-html.light div:not(.keep-dark) .text-neutral-200 {
-  color: #0f172a !important;
+html.light footer.keep-dark a:not([class*="bg-"]):not([class*="text-[#B43034]"]):hover {
+  color: #ffffff !important;
 }
 
-/* WCAG AA text colors: #334155 (ratio ~7.5:1 no branco) e #475569 (ratio ~5.5:1 no branco) */
-html.light section:not(.keep-dark) .text-neutral-300,
-html.light div:not(.keep-dark) .text-neutral-300,
-html.light p.text-neutral-300,
-html.light span.text-neutral-300,
-html.light li.text-neutral-300 {
-  color: #334155 !important;
+/* 2. OVERLAYS ESCUROS SOBRE FOTOS E BADGES */
+html.light [class*="bg-slate-900/"] .text-white,
+html.light [class*="bg-neutral-900/"] .text-white,
+html.light [class*="bg-black/"] .text-white {
+  color: #ffffff !important;
 }
 
-html.light section:not(.keep-dark) .text-neutral-400,
-html.light div:not(.keep-dark) .text-neutral-400,
-html.light p.text-neutral-400,
-html.light span.text-neutral-400,
-html.light li.text-neutral-400 {
-  color: #475569 !important;
+/* 3. BOTÕES E ELEMENTOS VERMELHOS INSTITUCIONAIS - TEXTO SEMPRE BRANCO */
+.bg-\[\#B43034\],
+.bg-\[\#8F2428\],
+.bg-red-600,
+.bg-red-700,
+.button-3d,
+a[class*="from-\[\#B43034\]"],
+button[class*="from-\[\#B43034\]"] {
+  color: #ffffff !important;
 }
 
-html.light section:not(.keep-dark) .text-neutral-500,
-html.light div:not(.keep-dark) .text-neutral-500,
-html.light p.text-neutral-500,
-html.light span.text-neutral-500 {
-  color: #64748b !important;
+.bg-\[\#B43034\] *,
+.bg-\[\#8F2428\] *,
+.bg-red-600 *,
+.bg-red-700 *,
+.button-3d *,
+a[class*="from-\[\#B43034\]"] *,
+button[class*="from-\[\#B43034\]"] * {
+  color: #ffffff !important;
+}
+
+/* 4. SUPERFÍCIES CLARAS NO MODO CLARO (☀️) - CONTRASTE WCAG AAA */
+html.light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Títulos sobre superfícies claras */
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) h1:not([class*="text-[#B43034]"]):not([class*="text-red"]):not(.keep-white),
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) h2:not([class*="text-[#B43034]"]):not([class*="text-red"]):not(.keep-white),
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) h3:not([class*="text-[#B43034]"]):not([class*="text-red"]):not(.keep-white),
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) h4:not([class*="text-[#B43034]"]):not([class*="text-red"]):not(.keep-white) {
+  color: #0f172a;
+}
+
+/* Parágrafos e listas em superfícies claras */
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) p:not([class*="text-white"]):not([class*="text-[#B43034]"]):not([class*="text-red"]):not([class*="text-emerald"]):not(.keep-white),
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) li:not([class*="text-white"]):not([class*="text-[#B43034]"]):not([class*="text-red"]):not(.keep-white) {
+  color: #334155;
+}
+
+/* Strong em superfícies claras */
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) strong:not([class*="text-[#B43034]"]):not([class*="text-red"]):not(.keep-white) {
+  color: #0f172a;
+}
+
+/* Textos secundários em superfícies claras */
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) .text-slate-600 {
+  color: #475569;
+}
+
+html.light section:not(.keep-dark):not([data-keep-dark="true"]) .text-slate-500 {
+  color: #64748b;
+}
+
+/* Preserva cor de destaque vermelho institucional */
+.text-\[\#B43034\],
+.text-brand-red {
+  color: #B43034 !important;
 }
 
 /* Formulários e Inputs no Modo Claro */
