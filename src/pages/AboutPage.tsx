@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Truck, Car, MapPin, CheckCircle2, MessageCircle, ArrowRight, Building, Award } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Building } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const AboutPage: React.FC = () => {
   return (
@@ -110,51 +111,48 @@ export const AboutPage: React.FC = () => {
       {/* Cadastral & Operational Governance Section */}
       <section className="py-16 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-10">
+          <div className="max-w-3xl mb-8">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
               <Building className="w-4 h-4 text-[#B43034]" />
-              <span>Transparência Cadastral</span>
+              <span>Identificação Cadastral</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
-              Estrutura e Registros da Empresa
+              Dados Cadastrais da Empresa
             </h2>
             <p className="mt-2 text-sm text-slate-600 dark:text-neutral-300">
-              Registros cadastrais oficiais mantidos para conformidade fiscal e governança operacional.
+              Informações oficiais de registro empresarial para fins de transparência fiscal e contratual. Os endereços cadastrais não realizam atendimento presencial nem visitação ao público.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {COMPANY_CONFIG.registrosCadastrais.map((registro, idx) => (
-              <div
-                key={idx}
-                className="bg-white dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-slate-800 dark:text-white border border-slate-200 dark:border-neutral-700">
-                      {registro.type}
-                    </span>
-                    <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900/60">
-                      CNPJ Ativo
-                    </span>
-                  </div>
+          <div className="bg-white dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 p-6 shadow-sm max-w-3xl">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-slate-800 dark:text-white border border-slate-200 dark:border-neutral-700">
+                Razão Social & Matriz
+              </span>
+              <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900/60">
+                Registro Ativo
+              </span>
+            </div>
 
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 font-heading">
-                    Unidade {registro.city} - {registro.state}
-                  </h3>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 font-heading">
+              {COMPANY_CONFIG.legalName}
+            </h3>
 
-                  <div className="text-xs text-slate-600 dark:text-neutral-400 space-y-1.5 mb-4">
-                    <p><span className="text-slate-800 dark:text-neutral-300 font-semibold">CNPJ:</span> {registro.cnpj}</p>
-                    <p><span className="text-slate-800 dark:text-neutral-300 font-semibold">Endereço:</span> {registro.address}</p>
-                    <p><span className="text-slate-800 dark:text-neutral-300 font-semibold">CEP:</span> {registro.cep}</p>
-                  </div>
-                </div>
+            <div className="text-xs text-slate-600 dark:text-neutral-400 space-y-1.5 mb-4">
+              <p>
+                <span className="text-slate-800 dark:text-neutral-300 font-semibold">CNPJ Matriz:</span>{' '}
+                {COMPANY_CONFIG.privacy.cnpjMatriz}
+              </p>
+              <p>
+                <span className="text-slate-800 dark:text-neutral-300 font-semibold">Registro Administrativo:</span>{' '}
+                {COMPANY_CONFIG.registrosCadastrais[0].address}, {COMPANY_CONFIG.registrosCadastrais[0].city} -{' '}
+                {COMPANY_CONFIG.registrosCadastrais[0].state}, CEP {COMPANY_CONFIG.registrosCadastrais[0].cep}
+              </p>
+            </div>
 
-                <div className="pt-3 border-t border-slate-200 dark:border-neutral-800 text-[11px] text-slate-500 dark:text-neutral-400 italic">
-                  * Finalidade administrativa e base operacional. Atendimento presencial sujeito a consulta prévia; solicite deslocamento via WhatsApp.
-                </div>
-              </div>
-            ))}
+            <div className="pt-3 border-t border-slate-200 dark:border-neutral-800 text-[11px] text-slate-500 dark:text-neutral-400">
+              <strong>Nota Importante:</strong> Este endereço destina-se exclusivamente a registro administrativo e fiscal. O atendimento aos clientes e solicitações de remoção ocorrem exclusivamente pelos canais digitais oficiais (WhatsApp).
+            </div>
           </div>
 
           <div className="mt-8 p-4 rounded-xl bg-white dark:bg-neutral-900/40 border border-slate-200 dark:border-neutral-800/80 text-xs text-slate-600 dark:text-neutral-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
@@ -190,7 +188,7 @@ export const AboutPage: React.FC = () => {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded shadow-lg transition-colors font-heading"
             >
-              <MessageCircle className="w-4 h-4" />
+              <WhatsAppIcon className="w-4 h-4" />
               <span>Chamar no WhatsApp ({COMPANY_CONFIG.whatsapp.display})</span>
             </a>
             <Link

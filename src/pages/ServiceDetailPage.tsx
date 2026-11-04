@@ -1,8 +1,9 @@
 import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { MessageCircle, ArrowLeft, CheckCircle2, ShieldCheck, Truck, Car, ShieldAlert, ArrowRight, HelpCircle } from 'lucide-react';
-import { COMPANY_CONFIG, ServiceItem } from '../data/companyData';
+import { CheckCircle2, ShieldCheck, Truck, Car, ShieldAlert, ArrowRight, HelpCircle } from 'lucide-react';
+import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const ServiceDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -145,13 +146,13 @@ export const ServiceDetailPage: React.FC = () => {
                 </div>
                 <a
                   href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
-                    `Olá! Gostaria de consultar atendimento imediato para ${currentService.title}.`
+                    `Olá! Gostaria de consultar atendimento para ${currentService.title}.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-5 py-3 rounded shrink-0 shadow-lg transition-colors"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <WhatsAppIcon className="w-4 h-4" />
                   <span>Consultar no WhatsApp</span>
                 </a>
               </div>
@@ -192,7 +193,7 @@ export const ServiceDetailPage: React.FC = () => {
                   <span>Dúvidas Frequentes</span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
-                  Confira perguntas e respostas sobre formas de pagamento, documentos necessários e prazos reais de deslocamento.
+                  Confira perguntas e respostas sobre como solicitar atendimento, tipos de veículos atendidos e consulta de disponibilidade.
                 </p>
                 <Link
                   to="/perguntas-frequentes"

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Car, Truck, ShieldAlert, ArrowRight, MessageCircle, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Truck, ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const ServicesPage: React.FC = () => {
   const verifiedServices = COMPANY_CONFIG.services.filter((s) => !s.isPendingConfirmation);
@@ -92,7 +93,7 @@ export const ServicesPage: React.FC = () => {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded transition-colors shadow-md font-heading"
                       >
-                        <MessageCircle className="w-4 h-4" />
+                        <WhatsAppIcon className="w-4 h-4" />
                         <span>Solicitar Atendimento</span>
                       </a>
                     </div>
@@ -135,10 +136,10 @@ export const ServicesPage: React.FC = () => {
                 <span>Segurança em Primeiro Lugar</span>
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight font-heading">
-                Dúvidas sobre o Procedimento Operacional?
+                Dúvidas sobre o Atendimento?
               </h3>
               <p className="text-slate-600 dark:text-neutral-400 text-sm leading-relaxed">
-                Consulte nossa seção de Perguntas Frequentes para saber mais sobre ancoragem com cintas regulamentares, remoção de carros com câmbio automático, trancados ou sem chave.
+                Consulte nossa seção de Perguntas Frequentes para saber mais sobre como solicitar atendimento, informações necessárias e consulta de disponibilidade pelo WhatsApp.
               </p>
             </div>
 

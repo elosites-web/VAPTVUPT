@@ -19,13 +19,13 @@ export const About: React.FC = () => {
     },
     {
       icon: Wrench,
-      title: 'Equipamentos Específicos',
-      description: 'Frota dotada de plataformas hidráulicas, guinchos de arraste e cavalos mecânicos com manutenção preventiva contínua.',
+      title: 'Equipamentos Adequados',
+      description: 'Utilização de guincho plataforma e cavalos mecânicos compatíveis com o porte de cada operação.',
     },
     {
       icon: Layers,
-      title: 'Atendimento Corporativo',
-      description: 'Estrutura preparada para demandas particulares, empresas com frota própria e parcerias com seguradoras.',
+      title: 'Atendimento Direto',
+      description: 'Estrutura voltada tanto para demandas particulares quanto para necessidades corporativas e operacionais.',
     },
   ];
 

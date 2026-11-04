@@ -81,17 +81,15 @@
 /* Glassmorphism & Header entrance utilities */
 @keyframes headerEntrance {
   0% {
-    transform: translateY(-24px);
     opacity: 0;
   }
   100% {
-    transform: translateY(0);
     opacity: 1;
   }
 }
 
 .animate-header-entrance {
-  animation: headerEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: headerEntrance 0.35s ease-out forwards;
 }
 
 .glass-header-dark {
@@ -137,16 +135,15 @@
 /* Sombra 3D suave para botões e cápsulas */
 .button-3d {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .button-3d:hover {
-  transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(180, 48, 52, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .button-3d:active {
-  transform: translateY(1px);
+  transform: scale(0.99);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
@@ -169,16 +166,25 @@
 @keyframes tipSparkle {
   0%, 100% {
     opacity: 0.95;
-    filter: brightness(1);
   }
   50% {
     opacity: 1;
-    filter: brightness(1.35) drop-shadow(0 0 4px #FFFFFF);
   }
 }
 
 .animate-tip-sparkle {
-  animation: tipSparkle 1.6s ease-in-out infinite;
+  animation: tipSparkle 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ==========================================================================

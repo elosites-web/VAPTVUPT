@@ -1,8 +1,9 @@
 import React from 'react';
-import { Briefcase, MessageCircle, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react';
+import { Briefcase, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react';
 import { INTEGRATIONS } from '../config/integrations';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const CareersPage: React.FC = () => {
   const isFormsConfigured = INTEGRATIONS.googleForms.isConfigured;
@@ -51,19 +52,19 @@ export const CareersPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs text-slate-700 dark:text-neutral-300">
               <div className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-[#B43034] mt-0.5 shrink-0" />
-                <span>CNH Categoria D ou E com observação EAR (Exerce Atividade Remunerada)</span>
+                <span>Habilitação compatível com a categoria do veículo operacional</span>
               </div>
               <div className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-[#B43034] mt-0.5 shrink-0" />
-                <span>Experiência comprovada com guincho plataforma hidráulica ou cavalo mecânico</span>
+                <span>Experiência com operação de guincho ou transporte de veículos</span>
               </div>
               <div className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-[#B43034] mt-0.5 shrink-0" />
-                <span>Conhecimento dos procedimentos de amarração com cintas regulamentares</span>
+                <span>Compromisso com procedimentos seguros de embarque e movimentação</span>
               </div>
               <div className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-[#B43034] mt-0.5 shrink-0" />
-                <span>Residência no estado de São Paulo (Campinas, Jundiaí, SP e regiões adjacentes)</span>
+                <span>Postura profissional, pontualidade e atenção no atendimento</span>
               </div>
             </div>
           </div>
@@ -110,32 +111,25 @@ export const CareersPage: React.FC = () => {
                 </iframe>
               </div>
             ) : (
-              /* If Google Forms is Pending Setup (TODO-CONFIGURAR-GOOGLE-FORMS) */
               <div className="space-y-6">
-                <div className="p-5 rounded-xl bg-amber-50/80 dark:bg-neutral-950/80 border border-amber-200 dark:border-neutral-800 space-y-3">
-                  <div className="flex items-center gap-2 text-amber-800 dark:text-amber-400 font-bold text-sm">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>Integração Oficial com Google Forms (Pronta para Ativação)</span>
+                <div className="p-5 rounded-xl bg-slate-100/80 dark:bg-neutral-950/80 border border-slate-200 dark:border-neutral-800 space-y-2">
+                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
+                    <AlertCircle className="w-4 h-4 text-[#B43034] shrink-0" />
+                    <span>Recebimento de Cadastros Profissionais</span>
                   </div>
                   <p className="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed">
-                    O formulário de candidatura está preparado para integração direta com a conta Google do cliente. Assim que o link oficial do Google Forms for inserido no ambiente, o formulário será renderizado automaticamente nesta área sem necessidade de retrabalho de código.
+                    Para manifestar interesse em oportunidades operacionais, entre em contato pelo canal oficial do WhatsApp informando seu nome, cidade e área de experiência profissional.
                   </p>
-                  
-                  <div className="p-3 rounded bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 text-[11px] text-slate-600 dark:text-neutral-400 space-y-1 font-mono">
-                    <div>Variável de ambiente: <strong className="text-slate-900 dark:text-neutral-200">VITE_GOOGLE_FORMS_CAREERS_URL</strong></div>
-                    <div>Arquivo central: <strong className="text-slate-900 dark:text-neutral-200">src/config/integrations.ts</strong></div>
-                    <div>Status atual: <span className="text-amber-700 dark:text-amber-400 font-semibold">TODO-CONFIGURAR-GOOGLE-FORMS</span></div>
-                  </div>
                 </div>
 
                 {/* Alternative Direct Channel via WhatsApp */}
                 <div className="p-6 rounded-xl bg-white dark:bg-gradient-to-r dark:from-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
                   <div className="space-y-1 text-center sm:text-left">
                     <h4 className="text-base font-bold text-slate-900 dark:text-white font-heading">
-                      Envio Imediato via WhatsApp Operacional
+                      Contato Profissional via WhatsApp Oficial
                     </h4>
                     <p className="text-xs text-slate-600 dark:text-neutral-400">
-                      Você pode enviar suas informações básicas e dados de CNH diretamente para o nosso canal de contato.
+                      Envie apenas sua apresentação profissional inicial. Não envie fotos ou números de documentos pessoais (CPF, RG ou CNH) nesta etapa.
                     </p>
                   </div>
 
@@ -147,8 +141,8 @@ export const CareersPage: React.FC = () => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-5 py-3 rounded shadow-lg transition-colors shrink-0 font-heading"
                   >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>Enviar Informações no WhatsApp</span>
+                    <WhatsAppIcon className="w-4 h-4" />
+                    <span>Falar pelo WhatsApp</span>
                   </a>
                 </div>
               </div>

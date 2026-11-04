@@ -61,11 +61,11 @@ export const NotFoundPage: React.FC = () => {
                 Estrutura & Frota
               </Link>
               <span>•</span>
-              <Link to="/perguntas-frequentes" className="hover:text-white transition-colors">
+              <Link to="/perguntas-frequentes" className="hover:text-[#B43034] dark:hover:text-white transition-colors">
                 FAQ
               </Link>
               <span>•</span>
-              <Link to="/contato" className="hover:text-white transition-colors">
+              <Link to="/contato" className="hover:text-[#B43034] dark:hover:text-white transition-colors">
                 Contato
               </Link>
             </div>

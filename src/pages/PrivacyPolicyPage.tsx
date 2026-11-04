@@ -111,13 +111,13 @@ export const PrivacyPolicyPage: React.FC = () => {
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
-              5. Provedores de Infraestrutura e Serviços Externos
+              5. Serviços Externos e Plataformas de Terceiros
             </h2>
             <p className="text-slate-700 dark:text-neutral-300">
-              Para disponibilizar o site com estabilidade e segurança técnica na internet, utilizamos provedores de nuvem certificados (Google Cloud / CDN) sujeitos a rígidos padrões de segurança lógica.
+              Este site opera de forma institucional no navegador do visitante e disponibiliza links diretos para plataformas externas de comunicação (como WhatsApp e Instagram) apenas quando acionados voluntariamente pelo usuário.
             </p>
             <p className="text-slate-700 dark:text-neutral-300">
-              O site não contém plugins de terceiros para rastreamento invasivo ou coleta silenciosa. Eventuais métricas de acesso (Google Analytics 4), quando ativadas pelo administrador, operam em nível agregado e anônimo para aferição estatística de tráfego, sem identificação individual dos visitantes.
+              Caso ferramentas adicionais de análise de tráfego ou formulários externos venham a ser ativadas futuramente pela administração da empresa, este documento deverá ser atualizado para refletir tais integrações.
             </p>
           </div>
 
@@ -128,10 +128,10 @@ export const PrivacyPolicyPage: React.FC = () => {
               6. Retenção e Descarte de Dados
             </h2>
             <p className="text-slate-700 dark:text-neutral-300">
-              <strong className="text-slate-900 dark:text-white">No ambiente deste site:</strong> o tempo de retenção é nulo (zero), pois nenhuma informação do formulário é gravada em cookies, sessões ou bancos de dados. Ao fechar ou recarregar a página, qualquer dado digitado e não enviado é imediatamente apagado da memória volátil.
+              <strong className="text-slate-900 dark:text-white">No ambiente deste site:</strong> o site não armazena nem retém dados pessoais do formulário em banco de dados próprio. Ao fechar ou recarregar a página, os campos preenchidos e não enviados deixam de existir na sessão do navegador.
             </p>
             <p className="text-slate-700 dark:text-neutral-300">
-              <strong className="text-slate-900 dark:text-white">Nas conversas do WhatsApp:</strong> caso você inicie o atendimento, as mensagens ficam registradas nos canais oficiais da empresa estritamente pelo tempo necessário para a execução do serviço e cumprimento de obrigações fiscais e regulatórias do transporte rodoviário, sendo descartadas periodicamente.
+              <strong className="text-slate-900 dark:text-white">No atendimento via WhatsApp:</strong> caso o visitante decida enviar a mensagem pelo aplicativo WhatsApp, o tratamento e o tempo de guarda das informações seguem os procedimentos administrativos internos da empresa controladora e as normas legais aplicáveis à prestação do serviço contratado.
             </p>
           </div>
 
@@ -199,10 +199,10 @@ export const PrivacyPolicyPage: React.FC = () => {
           <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-neutral-800">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
-              10. Alterações deste Documento
+              10. Alterações e Revisão deste Documento
             </h2>
             <p className="text-slate-700 dark:text-neutral-300">
-              Esta Política de Privacidade poderá ser atualizada periodicamente para refletir melhorias técnicas ou adequações legais. Recomendamos consultas periódicas a esta página.
+              Esta Política de Privacidade constitui um modelo institucional estruturado para o ambiente digital da empresa e poderá ser atualizada periodicamente. Recomenda-se a revisão e validação final deste conteúdo pela administração da empresa e sua assessoria jurídica antes da publicação definitiva em domínio oficial.
             </p>
           </div>
 

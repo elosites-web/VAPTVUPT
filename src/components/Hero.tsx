@@ -1,6 +1,7 @@
 import React from 'react';
-import { MessageCircle, ChevronRight, Shield, Award, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, Shield, Award, CheckCircle2 } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const Hero: React.FC = () => {
   return (
@@ -61,7 +62,7 @@ export const Hero: React.FC = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-3 bg-[#B43034] hover:bg-[#8F2428] text-white text-base font-bold uppercase tracking-wider px-7 py-4 rounded-md shadow-lg shadow-red-950/40 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#B43034]"
               >
-                <MessageCircle className="w-5 h-5" />
+                <WhatsAppIcon className="w-5 h-5" />
                 <span>Solicitar Atendimento</span>
               </a>
 

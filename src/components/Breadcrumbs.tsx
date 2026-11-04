@@ -86,8 +86,8 @@ export const Breadcrumbs: React.FC = () => {
     }
   }
 
-  // Build Schema.org BreadcrumbList structured data
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://vaptvuptremocao.com.br';
+  // Build Schema.org BreadcrumbList structured data using current origin
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const schemaBreadcrumbs = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -95,7 +95,7 @@ export const Breadcrumbs: React.FC = () => {
       '@type': 'ListItem',
       position: index + 1,
       name: crumb.label,
-      item: `${baseUrl}${crumb.path}`,
+      ...(baseUrl ? { item: `${baseUrl}${crumb.path}` } : {}),
     })),
   };
 

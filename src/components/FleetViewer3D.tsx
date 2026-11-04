@@ -63,15 +63,27 @@ export const FleetViewer3D: React.FC = () => {
   const cycleProgressRef = useRef(65);
   const autoCycleDirRef = useRef<1 | -1>(1);
   const activePresetRef = useRef<'geral' | 'plataforma' | 'cabine'>('geral');
+  const isInViewportRef = useRef(true);
+  const isTabVisibleRef = useRef(true);
+  const prefersReducedMotionRef = useRef(false);
 
-  // Check prefers-reduced-motion
+  // Check and listen to prefers-reduced-motion
   useEffect(() => {
     if (typeof window !== 'undefined' && window.matchMedia) {
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReduced) {
-        setIsRotating(false);
-        isRotatingRef.current = false;
-      }
+      const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const applyReducedMotion = (matches: boolean) => {
+        prefersReducedMotionRef.current = matches;
+        if (matches) {
+          setIsRotating(false);
+          setIsAutoCycle(false);
+          isRotatingRef.current = false;
+          isAutoCycleRef.current = false;
+        }
+      };
+      applyReducedMotion(mql.matches);
+      const handler = (e: MediaQueryListEvent) => applyReducedMotion(e.matches);
+      mql.addEventListener('change', handler);
+      return () => mql.removeEventListener('change', handler);
     }
   }, []);
 
@@ -178,13 +190,16 @@ export const FleetViewer3D: React.FC = () => {
       return;
     }
 
+    const isMobileDevice = window.innerWidth < 768;
     renderer.setSize(width, height);
-    renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(
+      isSoftwareGl ? 1 : Math.min(window.devicePixelRatio || 1, isMobileDevice ? 1.25 : 1.75)
+    );
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
     renderer.shadowMap.enabled = !isSoftwareGl;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = isMobileDevice ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
     rendererRef.current = renderer;
 
     container.appendChild(renderer.domElement);
@@ -263,8 +278,9 @@ export const FleetViewer3D: React.FC = () => {
     keyLight.position.set(14, 18, 12);
     keyLight.castShadow = !isSoftwareGl;
     if (keyLight.castShadow) {
-      keyLight.shadow.mapSize.width = 1024;
-      keyLight.shadow.mapSize.height = 1024;
+      const shadowMapRes = isMobileDevice ? 512 : 1024;
+      keyLight.shadow.mapSize.width = shadowMapRes;
+      keyLight.shadow.mapSize.height = shadowMapRes;
       keyLight.shadow.camera.near = 0.5;
       keyLight.shadow.camera.far = 50;
       const d = 10;
@@ -703,18 +719,25 @@ export const FleetViewer3D: React.FC = () => {
     scene.add(heavyTractorGroup);
 
     // ==========================================
-    // ANIMATION LOOP & KINEMATICS
+    // ANIMATION LOOP & KINEMATICS (WITH VIEWPORT & TAB PAUSE)
     // ==========================================
     let lastTime = performance.now();
     let currentSlide = 0;
     let currentTilt = 0;
+    let isLoopRunning = false;
+    let lastReportedProgress = cycleProgressRef.current;
 
     const animate = (time: number) => {
+      if (!isInViewportRef.current || !isTabVisibleRef.current) {
+        isLoopRunning = false;
+        return;
+      }
+
       const delta = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time;
 
       // Auto cycle bounce
-      if (isAutoCycleRef.current) {
+      if (isAutoCycleRef.current && !prefersReducedMotionRef.current) {
         let nextP = cycleProgressRef.current + autoCycleDirRef.current * 18 * delta;
         if (nextP >= 100) {
           nextP = 100;
@@ -724,7 +747,11 @@ export const FleetViewer3D: React.FC = () => {
           autoCycleDirRef.current = 1;
         }
         cycleProgressRef.current = nextP;
-        setCycleProgress(Math.round(nextP));
+        const rounded = Math.round(nextP);
+        if (rounded !== lastReportedProgress) {
+          lastReportedProgress = rounded;
+          setCycleProgress(rounded);
+        }
       }
 
       // Hydraulic Platform Kinematics (Guincho Leve)
@@ -742,8 +769,13 @@ export const FleetViewer3D: React.FC = () => {
         targetTilt = tiltFraction * 16.0;
       }
 
-      currentSlide = THREE.MathUtils.damp(currentSlide, targetSlide, 6, delta);
-      currentTilt = THREE.MathUtils.damp(currentTilt, targetTilt, 6, delta);
+      if (prefersReducedMotionRef.current) {
+        currentSlide = targetSlide;
+        currentTilt = targetTilt;
+      } else {
+        currentSlide = THREE.MathUtils.damp(currentSlide, targetSlide, 6, delta);
+        currentTilt = THREE.MathUtils.damp(currentTilt, targetTilt, 6, delta);
+      }
 
       if (platformDeckRef.current) {
         platformDeckRef.current.position.x = 3.6 - currentSlide;
@@ -775,9 +807,9 @@ export const FleetViewer3D: React.FC = () => {
       }
 
       // Slow 360° showcase rotation (applied to both trucks)
-      if (isRotatingRef.current) {
-        if (guinchoGroupRef.current) guinchoGroupRef.current.rotation.y += 0.005;
-        if (heavyTractorGroupRef.current) heavyTractorGroupRef.current.rotation.y += 0.005;
+      if (isRotatingRef.current && !prefersReducedMotionRef.current) {
+        if (guinchoGroupRef.current) guinchoGroupRef.current.rotation.y += 0.004;
+        if (heavyTractorGroupRef.current) heavyTractorGroupRef.current.rotation.y += 0.004;
       }
 
       controls.update();
@@ -785,28 +817,87 @@ export const FleetViewer3D: React.FC = () => {
       requestRef.current = requestAnimationFrame(animate);
     };
 
-    requestRef.current = requestAnimationFrame(animate);
+    const startLoopIfEligible = () => {
+      if (!isLoopRunning && isInViewportRef.current && isTabVisibleRef.current) {
+        isLoopRunning = true;
+        lastTime = performance.now();
+        requestRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    startLoopIfEligible();
+
+    // Pause rendering when viewer scrolls out of viewport
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          isInViewportRef.current = entry.isIntersecting;
+          if (entry.isIntersecting) {
+            startLoopIfEligible();
+          } else if (isLoopRunning) {
+            cancelAnimationFrame(requestRef.current);
+            isLoopRunning = false;
+          }
+        }
+      },
+      { threshold: 0.05 }
+    );
+    intersectionObserver.observe(container);
+
+    // Pause rendering when browser tab is inactive
+    const handleVisibilityChange = () => {
+      isTabVisibleRef.current = !document.hidden;
+      if (isTabVisibleRef.current) {
+        startLoopIfEligible();
+      } else if (isLoopRunning) {
+        cancelAnimationFrame(requestRef.current);
+        isLoopRunning = false;
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // ==========================================
     // PROPER RESIZEOBSERVER IMPLEMENTATION
-    // Reacts instantly to container layout, orientation, and window resizing
     // ==========================================
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width: w, height: h } = entry.contentRect;
         if (w > 0 && h > 0) {
           applyResponsiveCamera(w, h, activePresetRef.current);
+          if (!isLoopRunning) {
+            renderer.render(scene, camera);
+          }
         }
       }
     });
 
     resizeObserver.observe(container);
 
-    // Cleanup
+    // Full Cleanup on Unmount
     return () => {
+      intersectionObserver.disconnect();
       resizeObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       cancelAnimationFrame(requestRef.current);
+      isLoopRunning = false;
       controls.dispose();
+
+      scene.traverse((object) => {
+        if ((object as THREE.Mesh).isMesh) {
+          const mesh = object as THREE.Mesh;
+          mesh.geometry?.dispose();
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((m) => m.dispose());
+          } else if (mesh.material) {
+            mesh.material.dispose();
+          }
+        }
+      });
+
+      if (scene.environment) {
+        scene.environment.dispose();
+      }
+
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -843,23 +934,21 @@ export const FleetViewer3D: React.FC = () => {
     if (cycleProgress === 0) {
       return {
         phase: 'Posição de Trânsito',
-        detail: 'Rampa recolhida e travada no chassi',
-        badge: '0% Plano',
+        detail: 'Representação ilustrativa da plataforma recolhida sobre o chassi',
+        badge: 'Posição Recolhida',
       };
     }
     if (cycleProgress <= 35) {
-      const slidePct = Math.round((cycleProgress / 35) * 33);
       return {
-        phase: 'Fase 1: Recuo Horizontal',
-        detail: `Deslocando para trás (~${slidePct}% do comprimento) sem inclinar`,
-        badge: 'Recuo 33%',
+        phase: 'Etapa 1: Recuo da Plataforma',
+        detail: 'Representação ilustrativa do deslocamento horizontal traseiro da prancha',
+        badge: 'Recuo Horizontal',
       };
     }
-    const tiltDegrees = Math.round(((cycleProgress - 35) / 65) * 16);
     return {
-      phase: 'Fase 2: Basculamento Hidráulico',
-      detail: `Rampa inclinando (${tiltDegrees}°) com extremidade tocando o solo`,
-      badge: `${tiltDegrees}° Embarque`,
+      phase: 'Etapa 2: Basculamento da Rampa',
+      detail: 'Representação ilustrativa da inclinação da prancha para embarque do veículo',
+      badge: 'Rampa Inclinada',
     };
   };
 
@@ -879,12 +968,12 @@ export const FleetViewer3D: React.FC = () => {
           <div>
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
               <span className="w-6 h-0.5 bg-[#B43034]" />
-              <span>Ambiente Industrial & Simulação Técnica 3D</span>
+              <span>Representação Conceitual & Ilustrativa 3D</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight uppercase font-heading leading-tight">
               {selectedModel === 'guincho-leve'
-                ? 'OPERAÇÃO DA PLATAFORMA: RECUO & BASCULAMENTO'
-                : 'CAVALO MECÂNICO 1635: TRAÇÃO & SUPORTE PESADO'}
+                ? 'DEMONSTRAÇÃO CONCEITUAL: PLATAFORMA PARA VEÍCULOS LEVES'
+                : 'DEMONSTRAÇÃO CONCEITUAL: CAVALO MECÂNICO PESADO'}
             </h2>
             <p
               className={`mt-2 text-xs sm:text-base max-w-2xl leading-relaxed ${
@@ -892,8 +981,8 @@ export const FleetViewer3D: React.FC = () => {
               }`}
             >
               {selectedModel === 'guincho-leve'
-                ? 'Ciclo real de funcionamento: primeiro a rampa desloca-se 33% na horizontal para trás pelas guias e, em seguida, realiza o basculamento hidráulico para embarque seguro sem danos ao para-choque.'
-                : 'Estrutura técnica para tração rodoviária pesada: chassi reforçado com tandem traseiro, quinta roda de engate articulada, conexões pneumáticas de freio a ar e capacidade para grandes cargas.'}
+                ? 'Visualização conceitual do movimento de recuo horizontal e basculamento de prancha utilizado no embarque de veículos leves.'
+                : 'Visualização conceitual de um cavalo mecânico configurado para operações de acoplamento e remoção de veículos pesados.'}
             </p>
           </div>
 
@@ -953,7 +1042,7 @@ export const FleetViewer3D: React.FC = () => {
         >
           <Info className="w-4 h-4 text-[#B43034] shrink-0 mt-0.5" />
           <p>
-            <strong>Nota de Transparência:</strong> Este visualizador é uma <em>simulação mecânica e técnica ilustrativa</em> para demonstrar a cinemática da rampa hidráulica e os atributos de tração pesada. O modelo tridimensional e o cenário industrial têm caráter demonstrativo.
+            <strong>Nota de Transparência:</strong> Os modelos 3D exibidos abaixo são <em>representações conceituais e ilustrativas</em> construídas para demonstrar visualmente a movimentação de uma plataforma e de um cavalo mecânico, não constituindo réplicas técnicas exatas dos veículos da empresa.
           </p>
         </div>
       </div>
@@ -989,7 +1078,7 @@ export const FleetViewer3D: React.FC = () => {
             )}
 
             {/* Badges on top-left */}
-            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none flex flex-wrap items-center gap-1.5 sm:gap-2 z-10">
+            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none flex flex-wrap items-center gap-1.5 sm:gap-2 z-10 max-w-[72%] sm:max-w-none">
               <span
                 className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded border backdrop-blur-md font-heading ${
                   isDarkMode
@@ -997,10 +1086,10 @@ export const FleetViewer3D: React.FC = () => {
                     : 'bg-white/95 text-slate-900 border-slate-300 shadow-sm'
                 }`}
               >
-                {selectedModel === 'guincho-leve' ? 'Modelo: VW Delivery' : 'Modelo: MB 1635'}
+                {selectedModel === 'guincho-leve' ? 'Ilustração: Guincho Leve' : 'Ilustração: Cavalo Pesado'}
               </span>
               <span className="bg-red-950/90 text-red-200 text-[10px] sm:text-[11px] font-semibold tracking-wider px-2 sm:px-2.5 py-1 rounded border border-red-900/60 backdrop-blur-md">
-                {selectedModel === 'guincho-leve' ? `${status.phase} (${status.badge})` : 'Quinta Roda Engatada'}
+                {selectedModel === 'guincho-leve' ? status.badge : 'Modelo Conceitual'}
               </span>
             </div>
 
@@ -1082,8 +1171,8 @@ export const FleetViewer3D: React.FC = () => {
                     <span className="text-neutral-500 hidden sm:inline">—</span>
                     <span className="text-[11px] sm:text-xs pl-4 sm:pl-0">{status.detail}</span>
                   </div>
-                  <div className="text-[11px] font-mono font-bold text-[#B43034] bg-red-950/40 px-2 py-0.5 rounded border border-red-900/40 shrink-0 self-start sm:self-auto">
-                    {cycleProgress}% DO CICLO
+                  <div className="text-[11px] font-mono font-bold text-[#B43034] bg-red-950/20 dark:bg-red-950/40 px-2 py-0.5 rounded border border-red-900/30 shrink-0 self-start sm:self-auto">
+                    SIMULAÇÃO ILUSTRATIVA
                   </div>
                 </div>
 
@@ -1093,10 +1182,10 @@ export const FleetViewer3D: React.FC = () => {
                     <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider font-heading">
                       <span className="flex items-center gap-1.5">
                         <Sliders className="w-3.5 h-3.5 text-[#B43034]" />
-                        <span>Ciclo da Plataforma:</span>
+                        <span>Controle Ilustrativo da Rampa:</span>
                       </span>
                       <span className="font-mono text-[11px]">
-                        {cycleProgress <= 35 ? 'Fase 1: Recuo Horizontal' : 'Fase 2: Basculamento Hidráulico'}
+                        {cycleProgress <= 35 ? 'Etapa 1: Recuo' : 'Etapa 2: Inclinação'}
                       </span>
                     </div>
 
@@ -1110,7 +1199,8 @@ export const FleetViewer3D: React.FC = () => {
                         setCycleProgress(Number(e.target.value));
                       }}
                       className="w-full accent-[#B43034] h-2.5 rounded-lg cursor-pointer touch-none"
-                      title="Controle do ciclo de operação da rampa"
+                      aria-label="Controle ilustrativo da posição da rampa"
+                      title="Controle ilustrativo da posição da rampa"
                     />
 
                     {/* Step presets */}
@@ -1129,7 +1219,7 @@ export const FleetViewer3D: React.FC = () => {
                             : 'bg-white text-slate-600 border-slate-300 hover:text-slate-900 shadow-sm'
                         }`}
                       >
-                        0% Trânsito
+                        Posição Trânsito
                       </button>
                       <button
                         type="button"
@@ -1145,7 +1235,7 @@ export const FleetViewer3D: React.FC = () => {
                             : 'bg-white text-slate-600 border-slate-300 hover:text-slate-900 shadow-sm'
                         }`}
                       >
-                        35% Recuo
+                        Recuo da Prancha
                       </button>
                       <button
                         type="button"
@@ -1161,7 +1251,7 @@ export const FleetViewer3D: React.FC = () => {
                             : 'bg-white text-slate-600 border-slate-300 hover:text-slate-900 shadow-sm'
                         }`}
                       >
-                        100% Embarque
+                        Posição Embarque
                       </button>
                     </div>
                   </div>
@@ -1173,14 +1263,18 @@ export const FleetViewer3D: React.FC = () => {
                         isDarkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-white border-slate-300 shadow-sm'
                       }`}
                     >
-                      <span className="text-[10px] text-neutral-500 uppercase px-1.5 font-bold hidden xs:inline">
+                      <span className={`text-[10px] uppercase px-1.5 font-bold hidden xs:inline ${isDarkMode ? 'text-neutral-500' : 'text-slate-500'}`}>
                         Ângulo:
                       </span>
                       <button
                         type="button"
                         onClick={() => setCameraPreset('geral')}
                         className={`text-[11px] px-2.5 py-1 rounded font-medium transition-colors ${
-                          activePreset === 'geral' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+                          activePreset === 'geral'
+                            ? 'bg-[#B43034] text-white font-semibold'
+                            : isDarkMode
+                            ? 'text-neutral-400 hover:text-white'
+                            : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
                         Geral
@@ -1189,7 +1283,11 @@ export const FleetViewer3D: React.FC = () => {
                         type="button"
                         onClick={() => setCameraPreset('plataforma')}
                         className={`text-[11px] px-2.5 py-1 rounded font-medium transition-colors ${
-                          activePreset === 'plataforma' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+                          activePreset === 'plataforma'
+                            ? 'bg-[#B43034] text-white font-semibold'
+                            : isDarkMode
+                            ? 'text-neutral-400 hover:text-white'
+                            : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
                         Rampa
@@ -1198,7 +1296,11 @@ export const FleetViewer3D: React.FC = () => {
                         type="button"
                         onClick={() => setCameraPreset('cabine')}
                         className={`text-[11px] px-2.5 py-1 rounded font-medium transition-colors ${
-                          activePreset === 'cabine' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+                          activePreset === 'cabine'
+                            ? 'bg-[#B43034] text-white font-semibold'
+                            : isDarkMode
+                            ? 'text-neutral-400 hover:text-white'
+                            : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
                         Cabine
@@ -1208,8 +1310,8 @@ export const FleetViewer3D: React.FC = () => {
                 </div>
               </>
             ) : (
-              /* Heavy Tractor Specifications Deck (Model 2: Cavalo Mecânico 1635) */
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+              /* Heavy Tractor Conceptual Deck (Model 2: Cavalo Mecânico) */
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                 <div
                   className={`p-3 rounded-lg border ${
                     isDarkMode ? 'bg-neutral-950/80 border-neutral-800' : 'bg-white border-slate-300 shadow-sm'
@@ -1217,10 +1319,10 @@ export const FleetViewer3D: React.FC = () => {
                 >
                   <div className="flex items-center gap-1.5 text-[#B43034] font-bold uppercase mb-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Quinta Roda Articulada</span>
+                    <span>Acoplamento Pesado</span>
                   </div>
-                  <p className="text-[11px] text-neutral-400">
-                    Mesa de acoplamento fundida com pino-rei de alta resistência para implementos pesados.
+                  <p className={`text-[11px] ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>
+                    Representação conceitual da quinta roda para operações de tração e deslocamento pesado.
                   </p>
                 </div>
 
@@ -1231,10 +1333,10 @@ export const FleetViewer3D: React.FC = () => {
                 >
                   <div className="flex items-center gap-1.5 text-[#B43034] font-bold uppercase mb-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Tração Tandem 6x2 / 6x4</span>
+                    <span>Estrutura Rodoviária</span>
                   </div>
-                  <p className="text-[11px] text-neutral-400">
-                    Rodado duplo reforçado para estabilidade e capacidade de arrasto em rodovias.
+                  <p className={`text-[11px] ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>
+                    Configuração voltada ao suporte operacional de caminhões e composições sob consulta.
                   </p>
                 </div>
 
@@ -1245,24 +1347,10 @@ export const FleetViewer3D: React.FC = () => {
                 >
                   <div className="flex items-center gap-1.5 text-[#B43034] font-bold uppercase mb-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Linhas Pneumáticas de Ar</span>
+                    <span>Atendimento Sob Consulta</span>
                   </div>
-                  <p className="text-[11px] text-neutral-400">
-                    Conectores rápidos em espiral para acionamento de freios do implemento rebocado.
-                  </p>
-                </div>
-
-                <div
-                  className={`p-3 rounded-lg border flex flex-col justify-between ${
-                    isDarkMode ? 'bg-neutral-950/80 border-neutral-800' : 'bg-white border-slate-300 shadow-sm'
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5 text-[#B43034] font-bold uppercase mb-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Motor Turbo Intercooler</span>
-                  </div>
-                  <p className="text-[11px] text-neutral-400">
-                    Alto torque e curva de potência contínua para remoção de composições pesadas.
+                  <p className={`text-[11px] ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>
+                    Consulte a equipe via WhatsApp para verificar disponibilidade e especificações para sua demanda.
                   </p>
                 </div>
               </div>

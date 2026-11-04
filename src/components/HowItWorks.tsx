@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { MessageCircle, FileText, CheckCircle2, ArrowRight, Car, Truck, HelpCircle, Send } from 'lucide-react';
+import { FileText, CheckCircle2, ArrowRight, Car, Truck, HelpCircle } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const HowItWorks: React.FC = () => {
   const [vehicleType, setVehicleType] = useState('Carro de Passeio');
@@ -10,7 +11,7 @@ export const HowItWorks: React.FC = () => {
   const steps = [
     {
       number: '01',
-      icon: MessageCircle,
+      icon: WhatsAppIcon,
       title: 'Entre em contato pelo WhatsApp',
       description: 'Clique no botão oficial e inicie o atendimento com nossa equipe de despacho.',
     },
@@ -160,7 +161,7 @@ export const HowItWorks: React.FC = () => {
                 type="text"
                 value={locationNote}
                 onChange={(e) => setLocationNote(e.target.value)}
-                placeholder="Ex: Campinas / Rodovia Anhanguera, ou São Paulo / Zona Leste"
+                placeholder="Ex: Cidade, bairro ou referência do local"
                 className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-[#B43034] transition-colors"
               />
             </div>
@@ -177,7 +178,7 @@ export const HowItWorks: React.FC = () => {
               rel="noopener noreferrer"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[#B43034] hover:bg-[#8F2428] text-white text-sm font-bold uppercase tracking-wider px-8 py-3.5 rounded-lg shadow-lg shadow-red-950/50 transition-all transform hover:-translate-y-0.5"
             >
-              <Send className="w-4 h-4" />
+              <WhatsAppIcon className="w-4 h-4" />
               <span>Enviar Consulta no WhatsApp</span>
             </a>
           </div>

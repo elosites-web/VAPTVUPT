@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion, type HTMLMotionProps } from 'motion/react';
+import React, { useState } from 'react';
+import { motion, useReducedMotion, type HTMLMotionProps } from 'motion/react';
 
 interface ZigZagItemProps extends HTMLMotionProps<'div'> {
   index?: number;
@@ -12,47 +12,65 @@ interface ZigZagItemProps extends HTMLMotionProps<'div'> {
 
 /**
  * ZigZagItem
- * Componente reutilizável com Framer Motion que aplica animação de entrada em "zigue-zague":
- * - Elementos de índice par entram deslizando da esquerda para a direita.
- * - Elementos de índice ímpar entram deslizando da direita para a esquerda.
- * - Re-engatilha toda vez que entra na viewport com `once: false`.
+ * Animação de entrada suave, estável e executada no compositor:
+ * - Dispara uma única vez por carregamento (viewport.once: true).
+ * - Utiliza exclusivamente 'transform' (translate3d via x/y) e 'opacity', sem scale ou propriedades de layout.
+ * - Respeita integralmente 'prefers-reduced-motion'.
  */
 export const ZigZagItem: React.FC<ZigZagItemProps> = ({
   index = 0,
   direction = 'auto',
-  distance = 45,
+  distance = 14,
   delay,
   children,
   className = '',
+  style,
   ...props
 }) => {
-  // Determina direção: se auto, alterna entre esquerda (par) e direita (ímpar)
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  );
+
+  if (prefersReducedMotion) {
+    return (
+      <div className={className} style={style as React.CSSProperties}>
+        {children}
+      </div>
+    );
+  }
+
+  const effectiveDistance = isMobile ? Math.min(distance, 8) : Math.min(distance, 14);
   const isLeft = direction === 'left' ? true : direction === 'right' ? false : index % 2 === 0;
-  const initialX = isLeft ? -distance : distance;
-  const calculatedDelay = delay !== undefined ? delay : (index % 4) * 0.1;
+  const initialX = isLeft ? -effectiveDistance : effectiveDistance;
+  const calculatedDelay =
+    delay !== undefined ? Math.min(delay, 0.15) : Math.min((index % 3) * 0.04, 0.1);
 
   return (
     <motion.div
       initial={{
         opacity: 0,
         x: initialX,
-        y: 18,
-        scale: 0.98,
+        y: 6,
       }}
       whileInView={{
         opacity: 1,
         x: 0,
         y: 0,
-        scale: 1,
       }}
       viewport={{
-        once: false, // Re-engatilha sempre que entra na viewport
-        amount: 0.18, // Gatilho quando 18% do elemento estiver visível
+        once: true,
+        amount: 0.12,
+        margin: '0px 0px -20px 0px',
       }}
       transition={{
-        duration: 0.65,
+        duration: 0.38,
         delay: calculatedDelay,
-        ease: [0.16, 1, 0.3, 1], // Curva suave e dinâmica
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      style={{
+        willChange: 'transform, opacity',
+        ...style,
       }}
       className={className}
       {...props}
@@ -71,39 +89,53 @@ interface ZigZagHeadingProps extends HTMLMotionProps<'div'> {
 
 /**
  * ZigZagHeading
- * Animação para títulos de seção, selos e subtítulos com re-disparo em viewport (once: false).
+ * Animação discreta para cabeçalhos de seção usando apenas transform (x/y) e opacity,
+ * disparada uma única vez (viewport.once: true) e respeitando prefers-reduced-motion.
  */
 export const ZigZagHeading: React.FC<ZigZagHeadingProps> = ({
   children,
   className = '',
   delay = 0,
   from = 'center',
+  style,
   ...props
 }) => {
-  const initialX = from === 'left' ? -35 : from === 'right' ? 35 : 0;
+  const prefersReducedMotion = useReducedMotion();
+
+  if (prefersReducedMotion) {
+    return (
+      <div className={className} style={style as React.CSSProperties}>
+        {children}
+      </div>
+    );
+  }
+
+  const initialX = from === 'left' ? -10 : from === 'right' ? 10 : 0;
 
   return (
     <motion.div
       initial={{
         opacity: 0,
         x: initialX,
-        y: -20,
-        scale: 0.96,
+        y: 6,
       }}
       whileInView={{
         opacity: 1,
         x: 0,
         y: 0,
-        scale: 1,
       }}
       viewport={{
-        once: false,
-        amount: 0.25,
+        once: true,
+        amount: 0.2,
       }}
       transition={{
-        duration: 0.7,
-        delay,
-        ease: [0.16, 1, 0.3, 1],
+        duration: 0.38,
+        delay: Math.min(delay, 0.12),
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      style={{
+        willChange: 'transform, opacity',
+        ...style,
       }}
       className={className}
       {...props}
@@ -120,18 +152,37 @@ interface ZigZagContainerProps extends HTMLMotionProps<'div'> {
 
 /**
  * ZigZagContainer
- * Container pai para orquestrar seções com efeito contínuo de entrada.
+ * Container com disparo único (viewport.once: true) e transição restrita a opacity/transform.
  */
 export const ZigZagContainer: React.FC<ZigZagContainerProps> = ({
   children,
   className = '',
+  style,
   ...props
 }) => {
+  const prefersReducedMotion = useReducedMotion();
+
+  if (prefersReducedMotion) {
+    return (
+      <div className={className} style={style as React.CSSProperties}>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.1 }}
+      initial={{ opacity: 0, y: 6 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{
+        duration: 0.35,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      style={{
+        willChange: 'transform, opacity',
+        ...style,
+      }}
       className={className}
       {...props}
     >

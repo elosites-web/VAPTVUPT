@@ -1,6 +1,7 @@
 import React from 'react';
-import { MessageCircle, Instagram, Phone, ArrowUpRight, ShieldCheck, MapPin } from 'lucide-react';
+import { Instagram, Phone, ArrowUpRight, ShieldCheck, MapPin } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const Contact: React.FC = () => {
   return (
@@ -47,7 +48,7 @@ export const Contact: React.FC = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-3 bg-[#B43034] hover:bg-[#8F2428] text-white text-base font-bold uppercase tracking-wider px-8 py-4 rounded-xl shadow-xl shadow-red-950/40 transition-all duration-200 transform hover:-translate-y-0.5"
                 >
-                  <MessageCircle className="w-5 h-5 text-white" />
+                  <WhatsAppIcon className="w-5 h-5 text-white" />
                   <span>Falar pelo WhatsApp</span>
                 </a>
 

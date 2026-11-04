@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, ChevronDown, MessageCircle, HelpCircle, ArrowRight, ShieldCheck, Phone } from 'lucide-react';
+import { Search, ChevronDown, HelpCircle, ArrowRight, ShieldCheck, Phone } from 'lucide-react';
 import { FAQ_CATEGORIES, FAQ_ITEMS, FAQItem } from '../data/faqData';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const FAQPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('todas');
@@ -100,7 +101,7 @@ export const FAQPage: React.FC = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Digite sua dúvida (ex: câmbio automático, pesados, pagamento, prazos)..."
+              placeholder="Digite sua dúvida (ex: atendimento, veículos leves, pesados, orçamento)..."
               className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-800 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder-neutral-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:border-transparent transition-all shadow-sm"
             />
             {searchTerm && (
@@ -237,7 +238,7 @@ export const FAQPage: React.FC = () => {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded shadow-lg transition-colors shrink-0 font-heading"
             >
-              <MessageCircle className="w-4 h-4" />
+              <WhatsAppIcon className="w-4 h-4" />
               <span>Chamar no WhatsApp Oficial</span>
             </a>
           </div>

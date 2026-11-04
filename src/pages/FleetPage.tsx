@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
-import { Eye, Shield, CheckCircle2, MessageCircle, X, ChevronRight, Sparkles, Layers } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Eye, CheckCircle2, X, ChevronRight } from 'lucide-react';
 import { COMPANY_CONFIG, FleetItem } from '../data/companyData';
 import { FleetViewer3D } from '../components/FleetViewer3D';
 import { SEOHead } from '../components/SEOHead';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const FleetPage: React.FC = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<FleetItem | null>(null);
+
+  useEffect(() => {
+    if (!selectedPhoto) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedPhoto(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedPhoto]);
 
   return (
     <>
       <SEOHead
         title="Estrutura e Frota Operacional"
-        description="Conheça a frota da Vapt Vupt Remoção de Veículos. Fotografias reais de guincho leve, cavalo mecânico 1635 e simulação técnica 3D."
+        description="Conheça a frota da Vapt Vupt Remoção de Veículos. Fotografias reais de guincho leve, cavalo mecânico 1635 e demonstração conceitual 3D."
       />
 
       {/* Header Banner */}
@@ -26,7 +38,7 @@ export const FleetPage: React.FC = () => {
               Estrutura & Frota Operacional
             </h1>
             <p className="mt-3 text-base text-slate-600 dark:text-neutral-300 leading-relaxed">
-              Equipamentos dimensionados para garantir estabilidade, segurança mecânica e agilidade em ocorrências de veículos leves e pesados.
+              Fotografias reais dos veículos da Vapt Vupt destinados ao atendimento de ocorrências de remoção e transporte de veículos leves e pesados.
             </p>
           </div>
         </div>
@@ -37,10 +49,10 @@ export const FleetPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
-              Veículos em Operação (Fotografias Reais)
+              Veículos da Frota (Fotografias Reais)
             </h2>
             <p className="mt-2 text-sm text-slate-600 dark:text-neutral-400">
-              Registros autênticos de nossas unidades em campo. Clique em qualquer imagem para ampliar em alta definição.
+              Registros autênticos das unidades identificadas da empresa. Clique em qualquer imagem para ampliar.
             </p>
           </div>
 
@@ -84,7 +96,7 @@ export const FleetPage: React.FC = () => {
 
                     <div className="space-y-2 border-t border-slate-200 dark:border-neutral-800 pt-3">
                       <div className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-neutral-400">
-                        Características Técnicas:
+                        Destaques:
                       </div>
                       <ul className="space-y-1.5 text-xs text-slate-600 dark:text-neutral-400">
                         {item.features.map((feature, fIdx) => (
@@ -126,31 +138,33 @@ export const FleetPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3D Mechanical Simulation Section */}
+      {/* 3D Conceptual Simulation Section */}
       <section className="bg-[#141416]">
-        {/* We reuse the validated 3D simulation with the two-phase rollback & tilt */}
         <FleetViewer3D />
       </section>
 
       {/* Lightbox Modal */}
       {selectedPhoto && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Fotografia ampliada: ${selectedPhoto.title}`}
           className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
           onClick={() => setSelectedPhoto(null)}
         >
           <div
-            className="relative max-w-4xl w-full bg-neutral-900 rounded-2xl overflow-hidden border border-neutral-800 shadow-2xl"
+            className="relative max-w-4xl w-full bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-800 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-4 border-b border-neutral-800">
+            <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-neutral-800">
               <div>
-                <h3 className="text-base font-bold text-white">{selectedPhoto.title}</h3>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">{selectedPhoto.title}</h3>
                 <span className="text-xs text-[#B43034] font-semibold">{selectedPhoto.category}</span>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedPhoto(null)}
-                className="p-2 text-neutral-400 hover:text-white rounded-lg bg-neutral-800"
+                className="p-2 text-slate-500 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white rounded-lg bg-slate-100 dark:bg-neutral-800 transition-colors"
                 aria-label="Fechar ampliação"
               >
                 <X className="w-5 h-5" />
@@ -165,8 +179,8 @@ export const FleetPage: React.FC = () => {
               />
             </div>
 
-            <div className="p-4 border-t border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-              <p className="text-neutral-300 max-w-xl">{selectedPhoto.description}</p>
+            <div className="p-4 border-t border-slate-200 dark:border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+              <p className="text-slate-600 dark:text-neutral-300 max-w-xl">{selectedPhoto.description}</p>
               <a
                 href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
                   `Olá! Gostaria de consultar atendimento com ${selectedPhoto.title}.`
@@ -175,7 +189,7 @@ export const FleetPage: React.FC = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#B43034] hover:bg-[#8F2428] text-white font-bold uppercase tracking-wider shrink-0"
               >
-                <MessageCircle className="w-4 h-4" />
+                <WhatsAppIcon className="w-4 h-4" />
                 <span>Solicitar via WhatsApp</span>
               </a>
             </div>

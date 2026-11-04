@@ -1,8 +1,9 @@
 import React from 'react';
-import { MessageCircle, Instagram, Phone, Building } from 'lucide-react';
+import { Instagram, Phone, Building } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppContactForm } from '../components/WhatsAppContactForm';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const ContactPage: React.FC = () => {
 
@@ -68,7 +69,7 @@ export const ContactPage: React.FC = () => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded transition-colors w-full justify-center"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <WhatsAppIcon className="w-4 h-4" />
                     <span>Iniciar Conversa Direta</span>
                   </a>
                 </div>
@@ -106,7 +107,7 @@ export const ContactPage: React.FC = () => {
                   <strong className="text-slate-800 dark:text-neutral-200">{COMPANY_CONFIG.legalName}</strong>
                 </p>
                 <p>
-                  Nossos registros em São Paulo (Matriz), Campinas e Jundiaí destinam-se a controle administrativo e base operacional. Os atendimentos são realizados mediante acionamento das equipes móveis via WhatsApp.
+                  Os endereços constantes nos registros empresariais (Matriz e Filiais) possuem finalidade estritamente cadastral e administrativa, não constituindo postos de atendimento presencial ao público. Todo acionamento operacional ocorre exclusivamente pelo canal oficial do WhatsApp.
                 </p>
               </div>
 

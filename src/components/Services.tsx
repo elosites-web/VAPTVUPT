@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Car, Truck, ShieldAlert, ArrowRight, Check, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Car, Truck, ShieldAlert, ArrowRight, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { COMPANY_CONFIG, ServiceItem } from '../data/companyData';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const Services: React.FC = () => {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
@@ -113,7 +114,7 @@ export const Services: React.FC = () => {
                       rel="noopener noreferrer"
                       className="w-full inline-flex items-center justify-center gap-2 bg-neutral-800 hover:bg-[#B43034] text-white text-xs font-bold uppercase tracking-wider py-3 px-4 rounded-md transition-colors duration-200 group-hover:bg-[#B43034]"
                     >
-                      <MessageCircle className="w-4 h-4" />
+                      <WhatsAppIcon className="w-4 h-4" />
                       <span>Solicitar {service.title}</span>
                     </a>
                   </div>

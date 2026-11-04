@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MessageCircle, ArrowRight, ShieldCheck, Truck, Car, ShieldAlert, Award, Clock, MapPin, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Truck, Car, CheckCircle2 } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppContactForm } from '../components/WhatsAppContactForm';
-import { ZigZagItem, ZigZagHeading, ZigZagContainer } from '../components/ZigZagMotion';
+import { ZigZagItem, ZigZagHeading } from '../components/ZigZagMotion';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const Home: React.FC = () => {
   const verifiedServices = COMPANY_CONFIG.services.filter((s) => !s.isPendingConfirmation);
@@ -13,7 +14,7 @@ export const Home: React.FC = () => {
     <>
       <SEOHead
         title="Início - Guincho Leve e Pesado"
-        description="Vapt Vupt Remoção de Veículos. Atendimento técnico e especializado em remoção e transporte de veículos leves e pesados em SP."
+        description="Conheça a Vapt Vupt Remoção de Veículos. Soluções em remoção e transporte de veículos leves e pesados. Entre em contato para consultar atendimento."
       />
 
       {/* Hero Section */}
@@ -34,7 +35,7 @@ export const Home: React.FC = () => {
             
             {/* Tagline Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/80 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-[#B43034] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#B43034]" />
               <span>{COMPANY_CONFIG.badge}</span>
             </div>
 
@@ -45,7 +46,7 @@ export const Home: React.FC = () => {
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl">
-              Estrutura operacional dedicada ao transporte, guincho e resgate de <strong className="text-white">veículos leves e pesados</strong>. Atendimento técnico com zelo pelo patrimônio e rigor operacional.
+              Estrutura operacional dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Entre em contato para consultar atendimento.
             </p>
 
             {/* CTAs */}
@@ -56,9 +57,9 @@ export const Home: React.FC = () => {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-sm font-bold uppercase tracking-wider px-6 py-3.5 rounded-md shadow-xl transition-all duration-200 hover:shadow-red-900/40"
+                className="inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-sm font-bold uppercase tracking-wider px-6 py-3.5 rounded-md shadow-xl transition-colors duration-200 hover:shadow-red-900/40"
               >
-                <MessageCircle className="w-5 h-5" />
+                <WhatsAppIcon className="w-5 h-5" />
                 <span>Solicitar Atendimento no WhatsApp</span>
               </a>
 
@@ -228,8 +229,9 @@ export const Home: React.FC = () => {
                     rel="noopener noreferrer"
                     className="p-2 text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-neutral-800 rounded transition-colors"
                     title={`Consultar ${service.title} no WhatsApp`}
+                    aria-label={`Consultar ${service.title} no WhatsApp`}
                   >
-                    <MessageCircle className="w-4 h-4 text-[#B43034]" />
+                    <WhatsAppIcon className="w-4 h-4 text-[#B43034]" />
                   </a>
                 </div>
               </ZigZagItem>
@@ -341,7 +343,7 @@ export const Home: React.FC = () => {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded shadow-lg transition-colors font-heading"
             >
-              <MessageCircle className="w-4 h-4" />
+              <WhatsAppIcon className="w-4 h-4" />
               <span>Chamar no WhatsApp ({COMPANY_CONFIG.whatsapp.display})</span>
             </a>
           </div>

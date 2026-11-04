@@ -1,11 +1,12 @@
 /**
  * Perguntas Frequentes (FAQ) - Vapt Vupt Remoção de Veículos
- * Dados categorizados, transparentes e alinhados à realidade operacional.
- * 
- * DIRETRIZES ÉTICAS E OPERACIONAIS:
- * - Não prometer atendimento 24h sem confirmação explícita.
- * - Não prometer prazos mágicos ou irreais (ex: "chegamos em 15 minutos").
- * - Transparência sobre raio de atendimento, orçamentos e procedimentos.
+ * Dados categorizados, transparentes e alinhados exclusivamente às informações confirmadas.
+ *
+ * DIRETRIZES DE CONTEÚDO:
+ * - Não prometer atendimento 24h, chegada imediata ou prazos garantidos.
+ * - Não afirmar cobertura em cidades/rodovias específicas nem formas de pagamento sem confirmação.
+ * - Não inventar procedimentos técnicos ou equipamentos não validados.
+ * - Orientar sempre a consulta direta à equipe pelo WhatsApp oficial: (11) 91372-1849.
  */
 
 export interface FAQItem {
@@ -25,32 +26,27 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
   {
     id: 'geral',
     name: 'Atendimento & Solicitação',
-    description: 'Como funciona o primeiro contato e como solicitar remoção.',
+    description: 'Como funciona o contato e a solicitação de atendimento.',
   },
   {
     id: 'veiculos',
-    name: 'Tipos de Veículos & Cargas',
-    description: 'Veículos leves, caminhões, cavalos mecânicos e frotas.',
+    name: 'Tipos de Veículos',
+    description: 'Atendimento para veículos leves e pesados.',
   },
   {
     id: 'regiao',
-    name: 'Abrangência Operacional',
-    description: 'Regiões e rotas onde atuamos com guincho e remoção.',
+    name: 'Localização & Abrangência',
+    description: 'Consulta de disponibilidade por rota e região.',
   },
   {
     id: 'prazos',
-    name: 'Prazos & Previsão de Chegada',
-    description: 'Critérios técnicos para estimativa de deslocamento.',
+    name: 'Disponibilidade & Agendamento',
+    description: 'Consulta de previsão e solicitações programadas.',
   },
   {
     id: 'orcamentos',
-    name: 'Condições Comerciais & Pagamento',
-    description: 'Como é formulado o orçamento e formas de pagamento aceitas.',
-  },
-  {
-    id: 'seguranca',
-    name: 'Segurança & Procedimentos Técnicos',
-    description: 'Zelo pelo veículo durante o içamento e transporte.',
+    name: 'Orçamentos & Condições',
+    description: 'Como consultar valores e condições comerciais.',
   },
 ];
 
@@ -59,95 +55,69 @@ export const FAQ_ITEMS: FAQItem[] = [
   {
     id: 'como-solicitar',
     category: 'geral',
-    question: 'Qual é o canal mais rápido para solicitar atendimento de remoção?',
-    answer: 'O canal mais ágil e direto é o nosso WhatsApp oficial: (11) 91372-1849. Ao enviar uma mensagem informando o modelo do veículo, a situação do automóvel e os pontos de origem e destino, nossa equipe operacional analisa a disponibilidade imediata e fornece a orientação completa.',
+    question: 'Como solicitar atendimento de remoção de veículos com a Vapt Vupt?',
+    answer: 'O atendimento pode ser solicitado diretamente pelo nosso WhatsApp oficial: (11) 91372-1849, ou preenchendo o formulário desta página para preparar a mensagem com os dados do seu veículo e necessidade.',
   },
   {
     id: 'horario-atendimento',
     category: 'geral',
-    question: 'Qual é o horário de atendimento da Vapt Vupt?',
-    answer: 'Atendemos demandas de remoção e transporte de veículos sob consulta direta da escala operacional via WhatsApp. Consulte nossa equipe pelo número oficial para verificar a disponibilidade de veículos no momento em que você precisar do serviço.',
+    question: 'Qual é o horário de funcionamento e atendimento?',
+    answer: 'Os horários e a disponibilidade operacional devem ser consultados diretamente com a nossa equipe pelo WhatsApp oficial (11) 91372-1849 no momento da sua necessidade.',
   },
   {
-    id: 'documentos-necessarios',
+    id: 'informacoes-necessarias',
     category: 'geral',
-    question: 'Quais dados ou documentos são necessários para liberar a remoção?',
-    answer: 'Por exigência legal e de segurança patrimonial, solicitamos a comprovação de propriedade ou autorização legítima do responsável pelo veículo (documento do veículo CRLV e documento de identificação com foto do solicitante/motorista), além da indicação precisa do local de destino.',
+    question: 'Quais informações devo enviar ao entrar em contato?',
+    answer: 'Para agilizar a análise da equipe, informe seu nome, o tipo de veículo (leve ou pesado), a região ou local da ocorrência e um breve resumo da necessidade de remoção ou transporte.',
   },
 
-  // Tipos de Veículos & Cargas
+  // Tipos de Veículos
   {
-    id: 'quais-veiculos-leves',
+    id: 'quais-veiculos-atendidos',
     category: 'veiculos',
-    question: 'Vocês realizam remoção de carros rebaixados ou com câmbio automático?',
-    answer: 'Sim. Nossas plataformas contam com sistema hidráulico basculante suave e guincho de arraste controlado por cabo, permitindo ângulo de ataque adequado para embarque seguro de veículos com câmbio automático (utilizando patins quando houver travamento de rodas) e modelos com suspensão baixa, evitando danos a para-choques e assoalho.',
+    question: 'Quais tipos de veículos a Vapt Vupt atende?',
+    answer: 'A Vapt Vupt atua com soluções em remoção e transporte de veículos leves (como automóveis de passeio e utilitários) e veículos pesados (como caminhões e cavalos mecânicos), conforme disponibilidade operacional.',
   },
   {
-    id: 'veiculos-pesados',
+    id: 'situacoes-especificas-veiculo',
     category: 'veiculos',
-    question: 'A empresa tem estrutura para caminhões, cavalos mecânicos e carretas?',
-    answer: 'Sim. Contamos com equipamento pesado dedicado, incluindo cavalo mecânico e guinchos de alta capacidade preparados para tração, resgate técnico e transporte de veículos comerciais de grande porte.',
-  },
-  {
-    id: 'motos-e-vans',
-    category: 'veiculos',
-    question: 'Vocês atendem furgões, vans e veículos utilitários comerciais?',
-    answer: 'Sim. Atendemos utilitários, furgões, caminhonetes de cabine dupla e vans de passageiros ou carga, dimensionando a prancha ou caminhão ideal para o comprimento e peso do veículo.',
+    question: 'Meu veículo possui uma condição específica. Como saber se pode ser atendido?',
+    answer: 'Cada solicitação é avaliada de acordo com as características do veículo e do local. Descreva a situação detalhadamente pelo WhatsApp para que nossa equipe verifique o equipamento adequado e confirme a viabilidade do atendimento.',
   },
 
-  // Abrangência Operacional
+  // Localização & Abrangência
   {
-    id: 'cidades-atendidas',
+    id: 'regioes-atendidas',
     category: 'regiao',
-    question: 'Quais regiões têm cobertura de atendimento da Vapt Vupt?',
-    answer: 'Nossa base operacional tem foco principal no estado de São Paulo, cobrindo trajetos na Região Metropolitana de São Paulo, Campinas, Jundiaí e principais rodovias intermunicipais (como Anhanguera, Bandeirantes e Dutra). Para viagens interestaduais ou rotas específicas, consulte nossa equipe com antecedência.',
+    question: 'Quais cidades ou regiões são atendidas pela empresa?',
+    answer: 'A disponibilidade de atendimento varia conforme o ponto de origem, o destino e a operação em andamento. Entre em contato pelo WhatsApp oficial informando a localização para consultar a cobertura para o seu trajeto.',
   },
   {
-    id: 'remocao-rodovia',
+    id: 'atendimento-presencial',
     category: 'regiao',
-    question: 'Vocês podem fazer a remoção do veículo a partir de rodovias concedidas?',
-    answer: 'Sim. Em rodovias com concessionárias, após a sinalização obrigatória e posicionamento seguro no acostamento ou na base de apoio da concessionária, realizamos o transporte até a oficina, concessionária ou destino final indicado pelo cliente.',
+    question: 'Os endereços cadastrais da empresa realizam atendimento presencial ao público?',
+    answer: 'Não. Os endereços vinculados ao CNPJ possuem finalidade cadastral e administrativa. Todas as solicitações de remoção, cotações e informações devem ser feitas pelos nossos canais digitais oficiais (WhatsApp).',
   },
 
-  // Prazos & Previsão de Chegada
+  // Disponibilidade & Agendamento
   {
     id: 'tempo-chegada',
     category: 'prazos',
-    question: 'Qual é o tempo estimado para o guincho chegar ao local?',
-    answer: 'O tempo de deslocamento varia conforme a distância do veículo mais próximo da frota no momento da chamada, as condições climáticas e o trânsito da região. Nunca prometemos prazos irreais: no momento do contato, calculamos a rota real e informamos uma estimativa transparente.',
+    question: 'Como funciona a previsão de atendimento e deslocamento?',
+    answer: 'Não trabalhamos com prazos padronizados sem antes avaliar a solicitação. Ao receber seu chamado pelo WhatsApp, a equipe verifica a disponibilidade da frota e a distância do trajeto para informar a previsão correspondente.',
   },
   {
-    id: 'agendamento-previo',
+    id: 'transporte-programado',
     category: 'prazos',
-    question: 'É possível agendar a remoção ou transferência de veículos com antecedência?',
-    answer: 'Sim! Recomendamos o agendamento prévio para transferências entre oficinas, vistorias, entrega em concessionárias ou eventos corporativos, assegurando vaga e horário prioritários na frota.',
+    question: 'É possível consultar remoção ou transporte programado com antecedência?',
+    answer: 'Sim. Caso precise planejar uma movimentação ou transferência veicular com antecedência, entre em contato com a equipe pelo WhatsApp para verificar disponibilidade de agenda e condições.',
   },
 
-  // Condições Comerciais & Pagamento
+  // Orçamentos & Condições
   {
-    id: 'como-calcula-valor',
+    id: 'como-solicitar-orcamento',
     category: 'orcamentos',
-    question: 'Como é calculado o valor do serviço de remoção?',
-    answer: 'O orçamento leva em conta: 1) Porte e peso do veículo (se necessita guincho leve ou pesado); 2) Distância total em quilômetros entre origem e destino; 3) Complexidade da operação (rodas travadas, subsolo, ribanceira, necessidade de patins ou guincho lança); 4) Custos de pedágios quando aplicável.',
-  },
-  {
-    id: 'formas-pagamento',
-    category: 'orcamentos',
-    question: 'Quais são as formas de pagamento aceitas?',
-    answer: 'Aceitamos PIX, transferência bancária e cartões de débito/crédito. Para empresas e frotistas conveniados, consulte condições de faturamento mediante aprovação cadastral prévia.',
-  },
-
-  // Segurança & Procedimentos Técnicos
-  {
-    id: 'seguranca-veiculo',
-    category: 'seguranca',
-    question: 'Como o veículo é fixado durante o transporte na plataforma?',
-    answer: 'Utilizamos cintas de poliéster de alta resistência com catracas travadas nas quatro rodas e calços regulamentares. O veículo nunca é ancorado por partes estruturais vulneráveis ou suspensão, respeitando rigorosamente os padrões de transporte automotivo.',
-  },
-  {
-    id: 'veiculo-sem-chave',
-    category: 'seguranca',
-    question: 'O veículo está trancado ou sem chaves: ainda assim é possível remover?',
-    answer: 'Sim, desde que acompanhado da comprovação legal de propriedade. Para veículos trancados ou sem chaves, nossa equipe utiliza patins rolantes e cabos técnicos para que o veículo seja içado na plataforma sem arrastar os pneus nem forçar a transmissão.',
+    question: 'Como é feito o orçamento e quais são as formas de pagamento?',
+    answer: 'Os valores, condições comerciais e formas de pagamento aceitas são informados diretamente pela nossa equipe durante o atendimento no WhatsApp, após a análise do tipo de veículo, local de origem e destino.',
   },
 ];

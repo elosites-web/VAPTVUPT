@@ -71,6 +71,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       root.setAttribute('data-theme', 'light');
       root.style.colorScheme = 'light';
     }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('themechange'));
+    }
   }, [isDarkMode]);
 
   const setTheme = (newTheme: ThemeMode) => {

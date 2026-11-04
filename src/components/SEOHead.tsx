@@ -16,6 +16,15 @@ export const SEOHead: React.FC<SEOHeadProps> = ({ title, description }) => {
       metaDesc.setAttribute('content', description);
     }
 
+    // Garante diretiva noindex,nofollow enquanto for protótipo comercial
+    let metaRobots = document.querySelector('meta[name="robots"]');
+    if (!metaRobots) {
+      metaRobots = document.createElement('meta');
+      metaRobots.setAttribute('name', 'robots');
+      document.head.appendChild(metaRobots);
+    }
+    metaRobots.setAttribute('content', 'noindex,nofollow');
+
     // Atualiza OpenGraph
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {

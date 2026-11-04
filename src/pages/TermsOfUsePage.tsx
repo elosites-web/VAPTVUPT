@@ -60,10 +60,10 @@ export const TermsOfUsePage: React.FC = () => {
               2. Propriedade Intelectual e Direitos Autorais
             </h2>
             <p className="text-slate-700 dark:text-neutral-300">
-              Todos os elementos que compõem este site — incluindo a marca comercial <em>Vapt Vupt</em>, slogans, logotipos, elementos visuais, identidade gráfica, fotografias autênticas de veículos operacionais, textos e código-fonte — são de titularidade exclusiva da empresa ou utilizados sob autorização expressa.
+              Os elementos de identidade institucional exibidos neste site — incluindo a marca comercial <em>Vapt Vupt</em>, logotipos, identidade gráfica, textos institucionais e fotografias autênticas de veículos operacionais da empresa — são protegidos pela legislação aplicável e utilizados para fins de apresentação institucional.
             </p>
             <p className="text-slate-700 dark:text-neutral-300">
-              É terminantemente vedada a reprodução total ou parcial, cópia, alteração, comercialização, distribuição ou engenharia reversa de qualquer conteúdo presente neste site sem prévia e expressa autorização por escrito dos titulares de direito.
+              É vedada a utilização indevida da marca, logotipos ou fotografias dos veículos da empresa por terceiros sem autorização prévia dos respectivos titulares de direito.
             </p>
           </div>
 
@@ -124,7 +124,7 @@ export const TermsOfUsePage: React.FC = () => {
               Estes Termos de Uso são regidos integralmente pela legislação da República Federativa do Brasil, em especial o Marco Civil da Internet (Lei nº 12.965/2014) e a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
             </p>
             <p className="text-slate-700 dark:text-neutral-300">
-              Fica eleito o Foro da Comarca de São Paulo - Estado de São Paulo, para dirimir eventuais litígios decorrentes da interpretação destes Termos de Uso, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
+              Fica eleito o Foro da Comarca de São Paulo - Estado de São Paulo, para dirimir eventuais questões decorrentes da interpretação destes Termos de Uso. Este documento constitui uma minuta institucional padrão sujeita à validação final pela administração da empresa e sua assessoria jurídica.
             </p>
           </div>
 
