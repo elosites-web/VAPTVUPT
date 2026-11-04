@@ -18,76 +18,138 @@ export const Home: React.FC = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 bg-[#141416] overflow-hidden keep-dark" data-keep-dark="true">
-        {/* Background Image with Dark Vignette */}
+      <section className="relative min-h-[90vh] flex items-center pt-28 sm:pt-32 pb-16 bg-[#141416] overflow-hidden keep-dark" data-keep-dark="true">
+        {/* Subtle Background Image with Dark Editorial Vignette */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img
             src={COMPANY_CONFIG.heroImage}
             alt="Cavalo mecânico 1635 Vapt Vupt"
-            className="w-full h-full object-cover object-center brightness-[0.38] contrast-110"
+            className="w-full h-full object-cover object-center brightness-[0.26] contrast-110 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#141416] via-[#141416]/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#141416] via-[#141416]/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#141416] via-[#141416]/75 to-[#141416]/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#141416] via-[#141416]/85 to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-3xl space-y-6">
-            
-            {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/80 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-[#B43034]" />
-              <span>{COMPANY_CONFIG.badge}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+            {/* Editorial Hierarchy Column */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Tagline Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-[#B43034]" />
+                <span>{COMPANY_CONFIG.badge}</span>
+              </div>
+
+              {/* Main Headline */}
+              <h1 className="text-3xl sm:text-5xl lg:text-[52px] font-black text-white tracking-tight uppercase leading-[1.08]">
+                Estrutura e Soluções em <span className="text-[#B43034]">Remoção de Veículos</span>
+              </h1>
+
+              {/* Subtitle */}
+              <p className="text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl">
+                Atuação dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Fale diretamente com nossa equipe pelo WhatsApp oficial para consultar disponibilidade.
+              </p>
+
+              {/* CTAs */}
+              <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                <a
+                  href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
+                    COMPANY_CONFIG.whatsapp.defaultMessage
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 py-3.5 rounded-lg shadow-xl transition-colors duration-200"
+                >
+                  <WhatsAppIcon className="w-5 h-5 shrink-0" />
+                  <span>Solicitar Atendimento no WhatsApp</span>
+                </a>
+
+                <a
+                  href="#solicitar-atendimento"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg border border-white/25 transition-all backdrop-blur-md shadow-lg"
+                >
+                  <span>Preencher Solicitação</span>
+                  <ArrowRight className="w-4 h-4 text-[#B43034]" />
+                </a>
+              </div>
+
+              {/* Quick Differentiation: Atendimento Leve vs. Pesado */}
+              <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5 border-t border-neutral-800/90">
+                <Link
+                  to="/servicos/remocao-veiculos-leves"
+                  className="group p-3.5 rounded-xl bg-neutral-900/80 hover:bg-neutral-900 border border-neutral-800 hover:border-[#B43034]/60 transition-all flex items-start gap-3"
+                >
+                  <div className="p-2 rounded-lg bg-red-950/70 border border-red-900/60 text-[#B43034] shrink-0 mt-0.5">
+                    <Car className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                      <span>Atendimento Leve</span>
+                      <ArrowRight className="w-3 h-3 text-[#B43034] transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                    <p className="text-[11px] text-neutral-300 mt-0.5 leading-snug">
+                      Automóveis e utilitários em caminhão plataforma sob consulta.
+                    </p>
+                  </div>
+                </Link>
+
+                <Link
+                  to="/servicos/remocao-veiculos-pesados"
+                  className="group p-3.5 rounded-xl bg-neutral-900/80 hover:bg-neutral-900 border border-neutral-800 hover:border-[#B43034]/60 transition-all flex items-start gap-3"
+                >
+                  <div className="p-2 rounded-lg bg-red-950/70 border border-red-900/60 text-[#B43034] shrink-0 mt-0.5">
+                    <Truck className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                      <span>Atendimento Pesado</span>
+                      <ArrowRight className="w-3 h-3 text-[#B43034] transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                    <p className="text-[11px] text-neutral-300 mt-0.5 leading-snug">
+                      Cavalo mecânico 1635 e estrutura para caminhões sob consulta.
+                    </p>
+                  </div>
+                </Link>
+              </div>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight uppercase leading-[1.08]">
-              Soluções Técnicas em <span className="text-[#B43034]">Remoção de Veículos</span>
-            </h1>
+            {/* Real Truck Visual Showcase Column (Mercedes-Benz 1635) */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-2xl overflow-hidden border border-neutral-700/80 bg-neutral-900 shadow-2xl group">
+                <div className="relative aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] overflow-hidden bg-neutral-950">
+                  <img
+                    src={COMPANY_CONFIG.heroImage}
+                    srcSet={`${COMPANY_CONFIG.heroImage} 600w, ${COMPANY_CONFIG.heroImage} 1080w`}
+                    sizes="(max-width: 1024px) 100vw, 42vw"
+                    alt="Cavalo Mecânico 1635 Vapt Vupt Remoção de Veículos"
+                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
+                  <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-950/85 border border-neutral-700/80 text-[10px] font-bold uppercase tracking-wider text-neutral-200 backdrop-blur-md">
+                    <CheckCircle2 className="w-3 h-3 text-[#B43034]" />
+                    <span>Fotografia Real da Frota</span>
+                  </div>
+                </div>
 
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl">
-              Estrutura operacional dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Entre em contato para consultar atendimento.
-            </p>
-
-            {/* CTAs */}
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <a
-                href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
-                  COMPANY_CONFIG.whatsapp.defaultMessage
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-sm font-bold uppercase tracking-wider px-6 py-3.5 rounded-md shadow-xl transition-colors duration-200 hover:shadow-red-900/40"
-              >
-                <WhatsAppIcon className="w-5 h-5" />
-                <span>Solicitar Atendimento no WhatsApp</span>
-              </a>
-
-              <Link
-                to="/servicos"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-sm font-bold px-5 py-3.5 rounded-md border border-white/30 transition-all backdrop-blur-md shadow-lg"
-              >
-                <span>Conhecer Nossos Serviços</span>
-                <ArrowRight className="w-4 h-4 text-[#B43034]" />
-              </Link>
-            </div>
-
-            {/* Quick Fact Badges */}
-            <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-neutral-700/80 text-xs text-neutral-200">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#B43034] shrink-0" />
-                <span>Plataformas Hidráulicas</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#B43034] shrink-0" />
-                <span>Cavalo Mecânico Dedicado</span>
-              </div>
-              <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                <CheckCircle2 className="w-4 h-4 text-[#B43034] shrink-0" />
-                <span>Canais Oficiais Verificados</span>
+                <div className="p-4 sm:p-5 bg-neutral-900/95 border-t border-neutral-800 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-[#B43034]">
+                      Unidade Pesada • Vapt Vupt
+                    </div>
+                    <div className="text-sm sm:text-base font-bold text-white font-heading">
+                      Cavalo Mecânico 1635
+                    </div>
+                  </div>
+                  <Link
+                    to="/frota"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-bold uppercase tracking-wider border border-neutral-700 transition-colors shrink-0"
+                  >
+                    <span>Ver Frota</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#B43034]" />
+                  </Link>
+                </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -104,15 +166,15 @@ export const Home: React.FC = () => {
               </div>
 
               <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
-                Capacidade Técnica e Compromisso Operacional
+                Estrutura e Atendimento Direto
               </h2>
 
               <p className="text-slate-700 dark:text-neutral-300 text-base leading-relaxed">
-                A <strong className="text-slate-900 dark:text-white">Vapt Vupt Remoção de Veículos</strong> atua com foco na prestação de serviços de transporte e guincho para automóveis, utilitários, frotas e veículos comerciais pesados.
+                A <strong className="text-slate-900 dark:text-white">Vapt Vupt Remoção de Veículos</strong> atua no transporte, guincho e remoção de automóveis, utilitários e veículos comerciais pesados.
               </p>
 
               <p className="text-slate-600 dark:text-neutral-400 text-sm leading-relaxed">
-                Nossa atuação é pautada por rigor operacional, preservação patrimonial do veículo removido e comunicação transparente com o cliente, dimensionando sempre o equipamento ideal para a complexidade da ocorrência.
+                Nosso atendimento prioriza o cuidado com o veículo durante o embarque e o deslocamento, com comunicação direta pelo WhatsApp oficial para avaliar cada solicitação e verificar a disponibilidade operacional.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -122,7 +184,7 @@ export const Home: React.FC = () => {
                   </div>
                   <h4 className="text-slate-900 dark:text-white font-bold text-sm mb-1">Veículos Leves</h4>
                   <p className="text-slate-600 dark:text-neutral-400 text-xs">
-                    Plataformas basculantes para automóveis e utilitários sem atrito com o solo.
+                    Caminhão com plataforma para embarque e transporte de automóveis e utilitários.
                   </p>
                 </div>
 
@@ -132,7 +194,7 @@ export const Home: React.FC = () => {
                   </div>
                   <h4 className="text-slate-900 dark:text-white font-bold text-sm mb-1">Veículos Pesados</h4>
                   <p className="text-slate-600 dark:text-neutral-400 text-xs">
-                    Cavalo mecânico e recursos para operações com caminhões e cargas de grande porte.
+                    Cavalo mecânico e caminhão pesado para demandas avaliadas sob consulta.
                   </p>
                 </div>
               </div>
@@ -142,27 +204,35 @@ export const Home: React.FC = () => {
                   to="/empresa"
                   className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#B43034] hover:text-red-700 dark:hover:text-red-400 transition-colors"
                 >
-                  <span>Conhecer mais sobre a empresa e infraestrutura</span>
+                  <span>Conhecer mais sobre a empresa e estrutura</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
 
             <div className="lg:col-span-5">
-              <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-2xl group bg-slate-100 dark:bg-neutral-950">
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-2xl group bg-white dark:bg-neutral-950">
                 <img
                   src={COMPANY_CONFIG.fleet[1].image}
-                  alt="Plataforma de veículos leves Vapt Vupt"
-                  className="w-full h-80 sm:h-96 object-cover transition-transform duration-500 group-hover:scale-105"
+                  alt="Guincho Leve Plataforma Vapt Vupt"
+                  className="w-full h-72 sm:h-80 object-contain p-3 sm:p-4 bg-white transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90" />
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-slate-900/90 dark:bg-neutral-900/90 backdrop-blur-md border border-slate-700/80 dark:border-neutral-800">
-                  <div className="text-xs font-bold uppercase tracking-wider text-[#B43034]">
-                    Operação em Campo
+                <div className="p-4 bg-slate-900 dark:bg-neutral-900 border-t border-slate-800 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-[#B43034]">
+                      Registro Fotográfico Real
+                    </div>
+                    <div className="text-sm font-semibold text-white">
+                      Guincho Leve Plataforma (Delivery)
+                    </div>
                   </div>
-                  <div className="text-sm font-semibold text-white">
-                    Guincho Plataforma Hidráulica VW Delivery
-                  </div>
+                  <Link
+                    to="/frota"
+                    className="text-xs font-bold text-neutral-300 hover:text-white flex items-center gap-1"
+                  >
+                    <span>Galeria</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#B43034]" />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -217,7 +287,7 @@ export const Home: React.FC = () => {
                     to={`/servicos/${service.slug}`}
                     className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white hover:text-[#B43034] transition-colors"
                   >
-                    <span>Detalhes Técnicos</span>
+                    <span>Detalhes da Modalidade</span>
                     <ArrowRight className="w-3.5 h-3.5 text-[#B43034]" />
                   </Link>
 
@@ -257,7 +327,7 @@ export const Home: React.FC = () => {
               to="/frota"
               className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
-              <span>Ver galeria completa e simulação 3D</span>
+              <span>Ver galeria completa e demonstração 3D</span>
               <ArrowRight className="w-4 h-4 text-[#B43034]" />
             </Link>
           </div>
@@ -269,7 +339,7 @@ export const Home: React.FC = () => {
                 index={index}
                 className="bg-white dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 overflow-hidden flex flex-col group shadow-md hover:shadow-xl hover:border-red-400/50 dark:hover:border-neutral-700 transition-all"
               >
-                <div className="relative h-56 overflow-hidden bg-slate-100 dark:bg-neutral-950 flex items-center justify-center">
+                <div className="relative h-56 overflow-hidden bg-white dark:bg-neutral-950 flex items-center justify-center">
                   <img
                     src={item.image}
                     srcSet={`${item.image} 480w, ${item.image} 800w, ${item.image} 1200w`}
@@ -277,7 +347,11 @@ export const Home: React.FC = () => {
                     loading="lazy"
                     decoding="async"
                     alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
+                      item.id === 'cavalo-1635'
+                        ? 'object-cover object-center'
+                        : 'object-contain p-2.5 bg-white'
+                    }`}
                   />
                   <div className="absolute top-3 left-3 bg-slate-900/90 dark:bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-slate-700 dark:border-neutral-800">
                     {item.badge}

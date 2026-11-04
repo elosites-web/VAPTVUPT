@@ -109,11 +109,11 @@ export const Header: React.FC = () => {
         className={`fixed top-0 left-0 right-0 z-50 w-full max-w-[100vw] overflow-x-clip box-border transition-colors duration-300 animate-header-entrance ${
           isDarkMode
             ? isScrolled
-              ? 'glass-header-dark-scrolled border-b border-neutral-800/80 shadow-2xl py-2.5 sm:py-3'
-              : 'glass-header-dark border-b border-white/[0.06] shadow-lg shadow-black/20 py-3.5 sm:py-4'
+              ? 'glass-header-dark-scrolled border-b border-neutral-800/80 shadow-2xl pb-2 sm:pb-2.5'
+              : 'glass-header-dark border-b border-white/[0.06] shadow-lg shadow-black/20 pb-2.5 sm:pb-3.5'
             : isScrolled
-              ? 'glass-header-light-scrolled border-b border-neutral-200/90 shadow-xl py-2.5 sm:py-3'
-              : 'glass-header-light border-b border-neutral-200/60 shadow-md py-3.5 sm:py-4'
+              ? 'glass-header-light-scrolled border-b border-neutral-200/90 shadow-xl pb-2 sm:pb-2.5'
+              : 'glass-header-light border-b border-neutral-200/60 shadow-md pb-2.5 sm:pb-3.5'
         }`}
       >
         {/* Top Institutional Gradient Accent Line */}
@@ -122,22 +122,50 @@ export const Header: React.FC = () => {
           aria-hidden="true"
         />
 
-        <div className="w-full max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-4 xl:px-6 box-border">
-          <div className="flex items-center justify-between gap-1.5 sm:gap-2.5 xl:gap-3 w-full min-w-0">
-            {/* Brand Logo with adaptive theme and responsive width limit */}
+        {/* Identificação Discreta e Consistente de Protótipo Visual e Proposta Comercial */}
+        <div
+          className={`w-full border-b px-2.5 sm:px-4 py-1 text-[10px] sm:text-[11px] leading-tight transition-colors ${
+            isDarkMode
+              ? 'bg-neutral-950/75 border-neutral-800/80 text-neutral-300'
+              : 'bg-slate-900/[0.04] border-slate-200/80 text-slate-700'
+          }`}
+          role="region"
+          aria-label="Aviso de Protótipo Comercial"
+        >
+          <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-center">
+            <span className="inline-flex items-center gap-1.5 font-extrabold uppercase tracking-wider text-[#B43034]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B43034] shrink-0" aria-hidden="true" />
+              <span>{COMPANY_CONFIG.prototype.badge}</span>
+            </span>
+            <span className="hidden md:inline text-neutral-500 dark:text-neutral-600" aria-hidden="true">
+              •
+            </span>
+            <span className="hidden sm:inline text-[10px] sm:text-[11px] opacity-90">
+              {COMPANY_CONFIG.prototype.shortNotice}
+            </span>
+          </div>
+        </div>
+
+        <div className="w-full max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-4 xl:px-6 pt-2 sm:pt-2.5 box-border">
+          <div className="relative flex items-center justify-between gap-1.5 sm:gap-2.5 xl:gap-3 w-full min-w-0 min-h-[36px] sm:min-h-[40px]">
+            {/* Brand Logo with adaptive theme and true horizontal centering when mobile menu is open (ignoring the X button) */}
             <Link
               to="/"
               onClick={() => {
                 setMobileMenuOpen(false);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] rounded-md transition-opacity duration-200 hover:opacity-95"
+              className={`flex items-center justify-center shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] rounded-md transition-all duration-200 hover:opacity-95 ${
+                mobileMenuOpen
+                  ? 'absolute left-1/2 -translate-x-1/2 z-20 lg:static lg:left-auto lg:translate-x-0'
+                  : ''
+              }`}
               aria-label="Vapt Vupt Remoção de Veículos - Início"
             >
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
                 alt="Vapt Vupt Remoção de Veículos"
-                className="h-6 sm:h-7 lg:h-7 xl:h-8 w-auto max-w-[115px] sm:max-w-[135px] lg:max-w-[125px] xl:max-w-[148px] 2xl:max-w-[165px] object-contain transition-opacity duration-300"
+                className="block mx-auto h-6 sm:h-7 lg:h-7 xl:h-8 w-auto max-w-[115px] sm:max-w-[135px] lg:max-w-[125px] xl:max-w-[148px] 2xl:max-w-[165px] object-contain object-center transition-opacity duration-300"
               />
             </Link>
 
@@ -175,8 +203,8 @@ export const Header: React.FC = () => {
             </nav>
 
             {/* Action CTAs */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* Theme Toggle Component (Light / Dark / Auto) - Oculto quando menu mobile estiver aberto */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto lg:ml-0">
+              {/* Theme Toggle Component (Automático / Dia / Noite) - Oculto quando menu mobile estiver aberto */}
               {!mobileMenuOpen && (
                 <div className="shrink-0 transition-opacity duration-200" title="Alternar Modo de Tema">
                   <ThemeToggle variant="compact" />
@@ -241,7 +269,7 @@ export const Header: React.FC = () => {
           <div
             id="mobile-navigation-drawer"
             ref={drawerRef}
-            className={`lg:hidden fixed inset-x-0 top-[52px] sm:top-[60px] bottom-0 z-50 overflow-y-auto flex flex-col justify-between ${
+            className={`lg:hidden fixed inset-x-0 top-[74px] sm:top-[84px] bottom-0 z-50 overflow-y-auto flex flex-col justify-between ${
               isDarkMode
                 ? 'bg-[#141416] border-neutral-800/80 text-white'
                 : 'bg-white border-slate-200 text-slate-900'

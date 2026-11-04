@@ -13,43 +13,60 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'vaptvupt-theme-mode';
 
+/**
+ * Avalia se o horário local do dispositivo está na faixa noturna:
+ * - Das 06:00 às 17:59 -> Dia (Claro) => isDark = false
+ * - Das 18:00 às 05:59 -> Noite (Escuro) => isDark = true
+ */
+export function isLocalNightTime(date: Date = new Date()): boolean {
+  const hour = date.getHours();
+  return hour >= 18 || hour < 6;
+}
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-      if (stored === 'light' || stored === 'dark' || stored === 'auto') {
-        return stored;
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
+        if (stored === 'light' || stored === 'dark' || stored === 'auto') {
+          return stored;
+        }
+      } catch {
+        // Ignore storage access errors
       }
     }
-    return 'dark'; // Dark theme default for institutional brand
+    return 'auto'; // Automático por padrão quando não houver escolha manual salva
   });
 
-  const [systemIsDark, setSystemIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return true;
-  });
+  const [clockIsDark, setClockIsDark] = useState<boolean>(() => isLocalNightTime());
 
-  // Listen to system OS preference changes
+  // Reavalia periodicamente o horário local para atualizar automaticamente ao cruzar 06:00 ou 18:00
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
+    if (typeof window === 'undefined') return;
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      setSystemIsDark(e.matches);
+    const checkLocalTime = () => {
+      const night = isLocalNightTime();
+      setClockIsDark((prev) => (prev !== night ? night : prev));
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    checkLocalTime();
+    const intervalId = window.setInterval(checkLocalTime, 30000);
+    window.addEventListener('focus', checkLocalTime);
+    document.addEventListener('visibilitychange', checkLocalTime);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener('focus', checkLocalTime);
+      document.removeEventListener('visibilitychange', checkLocalTime);
+    };
   }, []);
 
-  // Compute resolved boolean: whether the interface should render dark
+  // Compute resolved boolean: whether the interface should render dark (Noite)
   const isDarkMode = useMemo(() => {
     if (theme === 'dark') return true;
     if (theme === 'light') return false;
-    return systemIsDark; // 'auto' mode
-  }, [theme, systemIsDark]);
+    return clockIsDark; // 'auto' mode follows 06:00-17:59 Dia / 18:00-05:59 Noite
+  }, [theme, clockIsDark]);
 
   // Apply classes and attributes to HTML document element
   useEffect(() => {
@@ -87,10 +104,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleTheme = () => {
-    // Cycle between: dark -> light -> auto -> dark
-    if (theme === 'dark') setTheme('light');
-    else if (theme === 'light') setTheme('auto');
-    else setTheme('dark');
+    // Cycle between: auto -> light (Dia) -> dark (Noite) -> auto
+    if (theme === 'auto') setTheme('light');
+    else if (theme === 'light') setTheme('dark');
+    else setTheme('auto');
   };
 
   return (
@@ -103,10 +120,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (!context) {
-    // Fallback safe defaults if used outside provider
+    const fallbackDark = isLocalNightTime();
     return {
-      theme: 'dark',
-      isDarkMode: true,
+      theme: 'auto',
+      isDarkMode: fallbackDark,
       setTheme: () => {},
       toggleTheme: () => {},
     };

@@ -39,15 +39,15 @@ interface ZigZagItemProps extends HTMLMotionProps<'div'> {
 
 /**
  * ZigZagItem
- * Animação de entrada suave focada exclusivamente em 'opacity' e 'transform: translateY' (y):
- * - Dispara uma única vez com viewport: { once: true, amount: 0.2 }.
- * - Sem animações de escala (scale) ou deslocamentos horizontais bruscos.
- * - Respeita integralmente 'prefers-reduced-motion' e a configuração reducedMotion.
+ * Animação de entrada suave com efeito zig-zag alternado (esquerda/direita) e reentrada fluida no scroll:
+ * - Distância curta (x: ±16px, y: 10px) e transição rápida (0.34s) sem atrasos longos.
+ * - Reaparece suavemente ao rolar para cima ou para baixo (once: false, amount: 0.14).
+ * - Respeita integralmente 'prefers-reduced-motion: reduce'.
  */
 export const ZigZagItem: React.FC<ZigZagItemProps> = ({
   index = 0,
-  direction: _direction = 'auto',
-  distance = 12,
+  direction = 'auto',
+  distance = 16,
   delay,
   children,
   className = '',
@@ -64,27 +64,34 @@ export const ZigZagItem: React.FC<ZigZagItemProps> = ({
     );
   }
 
-  const translateY = Math.min(Math.max(distance, 6), 14);
+  const resolvedDirection =
+    direction === 'auto' ? (index % 2 === 0 ? 'left' : 'right') : direction;
+  const clampedDistance = Math.min(Math.max(distance, 10), 20);
+  const translateX = resolvedDirection === 'left' ? -clampedDistance : clampedDistance;
+  const translateY = 10;
   const calculatedDelay =
-    delay !== undefined ? Math.min(delay, 0.15) : Math.min((index % 3) * 0.04, 0.1);
+    delay !== undefined ? Math.min(delay, 0.08) : Math.min((index % 3) * 0.03, 0.06);
 
   return (
     <MotionConfig reducedMotion="user">
       <motion.div
         initial={{
           opacity: 0,
+          x: translateX,
           y: translateY,
         }}
         whileInView={{
           opacity: 1,
+          x: 0,
           y: 0,
         }}
         viewport={{
-          once: true,
-          amount: 0.2,
+          once: false,
+          amount: 0.14,
+          margin: '0px 0px -24px 0px',
         }}
         transition={{
-          duration: 0.38,
+          duration: 0.34,
           delay: calculatedDelay,
           ease: [0.22, 1, 0.36, 1],
         }}
@@ -110,14 +117,14 @@ interface ZigZagHeadingProps extends HTMLMotionProps<'div'> {
 
 /**
  * ZigZagHeading
- * Animação de cabeçalho focada exclusivamente em 'opacity' e 'transform: translateY' (y),
- * com viewport: { once: true, amount: 0.2 } e suporte a 'prefers-reduced-motion'.
+ * Animação de cabeçalho com leve deslocamento direcional e reentrada suave no scroll,
+ * respeitando 'prefers-reduced-motion'.
  */
 export const ZigZagHeading: React.FC<ZigZagHeadingProps> = ({
   children,
   className = '',
   delay = 0,
-  from: _from = 'center',
+  from = 'center',
   style,
   ...props
 }) => {
@@ -131,24 +138,28 @@ export const ZigZagHeading: React.FC<ZigZagHeadingProps> = ({
     );
   }
 
+  const translateX = from === 'left' ? -14 : from === 'right' ? 14 : 0;
+
   return (
     <MotionConfig reducedMotion="user">
       <motion.div
         initial={{
           opacity: 0,
-          y: 10,
+          x: translateX,
+          y: 8,
         }}
         whileInView={{
           opacity: 1,
+          x: 0,
           y: 0,
         }}
         viewport={{
-          once: true,
-          amount: 0.2,
+          once: false,
+          amount: 0.15,
         }}
         transition={{
-          duration: 0.38,
-          delay: Math.min(delay, 0.12),
+          duration: 0.32,
+          delay: Math.min(delay, 0.06),
           ease: [0.22, 1, 0.36, 1],
         }}
         style={{
@@ -171,8 +182,7 @@ interface ZigZagContainerProps extends HTMLMotionProps<'div'> {
 
 /**
  * ZigZagContainer
- * Container com whileInView e viewport: { once: true, amount: 0.2 },
- * animando apenas 'opacity' e 'transform: translateY' (y).
+ * Container com whileInView suave e suporte a 'prefers-reduced-motion'.
  */
 export const ZigZagContainer: React.FC<ZigZagContainerProps> = ({
   children,
@@ -202,11 +212,11 @@ export const ZigZagContainer: React.FC<ZigZagContainerProps> = ({
           y: 0,
         }}
         viewport={{
-          once: true,
-          amount: 0.2,
+          once: false,
+          amount: 0.14,
         }}
         transition={{
-          duration: 0.35,
+          duration: 0.32,
           ease: [0.22, 1, 0.36, 1],
         }}
         style={{

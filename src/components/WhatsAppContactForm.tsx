@@ -1,8 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, AlertCircle, ArrowUpRight } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
+
+export interface WhatsAppContactFormProps {
+  defaultServiceType?: string;
+  defaultVehicleType?: string;
+}
 
 interface FormState {
   nome: string;
@@ -20,10 +25,28 @@ const INITIAL_STATE: FormState = {
   descricaoNecessidade: '',
 };
 
-export const WhatsAppContactForm: React.FC = () => {
+export const WhatsAppContactForm: React.FC<WhatsAppContactFormProps> = ({
+  defaultServiceType,
+  defaultVehicleType,
+}) => {
   // Pure in-memory component state — zero storage in localStorage, sessionStorage, cookies or external APIs
-  const [formData, setFormData] = useState<FormState>(INITIAL_STATE);
+  const [formData, setFormData] = useState<FormState>(() => ({
+    ...INITIAL_STATE,
+    ...(defaultServiceType ? { tipoAtendimento: defaultServiceType } : {}),
+    ...(defaultVehicleType ? { tipoVeiculo: defaultVehicleType } : {}),
+  }));
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+
+  // Sync pre-selected service/vehicle when navigating between service detail pages
+  useEffect(() => {
+    if (defaultServiceType || defaultVehicleType) {
+      setFormData((prev) => ({
+        ...prev,
+        ...(defaultServiceType ? { tipoAtendimento: defaultServiceType } : {}),
+        ...(defaultVehicleType ? { tipoVeiculo: defaultVehicleType } : {}),
+      }));
+    }
+  }, [defaultServiceType, defaultVehicleType]);
 
   const nomeInputRef = useRef<HTMLInputElement>(null);
   const atendimentoSelectRef = useRef<HTMLSelectElement>(null);
@@ -96,7 +119,7 @@ export const WhatsAppContactForm: React.FC = () => {
     const fullMessage = messageLines.join('\n');
     const waUrl = `${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(fullMessage)}`;
 
-    // Redirecionamento direto ao WhatsApp oficial sem persistir dados no cliente
+    // Redirecionamento direto ao WhatsApp oficial com fallback contra bloqueador de nova aba
     const link = document.createElement('a');
     link.href = waUrl;
     link.target = '_blank';
@@ -114,7 +137,7 @@ export const WhatsAppContactForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200 dark:border-neutral-800 p-6 sm:p-8 shadow-xl dark:shadow-2xl space-y-6 transition-colors">
+    <div id="solicitar-atendimento" className="bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200 dark:border-neutral-800 p-6 sm:p-8 shadow-xl dark:shadow-2xl space-y-6 transition-colors">
       <div>
         <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-1.5 font-heading">
           <span className="w-4 h-0.5 bg-[#B43034]" />

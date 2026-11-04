@@ -45,22 +45,22 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
 
   const options: { mode: ThemeMode; label: string; icon: React.ReactNode; desc: string }[] = [
     {
-      mode: 'light',
-      label: 'Claro',
-      icon: <Sun className="w-3.5 h-3.5 text-amber-500" />,
-      desc: 'Visual diurno de alto contraste',
-    },
-    {
-      mode: 'dark',
-      label: 'Escuro',
-      icon: <Moon className="w-3.5 h-3.5 text-blue-400" />,
-      desc: 'Tema industrial escuro padrão',
-    },
-    {
       mode: 'auto',
       label: 'Automático',
       icon: <Laptop className="w-3.5 h-3.5 text-emerald-400" />,
-      desc: 'Segue a preferência do sistema operacional',
+      desc: 'Dia (06h–17h59) e Noite (18h–05h59) pelo horário local',
+    },
+    {
+      mode: 'light',
+      label: 'Dia',
+      icon: <Sun className="w-3.5 h-3.5 text-amber-500" />,
+      desc: 'Visual diurno claro de alto contraste',
+    },
+    {
+      mode: 'dark',
+      label: 'Noite',
+      icon: <Moon className="w-3.5 h-3.5 text-blue-400" />,
+      desc: 'Tema industrial noturno escuro',
     },
   ];
 
@@ -86,7 +86,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => setTheme(opt.mode)}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
+                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
                   isSelected
                     ? 'bg-[#B43034] text-white shadow-md shadow-red-950/40'
                     : isDarkMode
@@ -106,22 +106,22 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   }
 
   // Render Compact Dropdown (Used in Desktop Header)
-  const currentOpt = options.find((o) => o.mode === theme) || options[1];
+  const currentOpt = options.find((o) => o.mode === theme) || options[0];
 
   return (
     <div className={`relative inline-block ${className}`} ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
+        className={`inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
           isDarkMode
             ? 'bg-neutral-900/90 text-neutral-100 border-neutral-700/90 hover:bg-neutral-800 hover:text-white shadow-md shadow-black/30'
             : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200/80 hover:border-slate-400 shadow-xs'
         }`}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        aria-label={`Tema visual ativo: ${currentOpt.label}. Clique para alterar entre Claro, Escuro e Automático.`}
-        title={`Tema: ${currentOpt.label} (Clique para alterar)`}
+        aria-label={`Tema visual ativo: ${currentOpt.label} (${isDarkMode ? 'Noite' : 'Dia'}). Clique para alterar entre Automático, Dia e Noite.`}
+        title={`Tema: ${currentOpt.label} (${isDarkMode ? 'Noite' : 'Dia'})`}
       >
         <span className="shrink-0 flex items-center">{currentOpt.icon}</span>
         <span

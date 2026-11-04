@@ -7,8 +7,9 @@ interface SEOHeadProps {
 
 export const SEOHead: React.FC<SEOHeadProps> = ({ title, description }) => {
   useEffect(() => {
+    const fullTitle = `${title} | Vapt Vupt Remoção de Veículos — Protótipo Visual`;
     // Atualiza title
-    document.title = `${title} | Vapt Vupt Remoção de Veículos`;
+    document.title = fullTitle;
 
     // Atualiza meta description
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -28,7 +29,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({ title, description }) => {
     // Atualiza OpenGraph
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
-      ogTitle.setAttribute('content', `${title} | Vapt Vupt Remoção de Veículos`);
+      ogTitle.setAttribute('content', fullTitle);
     }
 
     const ogDesc = document.querySelector('meta[property="og:description"]');

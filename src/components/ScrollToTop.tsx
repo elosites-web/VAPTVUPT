@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
-const HEADER_OFFSET = 88;
+const HEADER_OFFSET = 108;
 const scrollPositions = new Map<string, number>();
 
 /**

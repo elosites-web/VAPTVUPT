@@ -37,7 +37,14 @@ export const PrivacyPolicyPage: React.FC = () => {
       {/* Main Legal Content */}
       <section className="py-16 bg-white dark:bg-[#141416] text-slate-700 dark:text-neutral-300 transition-colors">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 leading-relaxed text-sm sm:text-base">
-          
+          {/* Aviso de Minuta Demonstrativa (Protótipo Comercial) */}
+          <div className="p-4 sm:p-5 rounded-xl bg-amber-50/80 dark:bg-amber-950/20 border border-amber-300/80 dark:border-amber-800/60 text-xs sm:text-sm text-slate-800 dark:text-neutral-200">
+            <strong className="text-[#B43034] dark:text-red-400 uppercase tracking-wider block mb-1 font-heading">
+              Nota de Protótipo Visual • Minuta Demonstrativa
+            </strong>
+            Este documento integra uma proposta visual demonstrativa e constitui um modelo técnico-institucional estruturado conforme a LGPD. Seu conteúdo final está sujeito à validação administrativa e revisão jurídica pela empresa antes de publicação oficial.
+          </div>
+
           {/* 1. Identificação do Controlador */}
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">

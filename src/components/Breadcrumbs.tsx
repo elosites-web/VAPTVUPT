@@ -114,7 +114,7 @@ export const Breadcrumbs: React.FC = () => {
       {/* Breadcrumb Navigation Bar */}
       <section
         aria-label="Navegação Estrutural"
-        className="w-full bg-slate-100 dark:bg-[#101012] border-b border-slate-200 dark:border-neutral-800/80 pt-20 sm:pt-24 pb-3 sm:pb-3.5 relative z-30 select-none shadow-xs"
+        className="w-full bg-slate-100 dark:bg-[#101012] border-b border-slate-200 dark:border-neutral-800/80 pt-24 sm:pt-28 pb-3 sm:pb-3.5 relative z-30 select-none shadow-xs"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-3">

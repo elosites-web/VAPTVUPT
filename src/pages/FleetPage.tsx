@@ -64,7 +64,7 @@ export const FleetPage: React.FC = () => {
               >
                 {/* Photo with hover button */}
                 <div
-                  className="relative h-64 overflow-hidden bg-slate-100 dark:bg-neutral-950 cursor-pointer flex items-center justify-center"
+                  className="relative h-64 overflow-hidden bg-white dark:bg-neutral-950 cursor-pointer flex items-center justify-center"
                   onClick={() => setSelectedPhoto(item)}
                 >
                   <img
@@ -74,7 +74,11 @@ export const FleetPage: React.FC = () => {
                     loading="lazy"
                     decoding="async"
                     alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
+                      item.id === 'cavalo-1635'
+                        ? 'object-cover object-center'
+                        : 'object-contain p-3 bg-white'
+                    }`}
                   />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-200">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-semibold border border-slate-700 shadow-lg">

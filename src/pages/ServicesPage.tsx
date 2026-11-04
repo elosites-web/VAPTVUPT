@@ -5,6 +5,7 @@ import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { ZigZagItem, ZigZagHeading } from '../components/ZigZagMotion';
+import { WhatsAppContactForm } from '../components/WhatsAppContactForm';
 
 export const ServicesPage: React.FC = () => {
   const verifiedServices = COMPANY_CONFIG.services.filter((s) => !s.isPendingConfirmation);
@@ -13,7 +14,7 @@ export const ServicesPage: React.FC = () => {
     <>
       <SEOHead
         title="Serviços de Remoção e Guincho"
-        description="Conheça nossos serviços de remoção de veículos leves, pesados e soluções especiais. Equipamentos dedicados e equipe capacitada."
+        description="Conheça nossos serviços de remoção de veículos leves, pesados e soluções sob consulta. Solicite atendimento pelo WhatsApp oficial."
       />
 
       {/* Header Banner */}
@@ -28,7 +29,7 @@ export const ServicesPage: React.FC = () => {
               Serviços Especializados
             </h1>
             <p className="mt-3 text-base text-slate-600 dark:text-neutral-300 leading-relaxed">
-              Soluções técnicas dimensionadas para cada tipo de veículo. Conheça as especificações operacionais de cada modalidade e solicite atendimento com nossa equipe.
+              Soluções dimensionadas para veículos leves e pesados. Conheça cada modalidade de atendimento e consulte disponibilidade com nossa equipe pelo WhatsApp.
             </p>
           </div>
         </div>
@@ -44,8 +45,9 @@ export const ServicesPage: React.FC = () => {
                 <ZigZagItem
                   key={service.id}
                   index={index}
-                  distance={14}
-                  className={`grid grid-cols-1 lg:grid-cols-12 gap-10 items-center p-8 rounded-2xl bg-slate-50 dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 hover:border-red-400/50 dark:hover:border-neutral-700 transition-all shadow-sm hover:shadow-xl ${
+                  direction={isEven ? 'right' : 'left'}
+                  distance={16}
+                  className={`grid grid-cols-1 lg:grid-cols-12 gap-10 items-center p-6 sm:p-8 rounded-2xl bg-slate-50 dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 hover:border-red-400/50 dark:hover:border-neutral-700 transition-all shadow-sm hover:shadow-xl ${
                     isEven ? 'lg:flex-row-reverse' : ''
                   }`}
                 >
@@ -66,7 +68,7 @@ export const ServicesPage: React.FC = () => {
                     {service.technicalHighlights && (
                       <div className="space-y-2 pt-2">
                         <h4 className="text-xs font-bold text-slate-900 dark:text-neutral-200 uppercase tracking-wider font-heading">
-                          Destaques Técnicos:
+                          Destaques do Atendimento:
                         </h4>
                         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 dark:text-neutral-400">
                           {service.technicalHighlights.map((highlight, hIdx) => (
@@ -84,7 +86,7 @@ export const ServicesPage: React.FC = () => {
                         to={`/servicos/${service.slug}`}
                         className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-slate-800 dark:text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded border border-slate-300 dark:border-neutral-700 transition-colors shadow-xs"
                       >
-                        <span>Página do Serviço & Procedimentos</span>
+                        <span>Detalhes & Solicitação</span>
                         <ArrowRight className="w-4 h-4 text-[#B43034]" />
                       </Link>
 
@@ -97,14 +99,14 @@ export const ServicesPage: React.FC = () => {
                         className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded transition-colors shadow-md font-heading"
                       >
                         <WhatsAppIcon className="w-4 h-4" />
-                        <span>Solicitar Atendimento</span>
+                        <span>Solicitar no WhatsApp</span>
                       </a>
                     </div>
                   </div>
 
                   {/* Image / Visual Asset */}
                   <div className={`lg:col-span-5 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
-                    <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-xl bg-slate-100 dark:bg-neutral-950 aspect-[4/3] group flex items-center justify-center">
+                    <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-xl bg-white dark:bg-neutral-950 aspect-[16/10] group flex items-center justify-center">
                       {service.image ? (
                         <img
                           src={service.image}
@@ -113,16 +115,20 @@ export const ServicesPage: React.FC = () => {
                           loading="lazy"
                           decoding="async"
                           alt={service.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
+                            service.id === 'pesados'
+                              ? 'object-cover object-center'
+                              : 'object-contain p-2 sm:p-3 bg-white'
+                          }`}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-neutral-900 text-neutral-400">
                           <Truck className="w-16 h-16" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                      <div className="absolute bottom-3 left-3 right-3 text-xs text-white font-medium bg-slate-900/90 dark:bg-neutral-900/80 px-3 py-1.5 rounded backdrop-blur-sm border border-slate-700 dark:border-neutral-800">
-                        {service.title} — Operação Vapt Vupt
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
+                      <div className="absolute bottom-3 left-3 right-3 text-xs text-white font-medium bg-slate-900/90 dark:bg-neutral-900/85 px-3 py-1.5 rounded backdrop-blur-sm border border-slate-700 dark:border-neutral-800">
+                        {service.title} — Fotografia Real Vapt Vupt
                       </div>
                     </div>
                   </div>
@@ -133,18 +139,28 @@ export const ServicesPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Integrated Native Contact Form */}
+      <section className="py-16 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <WhatsAppContactForm />
+        </div>
+      </section>
+
       {/* Safety and Protocol Callout */}
-      <section className="py-16 bg-slate-50 dark:bg-[#161618] transition-colors">
+      <section className="py-16 bg-white dark:bg-[#141416] transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ZigZagHeading from="left" className="sr-only">
+            <h2>Perguntas Frequentes</h2>
+          </ZigZagHeading>
           <ZigZagItem
             index={0}
-            distance={12}
-            className="p-8 sm:p-10 rounded-2xl bg-white dark:bg-gradient-to-r dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-8"
+            distance={14}
+            className="p-8 sm:p-10 rounded-2xl bg-slate-50 dark:bg-gradient-to-r dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-8"
           >
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest font-heading">
                 <ShieldCheck className="w-4 h-4 text-[#B43034]" />
-                <span>Segurança em Primeiro Lugar</span>
+                <span>Transparência no Atendimento</span>
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight font-heading">
                 Dúvidas sobre o Atendimento?
@@ -157,7 +173,7 @@ export const ServicesPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
               <Link
                 to="/perguntas-frequentes"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded bg-slate-100 hover:bg-slate-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-slate-800 dark:text-white text-xs font-bold uppercase tracking-wider border border-slate-300 dark:border-neutral-700 transition-colors shadow-xs"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded bg-white hover:bg-slate-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-slate-800 dark:text-white text-xs font-bold uppercase tracking-wider border border-slate-300 dark:border-neutral-700 transition-colors shadow-xs"
               >
                 <span>Acessar FAQ Completo</span>
                 <ArrowRight className="w-4 h-4 text-[#B43034]" />

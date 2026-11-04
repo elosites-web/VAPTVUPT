@@ -4,6 +4,7 @@ import { CheckCircle2, ShieldCheck, Truck, Car, ShieldAlert, ArrowRight, HelpCir
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
+import { WhatsAppContactForm } from '../components/WhatsAppContactForm';
 
 export const ServiceDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -20,6 +21,28 @@ export const ServiceDetailPage: React.FC = () => {
     (s) => s.slug !== slug && !s.isPendingConfirmation
   );
 
+  // Pre-fill service & vehicle type in the native WhatsApp form while allowing full user editing
+  const getFormDefaults = (serviceId: string) => {
+    if (serviceId === 'pesados') {
+      return {
+        defaultServiceType: 'Remoção de Veículo Pesado',
+        defaultVehicleType: 'Cavalo Mecânico / Caminhão Pesado',
+      };
+    }
+    if (serviceId === 'solucoes') {
+      return {
+        defaultServiceType: 'Soluções em Remoção / Transporte Logístico',
+        defaultVehicleType: 'Outro Veículo',
+      };
+    }
+    return {
+      defaultServiceType: 'Remoção de Veículo Leve',
+      defaultVehicleType: 'Automóvel de Passeio (Hatch / Sedã)',
+    };
+  };
+
+  const formDefaults = getFormDefaults(currentService.id);
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Truck':
@@ -35,7 +58,7 @@ export const ServiceDetailPage: React.FC = () => {
     <>
       <SEOHead
         title={`${currentService.title}`}
-        description={`${currentService.shortDesc} Atendimento técnico com guincho e remoção especializada.`}
+        description={`${currentService.shortDesc} Consulte atendimento pelo WhatsApp oficial da Vapt Vupt.`}
       />
 
       {/* Header Banner */}
@@ -65,7 +88,7 @@ export const ServiceDetailPage: React.FC = () => {
               
               {/* Photo Showcase */}
               {currentService.image && (
-                <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-xl bg-slate-100 dark:bg-neutral-950">
+                <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-xl bg-white dark:bg-neutral-950">
                   <img
                     src={currentService.image}
                     srcSet={`${currentService.image} 480w, ${currentService.image} 800w, ${currentService.image} 1200w`}
@@ -73,11 +96,15 @@ export const ServiceDetailPage: React.FC = () => {
                     loading="lazy"
                     decoding="async"
                     alt={currentService.title}
-                    className="w-full h-80 sm:h-96 object-cover"
+                    className={`w-full h-72 sm:h-96 ${
+                      currentService.id === 'pesados'
+                        ? 'object-cover object-center'
+                        : 'object-contain p-3 sm:p-5 bg-white'
+                    }`}
                   />
                   <div className="p-4 bg-slate-50 dark:bg-neutral-900 border-t border-slate-200 dark:border-neutral-800 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-900 dark:text-white">Equipamento Operacional Vapt Vupt</span>
-                    <span className="text-slate-500 dark:text-neutral-400 font-mono">Registro Fotográfico Real</span>
+                    <span className="font-semibold text-slate-900 dark:text-white">Veículo Identificado Vapt Vupt</span>
+                    <span className="text-slate-500 dark:text-neutral-400 font-mono">Fotografia Real do Acervo</span>
                   </div>
                 </div>
               )}
@@ -85,7 +112,7 @@ export const ServiceDetailPage: React.FC = () => {
               {/* Comprehensive Description */}
               <div className="space-y-4">
                 <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white uppercase tracking-tight">
-                  Visão Técnica da Operação
+                  Visão Geral da Modalidade
                 </h2>
                 <p className="text-slate-600 dark:text-neutral-300 text-base leading-relaxed">
                   {currentService.fullDesc}
@@ -100,7 +127,7 @@ export const ServiceDetailPage: React.FC = () => {
                       {getIcon(currentService.iconName)}
                     </div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wide">
-                      Recursos e Especificações Técnicas
+                      Características do Atendimento
                     </h3>
                   </div>
 
@@ -123,7 +150,7 @@ export const ServiceDetailPage: React.FC = () => {
                       <ShieldCheck className="w-5 h-5" />
                     </div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wide">
-                      Protocolos de Segurança e Amarração
+                      Cuidados Operacionais e Alinhamento
                     </h3>
                   </div>
 
@@ -138,27 +165,12 @@ export const ServiceDetailPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Action Callout */}
-              <div className="p-6 rounded-xl bg-gradient-to-r from-red-50 to-slate-50 dark:from-red-950/40 dark:to-neutral-900 border border-red-200 dark:border-red-900/40 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h4 className="text-slate-900 dark:text-white font-bold text-base mb-1">
-                    Precisa deste serviço agora?
-                  </h4>
-                  <p className="text-slate-600 dark:text-neutral-400 text-xs">
-                    Consulte a disponibilidade da equipe informando modelo e local da ocorrência.
-                  </p>
-                </div>
-                <a
-                  href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
-                    `Olá! Gostaria de consultar atendimento para ${currentService.title}.`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-5 py-3 rounded shrink-0 shadow-lg transition-colors"
-                >
-                  <WhatsAppIcon className="w-4 h-4" />
-                  <span>Consultar no WhatsApp</span>
-                </a>
+              {/* Integrated Native WhatsApp Form Pre-filled for Current Service */}
+              <div className="pt-2">
+                <WhatsAppContactForm
+                  defaultServiceType={formDefaults.defaultServiceType}
+                  defaultVehicleType={formDefaults.defaultVehicleType}
+                />
               </div>
 
             </div>
@@ -166,6 +178,27 @@ export const ServiceDetailPage: React.FC = () => {
             {/* Sidebar with Navigation & Info */}
             <div className="lg:col-span-4 space-y-6">
               
+              {/* Direct WhatsApp Quick Box */}
+              <div className="p-6 rounded-xl bg-gradient-to-br from-red-50 to-white dark:from-red-950/40 dark:to-neutral-900 border border-red-200 dark:border-red-900/40 shadow-sm space-y-3">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                  Consulta Rápida no WhatsApp
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
+                  Prefere falar diretamente com a equipe agora? Clique abaixo para abrir o WhatsApp oficial.
+                </p>
+                <a
+                  href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
+                    `Olá! Gostaria de consultar atendimento para ${currentService.title}.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full button-3d inline-flex items-center justify-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded shadow-lg transition-colors"
+                >
+                  <WhatsAppIcon className="w-4 h-4" />
+                  <span>Consultar no WhatsApp</span>
+                </a>
+              </div>
+
               {/* Other Services Box */}
               <div className="p-6 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm space-y-4">
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
@@ -211,7 +244,7 @@ export const ServiceDetailPage: React.FC = () => {
               {/* Contact Box */}
               <div className="p-6 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm space-y-3 text-xs">
                 <h4 className="text-slate-900 dark:text-white font-bold uppercase tracking-wider">
-                  Central de Atendimento
+                  Canal Oficial
                 </h4>
                 <p className="text-slate-600 dark:text-neutral-400">
                   Fale com a Vapt Vupt pelo canal oficial:

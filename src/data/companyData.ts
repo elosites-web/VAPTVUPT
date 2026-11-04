@@ -54,6 +54,13 @@ export const COMPANY_CONFIG = {
   badge: 'Referência em remoção de veículos',
   segment: 'Transporte, guincho e remoção de veículos leves e pesados',
 
+  // Identificação clara de protótipo visual e proposta comercial
+  prototype: {
+    badge: 'PROTÓTIPO VISUAL • PROPOSTA COMERCIAL',
+    shortNotice:
+      'Esta é uma proposta visual demonstrativa. Conteúdos, contatos e funcionalidades estão sujeitos à validação e aprovação da empresa.',
+  },
+
   // Official identified contacts
   whatsapp: {
     raw: '5511913721849',
@@ -65,6 +72,12 @@ export const COMPANY_CONFIG = {
     quoteMessage: (vehicleType: string, need: string, location?: string) =>
       `Olá! Gostaria de consultar atendimento com a Vapt Vupt.%0A- Tipo de veículo: ${vehicleType}%0A- Necessidade: ${need}${location ? `%0A- Local/Região: ${location}` : ''}`,
     careersMessage: 'Olá! Tenho interesse em oportunidades profissionais na Vapt Vupt e gostaria de conversar com a equipe.',
+  },
+
+  // E-mail de recrutamento confirmado nos materiais fornecidos (uso exclusivo na seção Trabalhe Conosco)
+  careers: {
+    email: 'contratacao@vaptvuptremocoes.com.br',
+    subject: 'Candidatura Profissional - Vapt Vupt Remoção de Veículos',
   },
 
   instagram: {

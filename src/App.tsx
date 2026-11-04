@@ -7,6 +7,7 @@ import { Footer } from './components/Footer';
 import { WhatsAppFloating } from './components/WhatsAppFloating';
 import { ScrollToTop } from './components/ScrollToTop';
 import { DynamicFavicon } from './components/DynamicFavicon';
+import { CustomTruckCursor } from './components/CustomTruckCursor';
 
 // Pages
 import { Home } from './pages/Home';
@@ -29,6 +30,9 @@ export default function App() {
       <NavProvider>
         <BrowserRouter>
         <div className="min-h-screen bg-slate-50 dark:bg-[#141416] text-slate-900 dark:text-neutral-100 flex flex-col font-sans selection:bg-[#B43034] selection:text-white transition-colors duration-250">
+          {/* Desktop-only minimalist steering-wheel cursor follower */}
+          <CustomTruckCursor />
+
           {/* Tricolor Scroll Progress Bar at the top edge of page */}
           <ScrollProgressBar />
 

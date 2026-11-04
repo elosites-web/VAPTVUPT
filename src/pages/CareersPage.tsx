@@ -1,5 +1,5 @@
 import React from 'react';
-import { Briefcase, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react';
+import { Briefcase, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, Mail } from 'lucide-react';
 import { INTEGRATIONS } from '../config/integrations';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
@@ -7,6 +7,9 @@ import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const CareersPage: React.FC = () => {
   const isFormsConfigured = INTEGRATIONS.googleForms.isConfigured;
+  const mailtoHref = `mailto:${COMPANY_CONFIG.careers.email}?subject=${encodeURIComponent(
+    COMPANY_CONFIG.careers.subject
+  )}`;
 
   return (
     <>
@@ -69,15 +72,15 @@ export const CareersPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Google Forms Integration Section */}
+          {/* Recruitment Channels Section */}
           <div className="bg-slate-50 dark:bg-neutral-900 rounded-2xl border border-slate-200 dark:border-neutral-800 p-6 sm:p-8 shadow-xl space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-neutral-800 pb-5">
               <div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight font-heading">
-                  Formulário Oficial de Cadastro de Talentos
+                  Canais Oficiais de Recrutamento e Seleção
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-neutral-400 mt-1">
-                  Preenchimento seguro e confidencial processado via Google Forms.
+                  Envie seu currículo ou apresentação profissional pelos canais confirmados da empresa.
                 </p>
               </div>
 
@@ -92,6 +95,30 @@ export const CareersPage: React.FC = () => {
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}
+            </div>
+
+            {/* Confirmed Recruitment Email Card */}
+            <div className="p-6 rounded-xl bg-white dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="space-y-1.5 text-center sm:text-left">
+                <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-wider font-heading">
+                  <Mail className="w-4 h-4 shrink-0" />
+                  <span>E-mail Oficial de Contratação</span>
+                </div>
+                <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-mono break-all">
+                  {COMPANY_CONFIG.careers.email}
+                </h4>
+                <p className="text-xs text-slate-600 dark:text-neutral-400">
+                  Canal exclusivo para envio de currículo profissional (motoristas de guincho leve, pesado e equipe operacional).
+                </p>
+              </div>
+
+              <a
+                href={mailtoHref}
+                className="btn-3d inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-5 py-3 rounded-lg shadow-lg transition-colors shrink-0 font-heading"
+              >
+                <Mail className="w-4 h-4" />
+                <span>Enviar Currículo por E-mail</span>
+              </a>
             </div>
 
             {/* If Google Forms is Configured: Render real responsive iframe */}
@@ -115,10 +142,10 @@ export const CareersPage: React.FC = () => {
                 <div className="p-5 rounded-xl bg-slate-100/80 dark:bg-neutral-950/80 border border-slate-200 dark:border-neutral-800 space-y-2">
                   <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
                     <AlertCircle className="w-4 h-4 text-[#B43034] shrink-0" />
-                    <span>Recebimento de Cadastros Profissionais</span>
+                    <span>Orientação para Envio de Candidatura</span>
                   </div>
                   <p className="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed">
-                    Para manifestar interesse em oportunidades operacionais, entre em contato pelo canal oficial do WhatsApp informando seu nome, cidade e área de experiência profissional.
+                    Você pode encaminhar seu currículo diretamente para o e-mail <strong>{COMPANY_CONFIG.careers.email}</strong> ou entrar em contato pelo WhatsApp oficial informando seu nome, cidade, categoria de CNH e área de experiência profissional.
                   </p>
                 </div>
 
@@ -139,9 +166,9 @@ export const CareersPage: React.FC = () => {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-5 py-3 rounded shadow-lg transition-colors shrink-0 font-heading"
+                    className="btn-3d inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-900 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-white text-xs font-bold uppercase tracking-wider px-5 py-3 rounded-lg shadow transition-colors shrink-0 font-heading"
                   >
-                    <WhatsAppIcon className="w-4 h-4" />
+                    <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
                     <span>Falar pelo WhatsApp</span>
                   </a>
                 </div>
