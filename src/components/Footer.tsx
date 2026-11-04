@@ -209,13 +209,19 @@ export const Footer: React.FC = () => {
 
         {/* Prototype Identification Notice in Footer */}
         <div
-          className={`mb-6 p-3.5 rounded-xl border text-center text-[11px] leading-relaxed ${
+          className={`mb-6 p-3.5 rounded-xl border text-center text-[11px] leading-relaxed yellow-border-glow ${
             isDarkMode
               ? 'bg-neutral-900/60 border-neutral-800 text-neutral-400'
               : 'bg-white/80 border-slate-200/90 text-slate-600'
           }`}
         >
-          <span className="font-bold uppercase tracking-wider text-[#B43034] mr-2">
+          <span
+            className={`font-bold uppercase tracking-wider mr-2 ${
+              isDarkMode
+                ? 'text-yellow-400'
+                : 'bg-yellow-300/80 text-neutral-950 px-1.5 py-0.5 rounded-sm'
+            }`}
+          >
             {COMPANY_CONFIG.prototype.badge}:
           </span>
           <span>{COMPANY_CONFIG.prototype.shortNotice}</span>

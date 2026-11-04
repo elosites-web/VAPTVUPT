@@ -421,6 +421,36 @@ div:has(> span.pulse-indicator) svg {
   filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.45));
 }
 
+/* Efeito de brilho na borda (border-glow) com pulso suave em amarelo (#facc15) no hover */
+@keyframes yellowBorderPulseGlow {
+  0%, 100% {
+    border-color: #facc15;
+    box-shadow:
+      0 0 0 1px rgba(250, 204, 21, 0.35),
+      0 0 10px rgba(250, 204, 21, 0.45),
+      inset 0 0 6px rgba(250, 204, 21, 0.16);
+  }
+  50% {
+    border-color: #facc15;
+    box-shadow:
+      0 0 0 2px rgba(250, 204, 21, 0.65),
+      0 0 20px rgba(250, 204, 21, 0.78),
+      inset 0 0 11px rgba(250, 204, 21, 0.3);
+  }
+}
+
+.yellow-border-glow {
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.yellow-border-glow:hover {
+  border-color: #facc15 !important;
+  animation: yellowBorderPulseGlow 2.2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -126,15 +126,26 @@ export const Header: React.FC = () => {
         <div
           className={`w-full border-b px-2.5 sm:px-4 py-1 text-[10px] sm:text-[11px] leading-tight transition-colors ${
             isDarkMode
-              ? 'bg-neutral-950/75 border-neutral-800/80 text-neutral-300'
+              ? 'bg-neutral-950/80 border-neutral-800/80 text-neutral-300'
               : 'bg-slate-900/[0.04] border-slate-200/80 text-slate-700'
           }`}
           role="region"
           aria-label="Aviso de Protótipo Comercial"
         >
-          <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-center">
-            <span className="inline-flex items-center gap-1.5 font-extrabold uppercase tracking-wider text-[#B43034]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#B43034] shrink-0" aria-hidden="true" />
+          <div className="max-w-[1440px] mx-auto px-3 py-0.5 rounded-lg border border-transparent yellow-border-glow flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-center">
+            <span
+              className={`inline-flex items-center gap-1.5 font-extrabold uppercase tracking-wider ${
+                isDarkMode
+                  ? 'text-yellow-400'
+                  : 'bg-yellow-300/80 text-neutral-950 px-1.5 py-0.5 rounded-sm'
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                  isDarkMode ? 'bg-yellow-400' : 'bg-yellow-600'
+                }`}
+                aria-hidden="true"
+              />
               <span>{COMPANY_CONFIG.prototype.badge}</span>
             </span>
             <span className="hidden md:inline text-neutral-500 dark:text-neutral-600" aria-hidden="true">
