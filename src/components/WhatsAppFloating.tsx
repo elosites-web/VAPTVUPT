@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
+import { useNav } from '../context/NavContext';
 
 export const WhatsAppFloating: React.FC = () => {
   const [tooltipDismissed, setTooltipDismissed] = useState(false);
+  const { mobileMenuOpen } = useNav();
+
+  // O botão flutuante não deve aparecer quando o menu hambúrguer estiver aberto
+  if (mobileMenuOpen) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-6 right-6 z-40 flex items-end flex-col gap-2 pointer-events-none">

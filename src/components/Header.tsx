@@ -5,10 +5,11 @@ import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
+import { useNav } from '../context/NavContext';
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { mobileMenuOpen, setMobileMenuOpen } = useNav();
   const { isDarkMode } = useTheme();
   const location = useLocation();
 
@@ -134,38 +135,42 @@ export const Header: React.FC = () => {
                 <span className="text-neutral-300 font-semibold tracking-wide">Remoção Leve e Pesada</span>
               </div>
 
-              {/* Theme Toggle Component (Light / Dark / Auto) */}
-              <div className="shrink-0">
-                <ThemeToggle variant="compact" />
-              </div>
+              {/* Theme Toggle Component (Light / Dark / Auto) - Oculto quando menu mobile estiver aberto */}
+              {!mobileMenuOpen && (
+                <div className="shrink-0 transition-opacity duration-200" title="Alternar Modo de Tema">
+                  <ThemeToggle variant="compact" />
+                </div>
+              )}
 
-              {/* Direct WhatsApp Call CTA (Icon on Mobile, Full text on Tablet/Desktop) */}
-              <a
-                href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
-                  COMPANY_CONFIG.whatsapp.defaultMessage
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group button-3d relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-xs font-bold uppercase tracking-wider p-2 sm:px-4 sm:py-2.5 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
-                aria-label="Solicitar Atendimento via WhatsApp"
-                title="Solicitar Atendimento no WhatsApp"
-              >
-                {/* Subtle light sweep reflection */}
-                <span
-                  className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"
-                  aria-hidden="true"
-                />
+              {/* Direct WhatsApp Call CTA - Oculto quando menu mobile estiver aberto */}
+              {!mobileMenuOpen && (
+                <a
+                  href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
+                    COMPANY_CONFIG.whatsapp.defaultMessage
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group button-3d relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-xs font-bold uppercase tracking-wider p-2 sm:px-4 sm:py-2.5 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
+                  aria-label="Solicitar Atendimento via WhatsApp"
+                  title="Solicitar Atendimento no WhatsApp"
+                >
+                  {/* Subtle light sweep reflection */}
+                  <span
+                    className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"
+                    aria-hidden="true"
+                  />
 
-                <WhatsAppIcon className="w-4 h-4 text-white fill-white shrink-0 group-hover:scale-110 transition-transform duration-200" />
-                <span className="hidden sm:inline">Solicitar Atendimento</span>
-              </a>
+                  <WhatsAppIcon className="w-4 h-4 text-white fill-white shrink-0 group-hover:scale-110 transition-transform duration-200" />
+                  <span className="hidden sm:inline">Solicitar Atendimento</span>
+                </a>
+              )}
 
-              {/* Mobile Menu Toggle Button (Hamburguer) - Always visible on vertical mobile */}
-              <div className="flex lg:hidden shrink-0">
+              {/* Mobile Menu Toggle Button (Hamburguer / Fechar) - Explicit visibility controls on mobile breakpoints */}
+              <div className="inline-flex lg:hidden shrink-0 relative z-30 items-center justify-center">
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className={`p-2 transition-colors rounded-lg border shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
+                  className={`p-2 transition-colors rounded-lg border shrink-0 relative z-30 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
                     isDarkMode
                       ? 'text-neutral-300 hover:text-white bg-neutral-900/90 border-neutral-800 hover:bg-neutral-800'
                       : 'text-neutral-700 hover:text-neutral-900 bg-white/90 border-neutral-300 hover:bg-neutral-100'

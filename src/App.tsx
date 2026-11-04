@@ -21,11 +21,13 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsOfUsePage } from './pages/TermsOfUsePage';
 import { ThemeProvider } from './context/ThemeContext';
+import { NavProvider } from './context/NavContext';
 
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <NavProvider>
+        <BrowserRouter>
         <div className="min-h-screen bg-slate-50 dark:bg-[#141416] text-slate-900 dark:text-neutral-100 flex flex-col font-sans selection:bg-[#B43034] selection:text-white transition-colors duration-250">
           {/* Tricolor Scroll Progress Bar at the top edge of page */}
           <ScrollProgressBar />
@@ -67,6 +69,7 @@ export default function App() {
           <WhatsAppFloating />
         </div>
       </BrowserRouter>
-    </ThemeProvider>
+    </NavProvider>
+  </ThemeProvider>
   );
 }
