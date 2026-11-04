@@ -8,6 +8,19 @@ interface CinematicHeroProps {
   onScrollToForm?: () => void;
 }
 
+/**
+ * Synchronously determine prefers-reduced-motion to avoid any layout flash
+ * of animated video for users with reduced motion enabled.
+ */
+const getInitialReducedMotion = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch {
+    return false;
+  }
+};
+
 export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -19,20 +32,23 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const finalCardRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
-  const [isReducedMotion, setIsReducedMotion] = useState(false);
+  // Motion and fallback states
+  const [isReducedMotion, setIsReducedMotion] = useState<boolean>(getInitialReducedMotion);
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [posterFailed, setPosterFailed] = useState(false);
   const [videoDuration, setVideoDuration] = useState<number>(6.334);
 
+  // Synchronization refs (avoiding React re-renders during high-frequency scroll)
   const targetProgressRef = useRef<number>(0);
   const currentProgressRef = useRef<number>(0);
   const rafIdRef = useRef<number | null>(null);
-  const isSeekingRef = useRef<boolean>(false);
+  const pendingSeekRef = useRef<number | null>(null);
 
-  // Check for prefers-reduced-motion media query
+  // Media query listener for prefers-reduced-motion
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setIsReducedMotion(mediaQuery.matches);
 
     const handler = (e: MediaQueryListEvent) => {
       setIsReducedMotion(e.matches);
@@ -47,155 +63,194 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     }
   }, []);
 
-  // Sync animation state with progress value
+  /**
+   * Apply code-driven opacities and transforms aligned with the genuine footage:
+   * - 0.00 to 0.45: Editorial proposition fades as user scrolls into the video
+   * - 0.00 to 0.80: Dark cinematic vignette stays fully active over road footage
+   * - 0.80 to 0.90: Vignette fades out as truck accelerates and begins flash to white
+   * - 0.89 to 0.92: White backdrop smoothly washes in to match the white scene
+   * - 0.90 to 0.95: Official Vapt Vupt Symbol appears on genuine white background
+   * - 0.94 to 0.98: Official Wordmark reveals beside the symbol
+   * - 0.97 to 1.00: Climax conversion card and CTAs settle into place
+   */
   const applyProgressStyles = useCallback((prog: number) => {
-    // 1. Initial Content Overlay (Headline, Subtitle, CTAs)
-    // Visible from prog 0.0 to 0.42, then smoothly fades out by 0.58
+    // 1. Initial Editorial Content Overlay (Headline, Subtitle, CTAs)
     if (contentOverlayRef.current) {
-      if (prog <= 0.05) {
+      if (prog <= 0.10) {
         contentOverlayRef.current.style.opacity = '1';
         contentOverlayRef.current.style.transform = 'translateY(0px)';
         contentOverlayRef.current.style.pointerEvents = 'auto';
-      } else if (prog < 0.48) {
-        const fadeProg = (prog - 0.05) / 0.43;
+      } else if (prog < 0.45) {
+        const fadeProg = (prog - 0.10) / 0.35;
         const opacity = Math.max(0, 1 - fadeProg);
         contentOverlayRef.current.style.opacity = opacity.toFixed(3);
-        contentOverlayRef.current.style.transform = `translateY(-${(fadeProg * 24).toFixed(1)}px)`;
-        contentOverlayRef.current.style.pointerEvents = opacity > 0.2 ? 'auto' : 'none';
+        contentOverlayRef.current.style.transform = `translateY(-${(fadeProg * 22).toFixed(1)}px)`;
+        contentOverlayRef.current.style.pointerEvents = opacity > 0.25 ? 'auto' : 'none';
       } else {
         contentOverlayRef.current.style.opacity = '0';
         contentOverlayRef.current.style.pointerEvents = 'none';
       }
     }
 
-    // 2. Scroll Prompt Indicator
+    // 2. Scroll Prompt Indicator (fades out immediately when user starts scrolling)
     if (scrollIndicatorRef.current) {
-      if (prog < 0.12) {
-        scrollIndicatorRef.current.style.opacity = (1 - prog / 0.12).toFixed(2);
+      if (prog < 0.08) {
+        scrollIndicatorRef.current.style.opacity = (1 - prog / 0.08).toFixed(2);
       } else {
         scrollIndicatorRef.current.style.opacity = '0';
       }
     }
 
-    // 3. Dark Vignette Overlay: Fades out as video transitions to white speed-lines
+    // 3. Dark Vignette Overlay: Fades only when the footage actually transitions toward white
     if (darkVignetteRef.current) {
-      if (prog < 0.55) {
+      if (prog < 0.80) {
         darkVignetteRef.current.style.opacity = '1';
-      } else if (prog < 0.78) {
-        const vignetteFade = (prog - 0.55) / 0.23;
+      } else if (prog < 0.90) {
+        const vignetteFade = (prog - 0.80) / 0.10;
         darkVignetteRef.current.style.opacity = Math.max(0, 1 - vignetteFade).toFixed(3);
       } else {
         darkVignetteRef.current.style.opacity = '0';
       }
     }
 
-    // 4. Logo Reveal Stage (Active on final white background from prog >= 0.78)
+    // 4. Logo Reveal Stage (Active exclusively on the genuine white ending from prog >= 0.89)
     if (logoStageRef.current) {
-      if (prog < 0.76) {
+      if (prog < 0.89) {
         logoStageRef.current.style.opacity = '0';
         logoStageRef.current.style.pointerEvents = 'none';
         logoStageRef.current.style.visibility = 'hidden';
       } else {
         logoStageRef.current.style.visibility = 'visible';
-        // Base container opacity ramps up quickly between 0.76 and 0.82
-        const stageOpacity = Math.min(1, Math.max(0, (prog - 0.76) / 0.06));
+        // Backdrop wash transitions from 0 to 1 between 0.89 and 0.92
+        const stageOpacity = Math.min(1, Math.max(0, (prog - 0.89) / 0.03));
         logoStageRef.current.style.opacity = stageOpacity.toFixed(3);
-        logoStageRef.current.style.pointerEvents = prog >= 0.90 ? 'auto' : 'none';
+        logoStageRef.current.style.pointerEvents = prog >= 0.96 ? 'auto' : 'none';
       }
     }
 
-    // Stage A: Symbol Reveal (Progress 0.79 to 0.89)
+    // Stage A: Official Symbol Reveal (Progress 0.90 to 0.95)
     if (symbolRef.current) {
-      if (prog < 0.79) {
+      if (prog < 0.90) {
         symbolRef.current.style.opacity = '0';
-        symbolRef.current.style.transform = 'scale(0.82)';
-      } else if (prog < 0.89) {
-        const sProg = (prog - 0.79) / 0.10;
+        symbolRef.current.style.transform = 'scale(0.85)';
+      } else if (prog < 0.95) {
+        const sProg = (prog - 0.90) / 0.05;
         symbolRef.current.style.opacity = Math.min(1, Math.max(0, sProg)).toFixed(3);
-        symbolRef.current.style.transform = `scale(${(0.82 + 0.18 * sProg).toFixed(3)})`;
+        symbolRef.current.style.transform = `scale(${(0.85 + 0.15 * sProg).toFixed(3)})`;
       } else {
         symbolRef.current.style.opacity = '1';
         symbolRef.current.style.transform = 'scale(1)';
       }
     }
 
-    // Stage B: Wordmark Reveal (Progress 0.87 to 0.96)
+    // Stage B: Official Wordmark Reveal (Progress 0.94 to 0.98, appears after symbol)
     if (wordmarkRef.current) {
-      if (prog < 0.87) {
+      if (prog < 0.94) {
         wordmarkRef.current.style.opacity = '0';
-        wordmarkRef.current.style.transform = 'translateX(18px)';
-      } else if (prog < 0.96) {
-        const wProg = (prog - 0.87) / 0.09;
+        wordmarkRef.current.style.transform = 'translateX(20px)';
+      } else if (prog < 0.98) {
+        const wProg = (prog - 0.94) / 0.04;
         wordmarkRef.current.style.opacity = Math.min(1, Math.max(0, wProg)).toFixed(3);
-        wordmarkRef.current.style.transform = `translateX(${((1 - wProg) * 18).toFixed(1)}px)`;
+        wordmarkRef.current.style.transform = `translateX(${((1 - wProg) * 20).toFixed(1)}px)`;
       } else {
         wordmarkRef.current.style.opacity = '1';
         wordmarkRef.current.style.transform = 'translateX(0px)';
       }
     }
 
-    // Stage C: Final Climax Call to Action Card (Progress 0.93 to 1.0)
+    // Stage C: Final Conversion Card on White Finale (Progress 0.97 to 1.00)
     if (finalCardRef.current) {
-      if (prog < 0.93) {
+      if (prog < 0.97) {
         finalCardRef.current.style.opacity = '0';
-        finalCardRef.current.style.transform = 'translateY(14px)';
+        finalCardRef.current.style.transform = 'translateY(12px)';
         finalCardRef.current.style.pointerEvents = 'none';
       } else {
-        const fProg = (prog - 0.93) / 0.07;
+        const fProg = (prog - 0.97) / 0.03;
         const opacity = Math.min(1, Math.max(0, fProg));
         finalCardRef.current.style.opacity = opacity.toFixed(3);
-        finalCardRef.current.style.transform = `translateY(${((1 - fProg) * 14).toFixed(1)}px)`;
-        finalCardRef.current.style.pointerEvents = opacity > 0.4 ? 'auto' : 'none';
+        finalCardRef.current.style.transform = `translateY(${((1 - fProg) * 12).toFixed(1)}px)`;
+        finalCardRef.current.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
       }
     }
   }, []);
 
-  // Smooth scrubbing animation frame loop
+  /**
+   * Hardware-accurate seek execution:
+   * Since hero-scrub.mp4 is 100% intra-frame encoded (all 152 frames are keyframes),
+   * standard currentTime assignment seeks instantly without inter-frame decoding overhead.
+   * If a seek is currently in-flight, the latest requested timestamp is buffered and
+   * executed as soon as the seeked event fires.
+   */
+  const performSeek = useCallback((targetTime: number) => {
+    const video = videoRef.current;
+    if (!video || video.readyState < 2) return;
+
+    if (video.seeking) {
+      pendingSeekRef.current = targetTime;
+      return;
+    }
+
+    try {
+      video.currentTime = targetTime;
+    } catch {
+      // Graceful fallback if browser throws on seeking
+    }
+  }, []);
+
+  // Event handler when video completes seeking to requested frame
+  const handleSeeked = useCallback(() => {
+    if (pendingSeekRef.current !== null) {
+      const nextTime = pendingSeekRef.current;
+      pendingSeekRef.current = null;
+      performSeek(nextTime);
+    }
+  }, [performSeek]);
+
+  /**
+   * Smooth, highly responsive rAF scrub loop:
+   * Interpolation factor tuned to 0.65 to settle promptly on the exact frame
+   * when scrolling ceases, completely eliminating perceptible trailing lag.
+   */
   const updateScrub = useCallback(() => {
     const video = videoRef.current;
     if (!video || !videoDuration) return;
 
-    // Smoothly interpolate current progress towards target progress
     const diff = targetProgressRef.current - currentProgressRef.current;
-    if (Math.abs(diff) > 0.0005) {
-      // Lerp factor tuned for natural, responsive tactile feel
-      currentProgressRef.current += diff * 0.28;
+
+    // Fast-settling lerp: snaps cleanly when close to target or at extremities
+    if (targetProgressRef.current === 0 && currentProgressRef.current < 0.005) {
+      currentProgressRef.current = 0;
+    } else if (targetProgressRef.current === 1 && currentProgressRef.current > 0.995) {
+      currentProgressRef.current = 1;
+    } else if (Math.abs(diff) > 0.001) {
+      currentProgressRef.current += diff * 0.65;
     } else {
       currentProgressRef.current = targetProgressRef.current;
     }
 
     const prog = currentProgressRef.current;
 
-    // Apply code-driven opacity and transforms
+    // Apply visual styling across all stages
     applyProgressStyles(prog);
 
-    // Seek the MP4 video (Intra-frame encoded video seeks instantly)
-    if (video.readyState >= 2 && !isSeekingRef.current) {
-      const targetTime = prog * videoDuration;
-      const timeDiff = Math.abs(video.currentTime - targetTime);
+    // Calculate clamped time: clamps just before videoDuration to prevent 'ended' black flash
+    const maxSafeTime = videoDuration > 0.05 ? videoDuration - 0.04 : videoDuration;
+    const targetTime = Math.min(maxSafeTime, Math.max(0, prog * videoDuration));
 
-      if (timeDiff > 0.02) {
-        try {
-          if ('fastSeek' in video && typeof (video as unknown as { fastSeek: (t: number) => void }).fastSeek === 'function') {
-            (video as unknown as { fastSeek: (t: number) => void }).fastSeek(targetTime);
-          } else {
-            video.currentTime = targetTime;
-          }
-        } catch {
-          // Fallback if browser throws on seeking
-        }
-      }
+    const timeDiff = Math.abs(video.currentTime - targetTime);
+    if (timeDiff > 0.015) {
+      performSeek(targetTime);
     }
 
-    // Continue loop while animating or schedule next check
-    if (Math.abs(targetProgressRef.current - currentProgressRef.current) > 0.0005) {
+    // Continue loop if still interpolating, otherwise park the rAF loop
+    if (Math.abs(targetProgressRef.current - currentProgressRef.current) > 0.001) {
       rafIdRef.current = requestAnimationFrame(updateScrub);
     } else {
       rafIdRef.current = null;
     }
-  }, [videoDuration, applyProgressStyles]);
+  }, [videoDuration, applyProgressStyles, performSeek]);
 
-  // Handle scroll events
+  // Handle scroll events with zero React re-renders
   const handleScroll = useCallback(() => {
     if (isReducedMotion || videoFailed) return;
 
@@ -209,7 +264,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
     if (scrollDistance <= 0) return;
 
-    // rect.top is 0 when the top of the track aligns with top of viewport
+    // Normalized progress calculation: 0 at top, 1 at bottom
     const rawProgress = -rect.top / scrollDistance;
     const clampedProgress = Math.max(0, Math.min(1, rawProgress));
 
@@ -220,14 +275,14 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     }
   }, [isReducedMotion, videoFailed, updateScrub]);
 
-  // Setup scroll and resize listeners
+  // Setup scroll and resize listeners with passive flags
   useEffect(() => {
     if (isReducedMotion || videoFailed) return;
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll, { passive: true });
 
-    // Initial measurement
+    // Initial positioning check
     handleScroll();
 
     return () => {
@@ -235,18 +290,20 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
       window.removeEventListener('resize', handleScroll);
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
       }
     };
   }, [isReducedMotion, videoFailed, handleScroll]);
 
-  // Video loaded metadata handler
+  // Video loaded metadata handler: reads exact duration and freezes on initial frame
   const handleLoadedMetadata = () => {
     const video = videoRef.current;
     if (video) {
       const dur = video.duration && !isNaN(video.duration) ? video.duration : 6.334;
       setVideoDuration(dur);
       setVideoReady(true);
-      // Cue initial frame
+      // Ensure video is paused and cued to start
+      video.pause();
       video.currentTime = 0;
     }
   };
@@ -255,7 +312,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     setVideoFailed(true);
   };
 
-  // Helper to replay from beginning (scrolls page smoothly to top)
+  // Replay helper: smoothly scrolls back to the beginning of the track
   const handleReplay = () => {
     const track = trackRef.current;
     if (track) {
@@ -278,11 +335,16 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         data-keep-dark="true"
       >
         <div className="absolute inset-0 z-0 pointer-events-none">
-          <img
-            src="/hero-poster.jpg"
-            alt="Caminhões de remoção Vapt Vupt"
-            className="w-full h-full object-cover object-center brightness-[0.32] contrast-110"
-          />
+          {!posterFailed ? (
+            <img
+              src="/hero-poster.jpg"
+              alt="Caminhões de remoção Vapt Vupt"
+              onError={() => setPosterFailed(true)}
+              className="w-full h-full object-cover object-center brightness-[0.32] contrast-110 select-none"
+            />
+          ) : (
+            <div className="w-full h-full bg-[#141416] industrial-grid" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#141416] via-[#141416]/70 to-[#141416]/40" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#141416] via-[#141416]/85 to-transparent" />
         </div>
@@ -380,15 +442,21 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             preload="auto"
             onLoadedMetadata={handleLoadedMetadata}
             onError={handleVideoError}
+            onSeeked={handleSeeked}
+            onPlay={(e) => {
+              // Enforce strictly scroll-driven playback without autonomous autoplay
+              e.currentTarget.pause();
+            }}
             className="w-full h-full object-cover object-center select-none pointer-events-none"
             aria-hidden="true"
           />
 
-          {/* Fallback poster while video is initializing */}
-          {!videoReady && (
+          {/* Fallback poster while video initializes metadata */}
+          {!videoReady && !posterFailed && (
             <img
               src="/hero-poster.jpg"
               alt="Caminhões Vapt Vupt"
+              onError={() => setPosterFailed(true)}
               className="absolute inset-0 w-full h-full object-cover object-center select-none"
             />
           )}
@@ -399,7 +467,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
           ref={darkVignetteRef}
           className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-150"
         >
-          {/* Top subtle vignette for Header contrast */}
+          {/* Top subtle vignette ensuring Header contrast */}
           <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-black/85 via-black/45 to-transparent" />
           {/* Main directional vignette keeping left-side text sharp and cinematic */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/25 sm:to-transparent" />
@@ -408,7 +476,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         </div>
 
         {/* =========================================================================
-            STAGE 1: EDITORIAL VALUE PROPOSITION (Fades out smoothly between 0.05 & 0.48)
+            STAGE 1: EDITORIAL VALUE PROPOSITION (Fades out smoothly between 0.10 & 0.45)
             ========================================================================= */}
         <div
           ref={contentOverlayRef}
@@ -497,7 +565,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
           </div>
         </div>
 
-        {/* Scroll Instruction Indicator (Disappears once user starts scrolling) */}
+        {/* Scroll Instruction Indicator (Disappears when user starts scrolling) */}
         <div
           ref={scrollIndicatorRef}
           className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-1.5 transition-opacity duration-200"
@@ -509,11 +577,11 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         </div>
 
         {/* =========================================================================
-            STAGE 2: OFFICIAL LOGO REVEAL (Symbol first, Wordmark second on white scene)
+            STAGE 2: OFFICIAL LOGO REVEAL (Symbol first, Wordmark second on genuine white scene)
             ========================================================================= */}
         <div
           ref={logoStageRef}
-          className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 sm:px-6 pointer-events-none"
+          className="absolute inset-0 z-30 flex flex-col items-center justify-center pt-20 sm:pt-24 pb-8 px-4 sm:px-6 pointer-events-none"
           style={{ opacity: 0, visibility: 'hidden' }}
         >
           {/* Subtle white-to-light-slate background wash ensuring 100% pure contrast */}
@@ -527,7 +595,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               <div
                 ref={symbolRef}
                 className="transition-transform duration-100 ease-out will-change-transform"
-                style={{ opacity: 0, transform: 'scale(0.82)' }}
+                style={{ opacity: 0, transform: 'scale(0.85)' }}
               >
                 <img
                   src="/logo-simbolo-original.png"
@@ -541,7 +609,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               <div
                 ref={wordmarkRef}
                 className="transition-transform duration-100 ease-out will-change-transform"
-                style={{ opacity: 0, transform: 'translateX(18px)' }}
+                style={{ opacity: 0, transform: 'translateX(20px)' }}
               >
                 <img
                   src="/logo-wordmark-original.png"
@@ -556,7 +624,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             <div
               ref={finalCardRef}
               className="space-y-4 max-w-xl transition-transform duration-150 ease-out"
-              style={{ opacity: 0, transform: 'translateY(14px)' }}
+              style={{ opacity: 0, transform: 'translateY(12px)' }}
             >
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-300 text-slate-800 text-[11px] font-bold uppercase tracking-wider shadow-xs">
                 <CheckCircle2 className="w-3.5 h-3.5 text-[#B43034]" />
