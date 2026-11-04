@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header';
+import { Breadcrumbs } from './components/Breadcrumbs';
 import { Footer } from './components/Footer';
 import { WhatsAppFloating } from './components/WhatsAppFloating';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -31,6 +32,9 @@ export default function App() {
 
         {/* Global Institutional Header */}
         <Header />
+
+        {/* Global Breadcrumbs Navigation below Header */}
+        <Breadcrumbs />
 
         {/* Dynamic Route Pages */}
         <main className="flex-grow">

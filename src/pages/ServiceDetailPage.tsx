@@ -38,18 +38,8 @@ export const ServiceDetailPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-28 pb-14 bg-[#111113] border-b border-neutral-800">
+      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-[#111113] border-b border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-4">
-            <Link
-              to="/servicos"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-400 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4 text-[#B43034]" />
-              <span>Voltar para Todos os Serviços</span>
-            </Link>
-          </div>
-
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-neutral-900 border border-neutral-800 text-[11px] font-bold uppercase tracking-widest text-[#B43034] mb-3">
               {currentService.tag}

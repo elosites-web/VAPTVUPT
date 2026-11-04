@@ -13,18 +13,8 @@ export const TermsOfUsePage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-28 pb-14 bg-[#111113] border-b border-neutral-800">
+      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-[#111113] border-b border-neutral-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-4">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-400 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4 text-[#B43034]" />
-              <span>Voltar à Página Inicial</span>
-            </Link>
-          </div>
-
           <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3 font-heading">
             <Scale className="w-4 h-4 text-[#B43034]" />
             <span>Condições de Navegação</span>

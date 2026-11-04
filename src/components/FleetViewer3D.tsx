@@ -124,20 +124,50 @@ export const FleetViewer3D: React.FC = () => {
     scene.fog = new THREE.Fog(0x131316, 14, 52);
     sceneRef.current = scene;
 
-    // Camera setup
+    // Camera setup with dynamic mobile portrait aspect handling
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(12, 6.5, 14);
     cameraRef.current = camera;
 
-    // OrbitControls
+    // OrbitControls with pan disabled to keep the model centered on touch swipe
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.maxPolarAngle = Math.PI / 2 - 0.04;
-    controls.minDistance = 6;
-    controls.maxDistance = 28;
-    controls.target.set(0, 1.8, 0);
+    controls.enablePan = false;
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN,
+    };
     controlsRef.current = controls;
+
+    // Dynamic camera calibrator: zooms out on mobile portrait so the 10m truck fits horizontally
+    const applyResponsiveCamera = (w: number, h: number, preset: 'geral' | 'plataforma' | 'cabine' = 'geral') => {
+      const currentAspect = w / h;
+      camera.aspect = currentAspect;
+
+      // On mobile portrait (currentAspect < 1.2), zoom out proportionately
+      const zoomFactor = currentAspect < 1.25 ? Math.max(1.0, 1.35 / Math.max(currentAspect, 0.52)) : 1.0;
+
+      if (preset === 'geral') {
+        camera.position.set(12 * zoomFactor, 6.5 * (currentAspect < 1 ? 1.15 : 1.0), 14 * zoomFactor);
+        controls.target.set(0, currentAspect < 1 ? 1.3 : 1.8, 0);
+      } else if (preset === 'plataforma') {
+        camera.position.set(-11 * zoomFactor, 4.5 * (currentAspect < 1 ? 1.15 : 1.0), 7 * zoomFactor);
+        controls.target.set(-2, 1.4, 0);
+      } else if (preset === 'cabine') {
+        camera.position.set(8 * zoomFactor, 3.5 * (currentAspect < 1 ? 1.15 : 1.0), 6 * zoomFactor);
+        controls.target.set(3, 1.9, 0);
+      }
+
+      controls.minDistance = currentAspect < 1 ? 8 : 6;
+      controls.maxDistance = currentAspect < 1 ? 38 : 28;
+
+      camera.updateProjectionMatrix();
+      controls.update();
+      renderer.setSize(w, h);
+    };
+
+    applyResponsiveCamera(width, height, 'geral');
 
     // Studio Environment map via PMREMGenerator
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
@@ -716,14 +746,12 @@ export const FleetViewer3D: React.FC = () => {
 
     requestRef.current = requestAnimationFrame(animate);
 
-    // Responsive Resize Handler
+    // Responsive Resize Handler with dynamic aspect zoom
     const handleResize = () => {
       if (!container) return;
       const w = container.clientWidth;
-      const h = container.clientHeight || 540;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      const h = container.clientHeight || 420;
+      applyResponsiveCamera(w, h, activePreset);
     };
 
     window.addEventListener('resize', handleResize);
@@ -739,21 +767,28 @@ export const FleetViewer3D: React.FC = () => {
     };
   }, []);
 
-  // Camera presets
+  // Camera presets with responsive mobile portrait awareness
   const setCameraPreset = (preset: 'geral' | 'plataforma' | 'cabine') => {
     setActivePreset(preset);
-    if (!cameraRef.current || !controlsRef.current) return;
+    if (!cameraRef.current || !controlsRef.current || !mountRef.current) return;
+    const w = mountRef.current.clientWidth;
+    const h = mountRef.current.clientHeight || 420;
+    const currentAspect = w / h;
+    const zoomFactor = currentAspect < 1.25 ? Math.max(1.0, 1.35 / Math.max(currentAspect, 0.52)) : 1.0;
 
     if (preset === 'geral') {
-      cameraRef.current.position.set(12, 6.5, 14);
-      controlsRef.current.target.set(0, 1.8, 0);
+      cameraRef.current.position.set(12 * zoomFactor, 6.5 * (currentAspect < 1 ? 1.15 : 1.0), 14 * zoomFactor);
+      controlsRef.current.target.set(0, currentAspect < 1 ? 1.3 : 1.8, 0);
     } else if (preset === 'plataforma') {
-      cameraRef.current.position.set(-11, 4.5, 7);
+      cameraRef.current.position.set(-11 * zoomFactor, 4.5 * (currentAspect < 1 ? 1.15 : 1.0), 7 * zoomFactor);
       controlsRef.current.target.set(-2, 1.4, 0);
     } else if (preset === 'cabine') {
-      cameraRef.current.position.set(8, 3.5, 6);
-      controlsRef.current.target.set(3, 2, 0);
+      cameraRef.current.position.set(8 * zoomFactor, 3.5 * (currentAspect < 1 ? 1.15 : 1.0), 6 * zoomFactor);
+      controlsRef.current.target.set(3, 1.9, 0);
     }
+
+    cameraRef.current.updateProjectionMatrix();
+    controlsRef.current.update();
   };
 
   // Compute status description based on current cycle progress
@@ -784,26 +819,26 @@ export const FleetViewer3D: React.FC = () => {
   const status = getPhaseDescription();
 
   return (
-    <section id="modelo-3d" className="py-20 bg-[#141416] border-t border-neutral-800 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+    <section id="modelo-3d" className="py-12 sm:py-20 bg-[#141416] border-t border-neutral-800 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
               <span className="w-6 h-0.5 bg-[#B43034]" />
               <span>Ambiente Industrial & Simulação Técnica</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase font-heading">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight uppercase font-heading leading-tight">
               OPERAÇÃO DA PLATAFORMA: RECUO & BASCULAMENTO
             </h2>
-            <p className="mt-2 text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed">
+            <p className="mt-2 text-xs sm:text-base text-neutral-300 max-w-2xl leading-relaxed">
               Ciclo real de funcionamento: primeiro a rampa desloca-se <strong>33% na horizontal para trás</strong> ao longo das guias, e somente após o recuo realiza o <strong>basculamento hidráulico</strong> para o embarque seguro do veículo.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 text-xs text-neutral-400 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded">
               <Sparkles className="w-3.5 h-3.5 text-[#B43034]" />
-              <span>Gire e inspecione em 360°</span>
+              <span>Interação 360° com Toque</span>
             </span>
           </div>
         </div>
@@ -817,222 +852,245 @@ export const FleetViewer3D: React.FC = () => {
         </div>
       </div>
 
-      {/* 3D Viewport Container */}
+      {/* 3D Viewport Card Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative w-full h-[520px] sm:h-[620px] bg-[#111113] rounded-2xl border border-neutral-800 overflow-hidden shadow-2xl">
+        <div className="relative w-full bg-[#111113] rounded-2xl border border-neutral-800 overflow-hidden shadow-2xl flex flex-col">
           
-          {/* WebGL Canvas Mount or Fallback */}
-          {webGlSupported ? (
-            <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-neutral-950 space-y-4">
-              <AlertTriangle className="w-10 h-10 text-amber-500" />
-              <h3 className="text-xl font-bold text-white font-heading uppercase">
-                Aceleração WebGL Indisponível no Navegador
-              </h3>
-              <p className="text-xs sm:text-sm text-neutral-400 max-w-md">
-                Seu dispositivo ou navegador não possui suporte ativo para aceleração 3D WebGL. Você pode conferir nossas fotografias reais da frota na galeria logo acima.
-              </p>
-              <img
-                src={COMPANY_CONFIG.fleet[1].image}
-                alt="Plataforma de veículos leves"
-                className="max-w-sm rounded-lg border border-neutral-800 shadow-md max-h-48 object-cover"
+          {/* WebGL Canvas Viewport Area */}
+          <div className="relative w-full h-[320px] xs:h-[350px] sm:h-[440px] md:h-[500px] lg:h-[560px] bg-[#111113] overflow-hidden select-none">
+            {webGlSupported ? (
+              <div
+                ref={mountRef}
+                className="w-full h-full cursor-grab active:cursor-grabbing touch-none"
               />
-            </div>
-          )}
-
-          {/* Minimal Top Badges */}
-          <div className="absolute top-4 left-4 pointer-events-none flex flex-col sm:flex-row items-start sm:items-center gap-2 z-10">
-            <span className="bg-neutral-900/90 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded border border-neutral-800 backdrop-blur-sm font-heading">
-              Cenário Industrial PBR
-            </span>
-            <span className="bg-red-950/90 text-red-300 text-[11px] font-semibold tracking-wider px-2.5 py-1 rounded border border-red-900/60 backdrop-blur-sm">
-              {status.phase}: {status.badge}
-            </span>
-          </div>
-
-          {/* Bottom Sleek Dock (Collapsible - Zero Viewport Occlusion) */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-3xl z-20 transition-all duration-300">
-            
-            {/* Collapse / Expand Toggle Button */}
-            <div className="flex justify-center mb-1.5">
-              <button
-                type="button"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="bg-neutral-900/95 hover:bg-neutral-850 text-neutral-300 hover:text-white text-xs font-semibold px-4 py-1.5 rounded-t-lg border-t border-x border-neutral-700/80 flex items-center gap-1.5 shadow-lg transition-colors font-heading"
-                aria-label={isCollapsed ? 'Mostrar controles 3D' : 'Ocultar controles 3D'}
-              >
-                {isCollapsed ? (
-                  <>
-                    <ChevronUp className="w-3.5 h-3.5" />
-                    <span>Exibir Controles de Operação</span>
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-3.5 h-3.5" />
-                    <span>Ocultar Controles (Modo Amplo)</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Dock Controls Body */}
-            {!isCollapsed && (
-              <div className="bg-neutral-900/95 border border-neutral-700/80 rounded-xl p-4 shadow-2xl backdrop-blur-md space-y-3">
-                
-                {/* Status Readout Banner */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-neutral-950/80 px-3 py-2 rounded-lg border border-neutral-800/80 text-xs gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#B43034]" />
-                    <span className="font-bold text-white uppercase tracking-wider font-heading">{status.phase}</span>
-                    <span className="text-neutral-400 hidden sm:inline">—</span>
-                    <span className="text-neutral-300 text-[11px]">{status.detail}</span>
-                  </div>
-                  <div className="text-[11px] font-mono font-bold text-[#B43034] bg-red-950/60 px-2 py-0.5 rounded border border-red-900/50 self-start sm:self-auto">
-                    {cycleProgress}% DO CICLO
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                  
-                  {/* Slider: Two-Phase Operational Cycle */}
-                  <div className="md:col-span-7 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between text-[11px] text-neutral-400 font-semibold uppercase tracking-wider font-heading">
-                      <span className="flex items-center gap-1">
-                        <Sliders className="w-3 h-3 text-[#B43034]" />
-                        <span>Ciclo de Operação:</span>
-                      </span>
-                      <span className="text-neutral-300 font-mono">
-                        {cycleProgress <= 35 ? 'Fase 1: Recuo' : 'Fase 2: Basculamento'}
-                      </span>
-                    </div>
-
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={cycleProgress}
-                      onChange={(e) => {
-                        setIsAutoCycle(false);
-                        setCycleProgress(Number(e.target.value));
-                      }}
-                      className="w-full accent-[#B43034] bg-neutral-800 h-2 rounded-lg cursor-pointer"
-                      title="Controle do ciclo de operação (recuo horizontal e basculamento)"
-                    />
-
-                    {/* Step presets */}
-                    <div className="flex items-center justify-between gap-1 pt-1 font-heading">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsAutoCycle(false);
-                          setCycleProgress(0);
-                        }}
-                        className={`text-[10px] font-semibold px-2 py-0.5 rounded border transition-colors ${
-                          cycleProgress === 0
-                            ? 'bg-[#B43034] text-white border-[#B43034]'
-                            : 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-white'
-                        }`}
-                      >
-                        0% Trânsito
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsAutoCycle(false);
-                          setCycleProgress(35);
-                        }}
-                        className={`text-[10px] font-semibold px-2 py-0.5 rounded border transition-colors ${
-                          cycleProgress === 35
-                            ? 'bg-[#B43034] text-white border-[#B43034]'
-                            : 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-white'
-                        }`}
-                      >
-                        35% Recuo Horizontal
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsAutoCycle(false);
-                          setCycleProgress(100);
-                        }}
-                        className={`text-[10px] font-semibold px-2 py-0.5 rounded border transition-colors ${
-                          cycleProgress === 100
-                            ? 'bg-[#B43034] text-white border-[#B43034]'
-                            : 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-white'
-                        }`}
-                      >
-                        100% Embarque
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Actions & Presets */}
-                  <div className="md:col-span-5 flex flex-wrap items-center justify-between sm:justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-neutral-800 font-heading">
-                    
-                    {/* Camera view buttons */}
-                    <div className="flex items-center gap-1 bg-neutral-950 p-1 rounded-lg border border-neutral-800">
-                      <button
-                        type="button"
-                        onClick={() => setCameraPreset('geral')}
-                        className={`text-[11px] px-2 py-1 rounded font-medium transition-colors ${
-                          activePreset === 'geral' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
-                        }`}
-                      >
-                        Geral
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCameraPreset('plataforma')}
-                        className={`text-[11px] px-2 py-1 rounded font-medium transition-colors ${
-                          activePreset === 'plataforma' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
-                        }`}
-                      >
-                        Rampa
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCameraPreset('cabine')}
-                        className={`text-[11px] px-2 py-1 rounded font-medium transition-colors ${
-                          activePreset === 'cabine' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
-                        }`}
-                      >
-                        Cabine
-                      </button>
-                    </div>
-
-                    {/* Auto Demonstration Cycle button */}
-                    <button
-                      type="button"
-                      onClick={() => setIsAutoCycle(!isAutoCycle)}
-                      className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-[11px] font-bold uppercase tracking-wider border transition-colors ${
-                        isAutoCycle
-                          ? 'bg-[#B43034] border-[#B43034] text-white'
-                          : 'bg-neutral-950 border-neutral-800 text-neutral-300 hover:text-white'
-                      }`}
-                      title={isAutoCycle ? 'Pausar demonstração' : 'Demonstrar ciclo completo'}
-                    >
-                      {isAutoCycle ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                      <span>{isAutoCycle ? 'Pausar' : 'Demonstrar'}</span>
-                    </button>
-
-                    {/* Rotation toggle */}
-                    <button
-                      type="button"
-                      onClick={() => setIsRotating(!isRotating)}
-                      className={`p-1.5 rounded border transition-colors ${
-                        isRotating ? 'bg-neutral-800 border-neutral-600 text-white' : 'bg-neutral-950 border-neutral-800 text-neutral-400'
-                      }`}
-                      title={isRotating ? 'Pausar rotação' : 'Girar modelo'}
-                    >
-                      <RotateCw className="w-3.5 h-3.5" />
-                    </button>
-
-                  </div>
-
-                </div>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-neutral-950 space-y-4">
+                <AlertTriangle className="w-10 h-10 text-amber-500" />
+                <h3 className="text-xl font-bold text-white font-heading uppercase">
+                  Aceleração WebGL Indisponível no Navegador
+                </h3>
+                <p className="text-xs sm:text-sm text-neutral-400 max-w-md">
+                  Seu dispositivo ou navegador não possui suporte ativo para aceleração 3D WebGL. Você pode conferir nossas fotografias reais da frota na galeria logo acima.
+                </p>
+                <img
+                  src={COMPANY_CONFIG.fleet[1].image}
+                  alt="Plataforma de veículos leves"
+                  className="max-w-sm rounded-lg border border-neutral-800 shadow-md max-h-48 object-cover"
+                />
               </div>
             )}
+
+            {/* Badges on top-left */}
+            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none flex flex-wrap items-center gap-1.5 sm:gap-2 z-10">
+              <span className="bg-neutral-900/90 text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2 sm:px-3 py-1 rounded border border-neutral-800 backdrop-blur-sm font-heading">
+                Cenário PBR
+              </span>
+              <span className="bg-red-950/90 text-red-300 text-[10px] sm:text-[11px] font-semibold tracking-wider px-2 sm:px-2.5 py-1 rounded border border-red-900/60 backdrop-blur-sm">
+                {status.phase}: {status.badge}
+              </span>
+            </div>
+
+            {/* 360 Hint on top-right */}
+            <div className="absolute top-3 sm:top-4 right-3 sm:right-4 pointer-events-none z-10">
+              <span className="bg-neutral-900/80 text-neutral-300 text-[10px] sm:text-xs font-medium px-2 sm:px-2.5 py-1 rounded border border-neutral-800 backdrop-blur-sm flex items-center gap-1.5 shadow-md">
+                <RotateCw className="w-3 h-3 text-[#B43034]" />
+                <span className="hidden xs:inline">Gire 360°</span>
+              </span>
+            </div>
+
+            {/* Quick floating action buttons on bottom-right of canvas */}
+            <div className="absolute bottom-3 right-3 flex items-center gap-1.5 z-10">
+              <button
+                type="button"
+                onClick={() => setIsAutoCycle(!isAutoCycle)}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border shadow-lg backdrop-blur-md transition-colors ${
+                  isAutoCycle
+                    ? 'bg-[#B43034] text-white border-[#B43034]'
+                    : 'bg-neutral-900/90 text-white border-neutral-700/80 hover:bg-neutral-800'
+                }`}
+                title={isAutoCycle ? 'Pausar animação' : 'Demonstrar ciclo automático'}
+              >
+                {isAutoCycle ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-[#B43034]" />}
+                <span className="text-[11px]">{isAutoCycle ? 'Pausar' : 'Demonstrar'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsRotating(!isRotating)}
+                className={`p-1.5 rounded-lg border shadow-lg backdrop-blur-md transition-colors ${
+                  isRotating
+                    ? 'bg-neutral-800/90 border-neutral-600 text-white'
+                    : 'bg-neutral-900/90 border-neutral-700/80 text-neutral-400 hover:text-white'
+                }`}
+                title={isRotating ? 'Pausar rotação contínua' : 'Ativar rotação 360° contínua'}
+                aria-label="Alternar rotação contínua"
+              >
+                <RotateCw className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Dedicated Industrial Control Deck (cleanly docked below canvas) */}
+          <div className="w-full bg-neutral-900/95 border-t border-neutral-800 p-3.5 pb-8 sm:p-5 space-y-3.5 z-10">
+            
+            {/* Status Readout Banner */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-neutral-950/80 px-3 py-2 sm:py-2.5 rounded-lg border border-neutral-800/80 text-xs gap-1.5 sm:gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#B43034] shrink-0" />
+                  <span className="font-bold text-white uppercase tracking-wider font-heading">{status.phase}</span>
+                </div>
+                <span className="text-neutral-500 hidden sm:inline">—</span>
+                <span className="text-neutral-300 text-[11px] sm:text-xs pl-4 sm:pl-0">{status.detail}</span>
+              </div>
+              <div className="text-[11px] font-mono font-bold text-[#B43034] bg-red-950/60 px-2 py-0.5 rounded border border-red-900/50 shrink-0 self-start sm:self-auto">
+                {cycleProgress}% DO CICLO
+              </div>
+            </div>
+
+            {/* Slider & Presets Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+              
+              {/* Slider & Step Presets */}
+              <div className="lg:col-span-7 space-y-2">
+                <div className="flex items-center justify-between text-[11px] text-neutral-400 font-semibold uppercase tracking-wider font-heading">
+                  <span className="flex items-center gap-1.5">
+                    <Sliders className="w-3.5 h-3.5 text-[#B43034]" />
+                    <span>Ciclo da Rampa:</span>
+                  </span>
+                  <span className="text-neutral-300 font-mono text-[11px]">
+                    {cycleProgress <= 35 ? 'Fase 1: Recuo Horizontal' : 'Fase 2: Basculamento'}
+                  </span>
+                </div>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={cycleProgress}
+                  onChange={(e) => {
+                    setIsAutoCycle(false);
+                    setCycleProgress(Number(e.target.value));
+                  }}
+                  className="w-full accent-[#B43034] bg-neutral-800 h-2.5 rounded-lg cursor-pointer touch-none"
+                  title="Controle do ciclo de operação (recuo horizontal e basculamento)"
+                />
+
+                {/* Step presets */}
+                <div className="grid grid-cols-3 gap-1.5 pt-1 font-heading">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAutoCycle(false);
+                      setCycleProgress(0);
+                    }}
+                    className={`text-[10px] sm:text-[11px] font-semibold py-1 px-1 rounded border transition-colors text-center truncate ${
+                      cycleProgress === 0
+                        ? 'bg-[#B43034] text-white border-[#B43034]'
+                        : 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-white'
+                    }`}
+                  >
+                    0% Trânsito
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAutoCycle(false);
+                      setCycleProgress(35);
+                    }}
+                    className={`text-[10px] sm:text-[11px] font-semibold py-1 px-1 rounded border transition-colors text-center truncate ${
+                      cycleProgress === 35
+                        ? 'bg-[#B43034] text-white border-[#B43034]'
+                        : 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-white'
+                    }`}
+                  >
+                    35% Recuo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAutoCycle(false);
+                      setCycleProgress(100);
+                    }}
+                    className={`text-[10px] sm:text-[11px] font-semibold py-1 px-1 rounded border transition-colors text-center truncate ${
+                      cycleProgress === 100
+                        ? 'bg-[#B43034] text-white border-[#B43034]'
+                        : 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-white'
+                    }`}
+                  >
+                    100% Embarque
+                  </button>
+                </div>
+              </div>
+
+              {/* Camera Presets & Actions */}
+              <div className="lg:col-span-5 flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-neutral-800/80 font-heading">
+                
+                {/* Camera view buttons */}
+                <div className="flex items-center gap-1 bg-neutral-950 p-1 rounded-lg border border-neutral-800 w-full sm:w-auto justify-center">
+                  <span className="text-[10px] text-neutral-500 uppercase px-1.5 font-bold hidden xs:inline">
+                    Ângulo:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setCameraPreset('geral')}
+                    className={`text-[11px] px-2.5 py-1 rounded font-medium transition-colors ${
+                      activePreset === 'geral' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+                    }`}
+                  >
+                    Geral
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCameraPreset('plataforma')}
+                    className={`text-[11px] px-2.5 py-1 rounded font-medium transition-colors ${
+                      activePreset === 'plataforma' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+                    }`}
+                  >
+                    Rampa
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCameraPreset('cabine')}
+                    className={`text-[11px] px-2.5 py-1 rounded font-medium transition-colors ${
+                      activePreset === 'cabine' ? 'bg-[#B43034] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+                    }`}
+                  >
+                    Cabine
+                  </button>
+                </div>
+
+                {/* Auto Demonstration Cycle button */}
+                <button
+                  type="button"
+                  onClick={() => setIsAutoCycle(!isAutoCycle)}
+                  className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border transition-colors flex-1 sm:flex-initial ${
+                    isAutoCycle
+                      ? 'bg-[#B43034] border-[#B43034] text-white'
+                      : 'bg-neutral-950 border-neutral-800 text-neutral-300 hover:text-white'
+                  }`}
+                  title={isAutoCycle ? 'Pausar demonstração' : 'Demonstrar ciclo completo'}
+                >
+                  {isAutoCycle ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-[#B43034]" />}
+                  <span>{isAutoCycle ? 'Pausar' : 'Demonstrar'}</span>
+                </button>
+
+                {/* Continuous rotation toggle */}
+                <button
+                  type="button"
+                  onClick={() => setIsRotating(!isRotating)}
+                  className={`p-2 rounded-lg border transition-colors shrink-0 ${
+                    isRotating ? 'bg-neutral-800 border-neutral-600 text-white' : 'bg-neutral-950 border-neutral-800 text-neutral-400 hover:text-white'
+                  }`}
+                  title={isRotating ? 'Pausar rotação contínua' : 'Ativar rotação 360°'}
+                  aria-label="Alternar rotação contínua"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                </button>
+
+              </div>
+
+            </div>
           </div>
 
         </div>

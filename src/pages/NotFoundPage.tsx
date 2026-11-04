@@ -12,7 +12,7 @@ export const NotFoundPage: React.FC = () => {
         description="A página que você está procurando não existe ou foi movida. Acesse a página inicial ou consulte nossos canais oficiais."
       />
 
-      <section className="min-h-[80vh] flex items-center justify-center pt-28 pb-16 bg-[#141416] px-4">
+      <section className="min-h-[75vh] flex items-center justify-center pt-8 sm:pt-12 pb-16 bg-[#141416] px-4">
         <div className="max-w-xl w-full text-center space-y-6 bg-neutral-900 p-8 sm:p-12 rounded-2xl border border-neutral-800 shadow-2xl">
           
           <div className="w-16 h-16 rounded-2xl bg-red-950/60 border border-red-900/60 flex items-center justify-center text-[#B43034] mx-auto">
