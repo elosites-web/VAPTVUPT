@@ -12,6 +12,8 @@ import {
   isTabletLandscapeViewport,
   isHeroVideoFrameReady,
   evaluateNetlifyRedirectStatus,
+  shouldRevealSectionOnScroll,
+  shouldRevealInitiallyAboveFold,
   DESKTOP_MIN_WIDTH_PX,
 } from './uxPolish';
 
@@ -227,4 +229,147 @@ test('public/_redirects preserves HTTP 200 for all valid SPA routes and returns 
       `Expected HTTP 404 status for unknown/404 path ${path404}`
     );
   }
+});
+
+test('shouldRevealSectionOnScroll triggers when section enters viewport, handles tall/scrolled-past sections, and fails open', () => {
+  // Below viewport fold -> stays unrevealed
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: 920,
+      rectBottom: 1500,
+      viewportHeight: 900,
+    }),
+    false
+  );
+
+  // Just touching 10px inside viewport (< 24px entryOffsetPx) -> waits slightly
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: 890,
+      rectBottom: 1500,
+      viewportHeight: 900,
+    }),
+    false
+  );
+
+  // Crossed 24px into viewport -> reveals
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: 876,
+      rectBottom: 1500,
+      viewportHeight: 900,
+    }),
+    true
+  );
+
+  // Very tall section (3000px tall on 844px mobile) whose top entered viewport -> reveals
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: 800,
+      rectBottom: 3800,
+      viewportHeight: 844,
+    }),
+    true
+  );
+
+  // Already scrolled past above viewport -> reveals immediately
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: -900,
+      rectBottom: -120,
+      viewportHeight: 900,
+    }),
+    true
+  );
+
+  // Scrolled to bottom of document -> reveals short bottom-most section even if < 24px tall
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: 888,
+      rectBottom: 900,
+      viewportHeight: 900,
+      scrolledToBottom: true,
+    }),
+    true
+  );
+
+  // Tiny viewport height clamps entry offset safely to 15% (15px of 100px -> threshold 85)
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: 90,
+      rectBottom: 400,
+      viewportHeight: 100,
+    }),
+    false
+  );
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: 85,
+      rectBottom: 400,
+      viewportHeight: 100,
+    }),
+    true
+  );
+
+  // Invalid / non-finite geometry fails open
+  assert.equal(
+    shouldRevealSectionOnScroll({
+      rectTop: Number.NaN,
+      rectBottom: 500,
+      viewportHeight: 900,
+    }),
+    true
+  );
+});
+
+test('shouldRevealInitiallyAboveFold reveals sections prominently above the fold on mount while deferring lower sections to scroll', () => {
+  // Top page banner on subpage (rectTop: 175 on 900px viewport -> < 495px) -> immediate
+  assert.equal(
+    shouldRevealInitiallyAboveFold({
+      rectTop: 175,
+      rectBottom: 380,
+      viewportHeight: 900,
+    }),
+    true
+  );
+
+  // Upper-fold primary grid (rectTop: 380 on 900px viewport -> < 495px) -> immediate
+  assert.equal(
+    shouldRevealInitiallyAboveFold({
+      rectTop: 380,
+      rectBottom: 940,
+      viewportHeight: 900,
+    }),
+    true
+  );
+
+  // Lower section on same page (#modelo-3d at rectTop: 680 >= 495px) -> defers to IntersectionObserver fade-in-up
+  assert.equal(
+    shouldRevealInitiallyAboveFold({
+      rectTop: 680,
+      rectBottom: 1300,
+      viewportHeight: 900,
+    }),
+    false
+  );
+
+  // Home sections below 240vh Hero (rectTop: 2160) -> defers to IntersectionObserver fade-in-up
+  assert.equal(
+    shouldRevealInitiallyAboveFold({
+      rectTop: 2160,
+      rectBottom: 2760,
+      viewportHeight: 900,
+    }),
+    false
+  );
+
+  // Already above viewport (deep-link / restored scroll) -> immediate
+  assert.equal(
+    shouldRevealInitiallyAboveFold({
+      rectTop: -900,
+      rectBottom: -120,
+      viewportHeight: 900,
+    }),
+    true
+  );
 });

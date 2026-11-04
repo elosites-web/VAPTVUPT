@@ -3,6 +3,7 @@ import { Car, Truck, ShieldAlert, ArrowRight, Check, ChevronDown, ChevronUp } fr
 import { COMPANY_CONFIG, ServiceItem } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { ZigZagItem, ZigZagHeading } from './ZigZagMotion';
+import { RevealSection } from './RevealSection';
 
 export const Services: React.FC = () => {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
@@ -11,7 +12,7 @@ export const Services: React.FC = () => {
   const activeServices = COMPANY_CONFIG.services.filter((s) => !s.isPendingConfirmation);
 
   return (
-    <section id="servicos" className="py-20 lg:py-28 bg-[#141416] relative overflow-hidden border-t border-neutral-800">
+    <RevealSection id="servicos" className="py-20 lg:py-28 bg-[#141416] relative overflow-hidden border-t border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
@@ -154,6 +155,6 @@ export const Services: React.FC = () => {
         </div>
 
       </div>
-    </section>
+    </RevealSection>
   );
 };

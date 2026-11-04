@@ -2,10 +2,11 @@ import React from 'react';
 import { Instagram, Phone, ArrowUpRight, ShieldCheck, MapPin } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
+import { RevealSection } from './RevealSection';
 
 export const Contact: React.FC = () => {
   return (
-    <section id="contato" className="py-20 lg:py-28 bg-[#18181b] relative overflow-hidden border-t border-neutral-800">
+    <RevealSection id="contato" className="py-20 lg:py-28 bg-[#18181b] relative overflow-hidden border-t border-neutral-800">
       
       {/* Background Graphic Accents */}
       <div className="absolute inset-0 pointer-events-none">
@@ -104,6 +105,6 @@ export const Contact: React.FC = () => {
         </div>
 
       </div>
-    </section>
+    </RevealSection>
   );
 };

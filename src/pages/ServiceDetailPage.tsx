@@ -5,6 +5,7 @@ import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { WhatsAppContactForm } from '../components/WhatsAppContactForm';
+import { RevealSection } from '../components/RevealSection';
 
 export const ServiceDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -62,7 +63,7 @@ export const ServiceDetailPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800">
+      <RevealSection className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 text-[11px] font-bold uppercase tracking-widest text-[#B43034] mb-3 shadow-xs">
@@ -76,10 +77,10 @@ export const ServiceDetailPage: React.FC = () => {
             </p>
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Main Service Content */}
-      <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800">
+      <RevealSection className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
             
@@ -266,7 +267,7 @@ export const ServiceDetailPage: React.FC = () => {
 
           </div>
         </div>
-      </section>
+      </RevealSection>
     </>
   );
 };

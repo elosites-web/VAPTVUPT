@@ -2,6 +2,7 @@ import React from 'react';
 import { ShieldCheck, Truck, Wrench, Layers, CheckCircle } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { useTheme } from '../context/ThemeContext';
+import { RevealSection } from './RevealSection';
 
 export const About: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -30,7 +31,7 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <section
+    <RevealSection
       id="empresa"
       className={`py-20 lg:py-28 relative overflow-hidden border-t transition-colors duration-300 ${
         isDarkMode
@@ -155,6 +156,6 @@ export const About: React.FC = () => {
         </div>
 
       </div>
-    </section>
+    </RevealSection>
   );
 };

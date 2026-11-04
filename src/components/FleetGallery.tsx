@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ZoomIn, X, Check } from 'lucide-react';
 import { COMPANY_CONFIG, FleetItem } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
+import { RevealSection } from './RevealSection';
 
 export const FleetGallery: React.FC = () => {
   const [activeModalItem, setActiveModalItem] = useState<FleetItem | null>(null);
@@ -18,7 +19,7 @@ export const FleetGallery: React.FC = () => {
   }, [activeModalItem]);
 
   return (
-    <section
+    <RevealSection
       id="frota"
       className="py-20 lg:py-28 bg-slate-50 dark:bg-[#18181b] relative overflow-hidden border-t border-slate-200 dark:border-neutral-800 transition-colors"
     >
@@ -172,6 +173,6 @@ export const FleetGallery: React.FC = () => {
           </div>
         </div>
       )}
-    </section>
+    </RevealSection>
   );
 };

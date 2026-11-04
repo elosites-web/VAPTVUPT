@@ -4,6 +4,7 @@ import { Home, ArrowRight, ShieldAlert } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
+import { RevealSection } from '../components/RevealSection';
 
 export const NotFoundPage: React.FC = () => {
   return (
@@ -13,7 +14,10 @@ export const NotFoundPage: React.FC = () => {
         description="A página que você está procurando não existe ou foi movida. Acesse a página inicial ou consulte nossos canais oficiais."
       />
 
-      <section className="min-h-[70vh] flex items-center justify-center pt-6 sm:pt-12 pb-20 sm:pb-16 bg-white dark:bg-[#141416] px-4 transition-colors">
+      <RevealSection
+        className="min-h-[70vh] flex items-center justify-center pt-6 sm:pt-12 pb-20 sm:pb-16 bg-white dark:bg-[#141416] px-4 transition-colors"
+        innerClassName="w-full flex justify-center"
+      >
         <div className="max-w-xl w-full text-center space-y-5 sm:space-y-6 bg-slate-50 dark:bg-neutral-900 p-6 sm:p-11 rounded-2xl border border-slate-200 dark:border-neutral-800 shadow-xl">
           <div className="w-14 h-1.5 rounded-full bg-[#B43034] mx-auto" aria-hidden="true" />
 
@@ -98,7 +102,7 @@ export const NotFoundPage: React.FC = () => {
             </div>
           </nav>
         </div>
-      </section>
+      </RevealSection>
     </>
   );
 };

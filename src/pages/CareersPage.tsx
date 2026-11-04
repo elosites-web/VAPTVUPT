@@ -4,6 +4,7 @@ import { Briefcase, ShieldCheck, CheckCircle2, Mail, ArrowUpRight } from 'lucide
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppRecruitmentForm } from '../components/WhatsAppRecruitmentForm';
+import { RevealSection } from '../components/RevealSection';
 
 export const CareersPage: React.FC = () => {
   const mailtoHref = `mailto:${COMPANY_CONFIG.careers.email}?subject=${encodeURIComponent(
@@ -18,7 +19,7 @@ export const CareersPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3">
@@ -33,10 +34,10 @@ export const CareersPage: React.FC = () => {
             </p>
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Main Careers Content */}
-      <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Profile Requirements Box */}
@@ -125,7 +126,7 @@ export const CareersPage: React.FC = () => {
           </div>
 
         </div>
-      </section>
+      </RevealSection>
     </>
   );
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { RevealSection } from './RevealSection';
 
 /**
  * Reusable theme-aware helper components that encapsulate paired background, border,
@@ -53,12 +54,12 @@ export const ThemeSection: React.FC<SectionProps> = ({
   };
 
   return (
-    <section
+    <RevealSection
       className={`border-b transition-colors duration-200 ${variantStyles[variant]} ${className}`}
       {...rest}
     >
       {children}
-    </section>
+    </RevealSection>
   );
 };
 

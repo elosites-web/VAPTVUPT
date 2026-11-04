@@ -6,6 +6,7 @@ import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { ZigZagItem, ZigZagHeading } from '../components/ZigZagMotion';
 import { WhatsAppContactForm } from '../components/WhatsAppContactForm';
+import { RevealSection } from '../components/RevealSection';
 
 export const ServicesPage: React.FC = () => {
   const verifiedServices = COMPANY_CONFIG.services.filter((s) => !s.isPendingConfirmation);
@@ -18,7 +19,7 @@ export const ServicesPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3">
@@ -33,10 +34,10 @@ export const ServicesPage: React.FC = () => {
             </p>
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Services Grid with Detailed Links */}
-      <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-16">
             {verifiedServices.map((service, index) => {
@@ -137,17 +138,17 @@ export const ServicesPage: React.FC = () => {
             })}
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Integrated Native Contact Form */}
-      <section className="py-16 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="py-16 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <WhatsAppContactForm />
         </div>
-      </section>
+      </RevealSection>
 
       {/* Safety and Protocol Callout */}
-      <section className="py-16 bg-white dark:bg-[#141416] transition-colors">
+      <RevealSection className="py-16 bg-white dark:bg-[#141416] transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ZigZagHeading from="left" className="sr-only">
             <h2>Perguntas Frequentes</h2>
@@ -181,7 +182,7 @@ export const ServicesPage: React.FC = () => {
             </div>
           </ZigZagItem>
         </div>
-      </section>
+      </RevealSection>
     </>
   );
 };

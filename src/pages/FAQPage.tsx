@@ -4,6 +4,7 @@ import { FAQ_CATEGORIES, FAQ_ITEMS, FAQItem } from '../data/faqData';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
+import { RevealSection } from '../components/RevealSection';
 
 export const FAQPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('todas');
@@ -66,7 +67,7 @@ export const FAQPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3">
@@ -81,10 +82,10 @@ export const FAQPage: React.FC = () => {
             </p>
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Main FAQ Section */}
-      <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Search Bar */}
@@ -252,7 +253,7 @@ export const FAQPage: React.FC = () => {
           </div>
 
         </div>
-      </section>
+      </RevealSection>
     </>
   );
 };

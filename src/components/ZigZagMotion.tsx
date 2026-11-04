@@ -1,42 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useReducedMotion, type HTMLMotionProps } from 'motion/react';
+import { motion, type HTMLMotionProps } from 'motion/react';
 import {
   isElementInOrNearViewport,
   shouldUseStaticReveal,
 } from '../utils/uxPolish';
-
-function usePrefersReducedMotion(): boolean {
-  const framerReducedMotion = useReducedMotion();
-  const [mediaReducedMotion, setMediaReducedMotion] = useState<boolean>(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-      return false;
-    }
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  });
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-      return;
-    }
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handleChange = (event: MediaQueryListEvent) => {
-      setMediaReducedMotion(event.matches);
-    };
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => {
-        mediaQuery.removeEventListener('change', handleChange);
-      };
-    }
-    mediaQuery.addListener(handleChange);
-    return () => {
-      mediaQuery.removeListener(handleChange);
-    };
-  }, []);
-
-  return Boolean(framerReducedMotion || mediaReducedMotion);
-}
+import { usePrefersReducedMotion } from './RevealSection';
 
 /**
  * Reliable viewport reveal hook backed by IntersectionObserver + passive scroll geometry check:

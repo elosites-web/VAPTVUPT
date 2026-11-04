@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Shield, ArrowLeft, CheckCircle2, Lock, FileText, HelpCircle, Phone, Building } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
+import { RevealSection } from '../components/RevealSection';
 
 export const PrivacyPolicyPage: React.FC = () => {
   return (
@@ -13,7 +14,7 @@ export const PrivacyPolicyPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800">
+      <RevealSection className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3 font-heading">
             <Shield className="w-4 h-4 text-[#B43034]" />
@@ -32,10 +33,10 @@ export const PrivacyPolicyPage: React.FC = () => {
             Última atualização: {COMPANY_CONFIG.privacy.lastUpdated}
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Main Legal Content */}
-      <section className="py-16 bg-white dark:bg-[#141416] text-slate-700 dark:text-neutral-300 transition-colors">
+      <RevealSection className="py-16 bg-white dark:bg-[#141416] text-slate-700 dark:text-neutral-300 transition-colors">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 leading-relaxed text-sm sm:text-base">
           {/* Aviso de Minuta Demonstrativa (Protótipo Comercial) */}
           <div className="p-4 sm:p-5 rounded-xl bg-amber-50/80 dark:bg-amber-950/20 border border-amber-300/80 dark:border-amber-800/60 text-xs sm:text-sm text-slate-800 dark:text-neutral-200">
@@ -252,7 +253,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           </div>
 
         </div>
-      </section>
+      </RevealSection>
     </>
   );
 };

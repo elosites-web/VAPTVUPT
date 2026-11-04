@@ -100,6 +100,88 @@ export function isElementInOrNearViewport(
   return rectTop <= viewportHeight + thresholdMarginPx;
 }
 
+export interface SectionRevealCheckInput {
+  rectTop: number;
+  rectBottom: number;
+  viewportHeight: number;
+  scrolledToBottom?: boolean;
+  entryOffsetPx?: number;
+}
+
+/**
+ * Determines whether a main section wrapper should reveal based on its bounding rect
+ * relative to the viewport, ensuring tall sections, scrolled-past sections, and
+ * bottom-of-page sections never remain stuck invisible.
+ */
+export function shouldRevealSectionOnScroll({
+  rectTop,
+  rectBottom,
+  viewportHeight,
+  scrolledToBottom = false,
+  entryOffsetPx = 24,
+}: SectionRevealCheckInput): boolean {
+  if (
+    !Number.isFinite(rectTop) ||
+    !Number.isFinite(rectBottom) ||
+    !Number.isFinite(viewportHeight) ||
+    viewportHeight <= 0
+  ) {
+    return true;
+  }
+
+  if (rectBottom <= 0) {
+    return true;
+  }
+
+  const safeOffset = Math.max(
+    0,
+    Math.min(
+      Math.floor(viewportHeight * 0.15),
+      Number.isFinite(entryOffsetPx) ? entryOffsetPx : 24
+    )
+  );
+
+  if (rectTop <= viewportHeight - safeOffset) {
+    return true;
+  }
+
+  if (scrolledToBottom && rectTop < viewportHeight) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Determines whether a section is already prominently positioned above the fold
+ * at initial mount (or scrolled past via hash/restored scroll) so it can render
+ * visible before first paint without being stalled by heavy sibling mounts (e.g., WebGL).
+ */
+export function shouldRevealInitiallyAboveFold({
+  rectTop,
+  rectBottom,
+  viewportHeight,
+}: {
+  rectTop: number;
+  rectBottom: number;
+  viewportHeight: number;
+}): boolean {
+  if (
+    !Number.isFinite(rectTop) ||
+    !Number.isFinite(rectBottom) ||
+    !Number.isFinite(viewportHeight) ||
+    viewportHeight <= 0
+  ) {
+    return true;
+  }
+
+  if (rectBottom <= 0) {
+    return true;
+  }
+
+  return rectTop < viewportHeight * 0.55;
+}
+
 /**
  * Normalizes loading delay (to prevent flicker on fast loads) and safety timeout bounds
  * (to ensure loading indicators cannot leave a user stuck indefinitely).

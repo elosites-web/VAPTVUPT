@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FileText, CheckCircle2, ArrowRight, Car, Truck, HelpCircle } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
+import { RevealSection } from './RevealSection';
 
 export const HowItWorks: React.FC = () => {
   const [vehicleType, setVehicleType] = useState('Carro de Passeio');
@@ -35,7 +36,7 @@ export const HowItWorks: React.FC = () => {
   };
 
   return (
-    <section id="como-funciona" className="py-20 lg:py-28 bg-[#141416] relative overflow-hidden border-t border-neutral-800">
+    <RevealSection id="como-funciona" className="py-20 lg:py-28 bg-[#141416] relative overflow-hidden border-t border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
@@ -185,6 +186,6 @@ export const HowItWorks: React.FC = () => {
         </div>
 
       </div>
-    </section>
+    </RevealSection>
   );
 };

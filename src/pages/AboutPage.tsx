@@ -4,6 +4,7 @@ import { CheckCircle2, ArrowRight, Building } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
+import { RevealSection } from '../components/RevealSection';
 
 export const AboutPage: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ export const AboutPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3">
@@ -29,10 +30,10 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Main Institutional Content */}
-      <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
@@ -110,10 +111,10 @@ export const AboutPage: React.FC = () => {
 
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Cadastral & Operational Governance Section */}
-      <section className="py-16 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
+      <RevealSection className="py-16 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-8">
             <div className="inline-flex items-center justify-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
@@ -172,10 +173,10 @@ export const AboutPage: React.FC = () => {
             </Link>
           </div>
         </div>
-      </section>
+      </RevealSection>
 
       {/* Call to Action */}
-      <section className="py-16 bg-white dark:bg-[#141416] transition-colors">
+      <RevealSection className="py-16 bg-white dark:bg-[#141416] transition-colors">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
             Precisa de Atendimento Técnico em Remoção?
@@ -204,7 +205,7 @@ export const AboutPage: React.FC = () => {
             </Link>
           </div>
         </div>
-      </section>
+      </RevealSection>
     </>
   );
 };

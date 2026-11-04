@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { BrandSpinner, useDelayedLoadingState } from './BrandSpinner';
+import { RevealSection } from './RevealSection';
 
 export type TruckModelType = 'guincho-leve' | 'cavalo-1635';
 export type CameraPresetType = 'geral' | 'plataforma' | 'cabine';
@@ -1283,7 +1284,7 @@ export const FleetViewer3D: React.FC = () => {
   const status = getPhaseDescription();
 
   return (
-    <section
+    <RevealSection
       id="modelo-3d"
       className={`py-12 sm:py-20 border-t transition-colors duration-300 relative ${
         isDarkMode
@@ -1727,6 +1728,6 @@ export const FleetViewer3D: React.FC = () => {
           </div>
         </div>
       </div>
-    </section>
+    </RevealSection>
   );
 };
