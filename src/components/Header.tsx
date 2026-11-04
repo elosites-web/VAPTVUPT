@@ -106,7 +106,7 @@ export const Header: React.FC = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 animate-header-entrance ${
+        className={`fixed top-0 left-0 right-0 z-50 w-full max-w-[100vw] overflow-x-clip box-border transition-colors duration-300 animate-header-entrance ${
           isDarkMode
             ? isScrolled
               ? 'glass-header-dark-scrolled border-b border-neutral-800/80 shadow-2xl py-2.5 sm:py-3'
@@ -122,8 +122,8 @@ export const Header: React.FC = () => {
           aria-hidden="true"
         />
 
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-2 sm:gap-4">
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 box-border">
+          <div className="flex items-center justify-between gap-2 sm:gap-3 xl:gap-4 w-full min-w-0">
             {/* Brand Logo with adaptive theme and responsive width limit */}
             <Link
               to="/"
@@ -131,26 +131,26 @@ export const Header: React.FC = () => {
                 setMobileMenuOpen(false);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center shrink-0 min-w-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] rounded-md transition-opacity duration-200 hover:opacity-95"
+              className="flex items-center shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] rounded-md transition-opacity duration-200 hover:opacity-95"
               aria-label="Vapt Vupt Remoção de Veículos - Início"
             >
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
                 alt="Vapt Vupt Remoção de Veículos"
-                className="h-7 sm:h-9 md:h-10 w-auto max-w-[125px] xs:max-w-[155px] sm:max-w-none object-contain transition-opacity duration-300"
+                className="h-7 sm:h-8 lg:h-8 xl:h-9 w-auto max-w-[125px] xs:max-w-[140px] sm:max-w-[155px] xl:max-w-[170px] object-contain transition-opacity duration-300"
               />
             </Link>
 
             {/* Desktop Navigation Capsule */}
             <nav
-              className="navbar hidden lg:flex items-center justify-center flex-1 mx-2 xl:mx-6"
+              className="navbar hidden lg:flex items-center justify-center flex-1 min-w-0 mx-1 xl:mx-2 overflow-x-clip"
               aria-label="Navegação Principal"
             >
               <div
-                className={`navbar-container flex items-center justify-center gap-1 xl:gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full transition-colors duration-300 ${
+                className={`navbar-container inline-flex items-center justify-center gap-0.5 xl:gap-1 px-2 xl:px-2.5 py-1.5 rounded-full transition-colors duration-300 max-w-full ${
                   isDarkMode
-                    ? 'bg-neutral-900/80 border border-neutral-800/90 shadow-inner shadow-black/40 backdrop-blur-md'
-                    : 'bg-white/80 border border-neutral-200 shadow-sm backdrop-blur-md'
+                    ? 'bg-neutral-900/90 border border-neutral-800/90 shadow-inner shadow-black/40 backdrop-blur-md'
+                    : 'bg-slate-100/95 border border-slate-200/90 shadow-inner backdrop-blur-md'
                 }`}
               >
                 {navLinks.map((link) => (
@@ -159,12 +159,12 @@ export const Header: React.FC = () => {
                     to={link.path}
                     end={link.path === '/'}
                     className={({ isActive }) =>
-                      `px-2.5 xl:px-3.5 py-1.5 font-heading text-xs xl:text-sm font-bold tracking-wider transition-colors duration-200 rounded-full flex items-center justify-center text-center whitespace-nowrap leading-none ${
+                      `px-2 xl:px-3 py-1.5 font-heading text-[11px] xl:text-xs font-bold tracking-wider transition-colors duration-200 rounded-full flex items-center justify-center text-center whitespace-nowrap leading-none ${
                         isActive
                           ? 'text-white bg-gradient-to-r from-[#B43034] to-[#982226] shadow-md shadow-red-950/60'
                           : isDarkMode
                             ? 'text-neutral-300 hover:text-white hover:bg-neutral-800/80'
-                            : 'text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100'
+                            : 'text-slate-700 hover:text-slate-950 hover:bg-white/80'
                       }`
                     }
                   >
@@ -175,21 +175,7 @@ export const Header: React.FC = () => {
             </nav>
 
             {/* Action CTAs */}
-            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-auto">
-              {/* Institutional Category Badge (Desktop XL) */}
-              <div
-                className={`hidden 2xl:flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full ${
-                  isDarkMode
-                    ? 'text-neutral-300 bg-neutral-900/40 border border-neutral-800/60'
-                    : 'text-slate-700 bg-slate-100 border border-slate-200 shadow-xs'
-                }`}
-              >
-                <span className="inline-flex rounded-full h-2 w-2 bg-[#B43034]" />
-                <span className={`font-semibold tracking-wide ${isDarkMode ? 'text-neutral-300' : 'text-slate-800'}`}>
-                  Remoção Leve e Pesada
-                </span>
-              </div>
-
+            <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-2.5 shrink-0">
               {/* Theme Toggle Component (Light / Dark / Auto) - Oculto quando menu mobile estiver aberto */}
               {!mobileMenuOpen && (
                 <div className="shrink-0 transition-opacity duration-200" title="Alternar Modo de Tema">
@@ -205,12 +191,12 @@ export const Header: React.FC = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group button-3d relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-xs font-bold uppercase tracking-wider p-2 sm:px-3.5 md:px-4 sm:py-2.5 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
-                  aria-label="Solicitar Atendimento via WhatsApp"
-                  title="Solicitar Atendimento no WhatsApp"
+                  className="group button-3d relative inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-xs font-bold uppercase tracking-wider p-2 sm:px-3.5 sm:py-2 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
+                  aria-label="Atendimento via WhatsApp"
+                  title="Atendimento no WhatsApp"
                 >
                   <WhatsAppIcon className="w-4 h-4 text-white fill-white shrink-0" />
-                  <span className="hidden sm:inline whitespace-nowrap">Solicitar Atendimento</span>
+                  <span className="hidden sm:inline whitespace-nowrap">Atendimento</span>
                 </a>
               )}
 
@@ -275,11 +261,14 @@ export const Header: React.FC = () => {
                 }`}
               >
                 <span className={`flex items-center gap-1.5 ${isDarkMode ? 'text-neutral-300' : 'text-slate-700'}`}>
-                  <Clock className="w-3.5 h-3.5 text-[#B43034]" />
+                  <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
                   <span>Atendimento sob consulta</span>
                 </span>
-                <span className="flex items-center gap-1.5 text-[#B43034] font-semibold">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#B43034]" />
+                <span className="pulse-indicator flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+                  <span className="pulse-indicator relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 animate-pulse" />
+                  </span>
                   <span>Canal Oficial</span>
                 </span>
               </div>

@@ -4,6 +4,7 @@ import { Truck, ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
+import { ZigZagItem, ZigZagHeading } from '../components/ZigZagMotion';
 
 export const ServicesPage: React.FC = () => {
   const verifiedServices = COMPANY_CONFIG.services.filter((s) => !s.isPendingConfirmation);
@@ -40,8 +41,10 @@ export const ServicesPage: React.FC = () => {
             {verifiedServices.map((service, index) => {
               const isEven = index % 2 === 1;
               return (
-                <div
+                <ZigZagItem
                   key={service.id}
+                  index={index}
+                  distance={14}
                   className={`grid grid-cols-1 lg:grid-cols-12 gap-10 items-center p-8 rounded-2xl bg-slate-50 dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 hover:border-red-400/50 dark:hover:border-neutral-700 transition-all shadow-sm hover:shadow-xl ${
                     isEven ? 'lg:flex-row-reverse' : ''
                   }`}
@@ -119,7 +122,7 @@ export const ServicesPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </ZigZagItem>
               );
             })}
           </div>
@@ -129,7 +132,11 @@ export const ServicesPage: React.FC = () => {
       {/* Safety and Protocol Callout */}
       <section className="py-16 bg-slate-50 dark:bg-[#161618] transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-8 sm:p-10 rounded-2xl bg-white dark:bg-gradient-to-r dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <ZigZagItem
+            index={0}
+            distance={12}
+            className="p-8 sm:p-10 rounded-2xl bg-white dark:bg-gradient-to-r dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-8"
+          >
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest font-heading">
                 <ShieldCheck className="w-4 h-4 text-[#B43034]" />
@@ -152,7 +159,7 @@ export const ServicesPage: React.FC = () => {
                 <ArrowRight className="w-4 h-4 text-[#B43034]" />
               </Link>
             </div>
-          </div>
+          </ZigZagItem>
         </div>
       </section>
     </>

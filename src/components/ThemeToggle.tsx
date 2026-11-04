@@ -113,21 +113,27 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`button-3d inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
           isDarkMode
-            ? 'bg-neutral-900/90 text-neutral-200 border-neutral-800/90 hover:bg-neutral-800 hover:text-white'
-            : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-50 hover:text-slate-950 shadow-sm'
+            ? 'bg-neutral-900/90 text-neutral-100 border-neutral-700/90 hover:bg-neutral-800 hover:text-white shadow-md shadow-black/30'
+            : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200/80 hover:border-slate-400 shadow-xs'
         }`}
         aria-expanded={isOpen}
         aria-haspopup="menu"
         aria-label={`Tema visual ativo: ${currentOpt.label}. Clique para alterar entre Claro, Escuro e Automático.`}
         title={`Tema: ${currentOpt.label} (Clique para alterar)`}
       >
-        <span className="shrink-0">{currentOpt.icon}</span>
-        <span className="hidden md:inline tracking-wide capitalize">{currentOpt.label}</span>
+        <span className="shrink-0 flex items-center">{currentOpt.icon}</span>
+        <span
+          className={`hidden md:inline tracking-wide capitalize ${
+            isDarkMode ? 'text-neutral-100' : 'text-slate-900'
+          }`}
+        >
+          {currentOpt.label}
+        </span>
         <ChevronDown
-          className={`w-3 h-3 transition-transform duration-200 ${
-            isDarkMode ? 'text-neutral-400' : 'text-slate-500'
+          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+            isDarkMode ? 'text-neutral-400' : 'text-slate-600'
           } ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
@@ -137,10 +143,10 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         <div
           role="menu"
           aria-label="Opções de tema visual"
-          className={`absolute right-0 mt-1.5 w-48 rounded-xl shadow-2xl py-1.5 border z-50 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl ${
+          className={`absolute right-0 mt-1.5 w-48 rounded-xl py-1.5 border z-50 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl ${
             isDarkMode
-              ? 'bg-neutral-900/95 border-neutral-800 text-neutral-200'
-              : 'bg-white/98 border-slate-200 text-slate-800 shadow-xl'
+              ? 'bg-neutral-900/95 border-neutral-800 text-neutral-200 shadow-2xl'
+              : 'bg-white border-slate-200 text-slate-800 shadow-xl'
           }`}
         >
           <div

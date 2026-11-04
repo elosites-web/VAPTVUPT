@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Car, Truck, ShieldAlert, ArrowRight, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { COMPANY_CONFIG, ServiceItem } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
+import { ZigZagItem, ZigZagHeading } from './ZigZagMotion';
 
 export const Services: React.FC = () => {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
@@ -15,7 +16,7 @@ export const Services: React.FC = () => {
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div className="max-w-2xl">
+          <ZigZagHeading className="max-w-2xl" from="left">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3">
               <span className="w-6 h-0.5 bg-[#B43034]" />
               <span>Nossas Soluções</span>
@@ -26,7 +27,7 @@ export const Services: React.FC = () => {
             <p className="mt-4 text-base sm:text-lg text-neutral-300">
               Operações estruturadas para atender desde veículos de passeio até composições pesadas com rapidez, segurança e equipamentos adequados.
             </p>
-          </div>
+          </ZigZagHeading>
 
           <div className="shrink-0">
             <a
@@ -43,13 +44,15 @@ export const Services: React.FC = () => {
 
         {/* 3 Main Service Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {activeServices.map((service) => {
+          {activeServices.map((service, index) => {
             const isHeavy = service.id === 'pesados';
             const isLight = service.id === 'leves';
 
             return (
-              <div
+              <ZigZagItem
                 key={service.id}
+                index={index}
+                distance={14}
                 className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-[#B43034] transition-all duration-300 hover:shadow-xl hover:shadow-red-950/20 flex flex-col group"
               >
                 {/* Visual Image Header */}
@@ -119,7 +122,7 @@ export const Services: React.FC = () => {
                     </a>
                   </div>
                 </div>
-              </div>
+              </ZigZagItem>
             );
           })}
         </div>

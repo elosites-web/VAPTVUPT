@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Briefcase, ChevronRight, HelpCircle, ArrowUp } from 'lucide-react';
+import { Instagram, Facebook, Briefcase, ChevronRight, HelpCircle, ArrowUp } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { useTheme } from '../context/ThemeContext';
 import { WhatsAppIcon } from './WhatsAppIcon';
@@ -186,15 +186,67 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright & Institutional Links */}
+        {/* Bottom Bar: Copyright, Social Icons & Institutional Links */}
         <div
-          className={`pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4 text-xs ${
+          className={`pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4 text-xs ${
             isDarkMode ? 'border-neutral-800/80 text-neutral-400' : 'border-slate-200 text-slate-600'
           }`}
         >
-          <div className="text-center sm:text-left">
+          <div className="text-center md:text-left">
             © {new Date().getFullYear()} {COMPANY_CONFIG.legalName} • Controladora responsável pelos dados pessoais.
           </div>
+
+          {/* Row of Social Media Icons (WhatsApp, Instagram, Facebook) aligned vertically in a single line */}
+          <div
+            className="inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-2.5 shrink-0"
+            aria-label="Redes Sociais e Canais de Contato"
+          >
+            <a
+              href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
+                COMPANY_CONFIG.whatsapp.defaultMessage
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp Oficial"
+              title="WhatsApp Oficial"
+              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200 ease-out transform hover:-translate-y-1 hover:scale-110 active:translate-y-0 active:scale-95 hover:shadow-md hover:shadow-[#B43034]/25 shrink-0 ${
+                isDarkMode
+                  ? 'bg-neutral-900/90 border-neutral-800 text-neutral-300 hover:text-white hover:border-[#B43034]'
+                  : 'bg-white border-slate-300 text-slate-700 hover:text-[#B43034] hover:border-[#B43034]'
+              }`}
+            >
+              <WhatsAppIcon className="w-4 h-4 text-[#B43034] shrink-0" />
+            </a>
+            <a
+              href={COMPANY_CONFIG.instagram.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram Oficial"
+              title="Instagram Oficial"
+              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200 ease-out transform hover:-translate-y-1 hover:scale-110 active:translate-y-0 active:scale-95 hover:shadow-md hover:shadow-[#B43034]/25 shrink-0 ${
+                isDarkMode
+                  ? 'bg-neutral-900/90 border-neutral-800 text-neutral-300 hover:text-white hover:border-[#B43034]'
+                  : 'bg-white border-slate-300 text-slate-700 hover:text-[#B43034] hover:border-[#B43034]'
+              }`}
+            >
+              <Instagram className="w-4 h-4 text-[#B43034] shrink-0" />
+            </a>
+            <a
+              href={COMPANY_CONFIG.instagram.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              title="Facebook"
+              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200 ease-out transform hover:-translate-y-1 hover:scale-110 active:translate-y-0 active:scale-95 hover:shadow-md hover:shadow-[#B43034]/25 shrink-0 ${
+                isDarkMode
+                  ? 'bg-neutral-900/90 border-neutral-800 text-neutral-300 hover:text-white hover:border-[#B43034]'
+                  : 'bg-white border-slate-300 text-slate-700 hover:text-[#B43034] hover:border-[#B43034]'
+              }`}
+            >
+              <Facebook className="w-4 h-4 text-[#B43034] shrink-0" />
+            </a>
+          </div>
+
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[11px]">
             <Link
               to="/politica-de-privacidade"
@@ -219,37 +271,35 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Crédito discreto em linha única: "Desenvolvido por [logo ēloSites]" */}
         <div
           className={`mt-6 pt-4 border-t ${
             isDarkMode ? 'border-neutral-800/60' : 'border-slate-300/80'
-          } w-full text-center`}
+          } w-full flex items-center justify-center`}
         >
-          <div className="inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-1.5 text-xs">
-            <span className={isDarkMode ? 'text-neutral-400' : 'text-slate-600'}>
-              Desenvolvido por
-            </span>
-            <a
-              href="https://elosites.io.br/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center shrink-0 hover:opacity-85 transition-opacity focus:outline-none focus:ring-1 focus:ring-[#B43034] rounded px-1"
-              aria-label="ēloSites (abrir em nova aba)"
-            >
-              {!logoError ? (
-                <img
-                  src="/logo-traco-elosites.png"
-                  alt="ēloSites"
-                  onError={() => setLogoError(true)}
-                  className="h-4 w-auto object-contain shrink-0 inline-block align-middle"
-                />
-              ) : (
-                <span className={`font-semibold tracking-tight ${isDarkMode ? 'text-neutral-200' : 'text-slate-800'}`}>
-                  ēloSites
-                </span>
-              )}
-            </a>
-          </div>
+          <a
+            href="https://elosites.io.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-1 sm:gap-1.5 font-semibold uppercase tracking-tight sm:tracking-wide hover:opacity-90 transition-opacity focus:outline-none focus:ring-1 focus:ring-[#B43034] rounded px-1 py-0.5 text-[clamp(8.5px,2.3vw,12px)] leading-none ${
+              isDarkMode ? 'text-neutral-400 hover:text-neutral-200' : 'text-slate-600 hover:text-slate-900'
+            }`}
+            aria-label="CRIADO E DESENVOLVIDO POR ēloSites O MELHOR SITE PELO MELHOR PREÇO (abrir em nova aba)"
+          >
+            <span className="shrink-0 leading-none">CRIADO E DESENVOLVIDO POR</span>
+            {!logoError ? (
+              <img
+                src="/logo-elosites.png"
+                alt="ēloSites"
+                onError={() => setLogoError(true)}
+                className="h-3 sm:h-4 w-auto object-contain shrink-0 inline-block align-middle"
+              />
+            ) : (
+              <span className={`font-bold shrink-0 leading-none ${isDarkMode ? 'text-neutral-200' : 'text-slate-800'}`}>
+                ēloSites
+              </span>
+            )}
+            <span className="shrink-0 leading-none">O MELHOR SITE PELO MELHOR PREÇO</span>
+          </a>
         </div>
       </div>
     </footer>
