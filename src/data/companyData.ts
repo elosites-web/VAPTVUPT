@@ -10,12 +10,15 @@
 
 export interface ServiceItem {
   id: string;
+  slug: string;
   title: string;
   shortDesc: string;
   fullDesc: string;
   iconName: 'Car' | 'Truck' | 'ShieldAlert' | 'Warehouse';
   tag: string;
   image?: string;
+  technicalHighlights?: string[];
+  safetyProtocols?: string[];
   // Flag for services that must be confirmed by the client before public display
   isPendingConfirmation?: boolean;
 }
@@ -82,22 +85,35 @@ export const COMPANY_CONFIG = {
 
   // Key primary real photos provided in the official package
   heroImage: '/assets/aistudio/AIRetouch_20261103_160523027_bc27114e.jpg', // Real photo of 1635 mechanical tractor
-  templateHeroImage: '/assets/aistudio/template-hero_805a6919.jpg',
   
-  // Services documented in materials
+  // Services documented in materials with specific subpage slugs
   services: [
     {
       id: 'leves',
+      slug: 'remocao-veiculos-leves',
       title: 'Remoção de Veículos Leves',
-      shortDesc: 'Transporte e remoção técnica de automóveis, utilitários e veículos leves com segurança e zelo.',
+      shortDesc: 'Transporte e remoção técnica de automóveis de passeio, utilitários e vans com segurança e zelo.',
       fullDesc: 'Equipamentos apropriados para a movimentação e transporte de automóveis de passeio, veículos comerciais leves e utilitários, garantindo preservação integral do veículo durante o procedimento de içamento e transporte em plataforma.',
       iconName: 'Car',
       tag: 'Veículos Leves & Utilitários',
       image: '/assets/aistudio/img_1_1793732293699_2308579c.jpg',
       isPendingConfirmation: false,
+      technicalHighlights: [
+        'Plataforma hidráulica basculante com sistema de recuo horizontal e inclinação suave',
+        'Guincho de arraste hidráulico para veículos inoperantes ou com transmissão travada',
+        'Amarração regulamentar pelas rodas com cintas reforçadas e catracas de alta capacidade',
+        'Atendimento a modelos com câmbio automático, tração 4x4 e suspensão rebaixada',
+      ],
+      safetyProtocols: [
+        'Sinalização diurna e noturna no local da ocorrência com cones e giroflex regulamentares',
+        'Inspeção visual preliminar e checagem de integridade mecânica antes do içamento',
+        'Zero contato de correntes metálicas com a lataria ou rodas do veículo',
+        'Condução preventiva e rotas planejadas até o ponto de entrega',
+      ],
     },
     {
       id: 'pesados',
+      slug: 'remocao-veiculos-pesados',
       title: 'Remoção de Veículos Pesados',
       shortDesc: 'Capacidade técnica e estrutura dedicada para caminhões, cavalos mecânicos e transporte pesado.',
       fullDesc: 'Operação especializada com cavalos mecânicos e guinchos de alta capacidade para remoção, destombamento ou transferência de veículos comerciais pesados, caminhões e conjuntos com rigor operacional.',
@@ -105,9 +121,22 @@ export const COMPANY_CONFIG = {
       tag: 'Caminhões & Veículos Pesados',
       image: '/assets/aistudio/AIRetouch_20261103_160523027_bc27114e.jpg',
       isPendingConfirmation: false,
+      technicalHighlights: [
+        'Cavalo mecânico 1635 dedicado para tração de cargas e conjuntos pesados',
+        'Dispositivos de acoplamento de quinta roda e reboque pesado',
+        'Capacidade para transporte rodoviário entre polos logísticos do estado de SP',
+        'Equipe capacitada para manobras de precisão com veículos comerciais de grande porte',
+      ],
+      safetyProtocols: [
+        'Avaliação prévia de peso bruto total (PBT) e condições da via',
+        'Verificação de freios e linhas de ar comprimido para reboque sem travamento',
+        'Escolta e sinalização reforçada em vias arteriais e rodovias',
+        'Conformidade integral com normas do CONTRAN para transporte e reboque de carga pesada',
+      ],
     },
     {
       id: 'solucoes',
+      slug: 'solucoes-em-remocao',
       title: 'Soluções em Remoção',
       shortDesc: 'Atendimento técnico sob medida para demandas logísticas, imprevistos mecânicos e frotas.',
       fullDesc: 'Abordagem estruturada para atender ocorrências operacionais, transferência veicular programada e demandas corporativas com suporte dedicado e equipamentos compatíveis com a complexidade da carga.',
@@ -115,20 +144,32 @@ export const COMPANY_CONFIG = {
       tag: 'Operação Especializada',
       image: '/assets/aistudio/img_2_1793732339465_917a2240.jpg',
       isPendingConfirmation: false,
+      technicalHighlights: [
+        'Remoção programada para transferência de veículos entre concessionárias e pátios',
+        'Resgate em condições de acesso restrito com planejamento operacional prévio',
+        'Atendimento a frotistas e empresas com demandas contínuas de transporte',
+        'Flexibilidade logística para transporte em distâncias intermunicipais',
+      ],
+      safetyProtocols: [
+        'Alinhamento prévio de cronograma e janelas operacionais de embarque/desembarque',
+        'Documentação fiscal e termos de responsabilidade detalhados',
+        'Check-list operacional na retirada e entrega com registro fotográfico do estado do veículo',
+        'Comunicação direta em tempo real com a equipe de campo durante o trajeto',
+      ],
     },
     // TODO-CONFIRMAR-CLIENTE: Guarda e Hospedagem de veículos identificada em material antigo,
     // mantida oculta/condicional até validação oficial do responsável antes da divulgação pública.
     {
       id: 'hospedagem',
+      slug: 'guarda-e-hospedagem',
       title: 'Guarda e Hospedagem de Veículos',
       shortDesc: 'Espaço operacional seguro para custódia temporária de veículos removidos.',
       fullDesc: 'Estrutura destinada à acomodação e guarda segura de veículos sob remoção.',
       iconName: 'Warehouse',
       tag: 'Sob Consulta',
-      image: '/assets/aistudio/Screenshot_20261103-100626_WhatsAppBusiness_1477b8ed.jpg',
       isPendingConfirmation: true, // Will not show in public cards unless validated
     },
-  ] as ServiceItem[],
+  ] as (ServiceItem & { slug: string; technicalHighlights?: string[]; safetyProtocols?: string[] })[],
 
   // Verified fleet assets from photographs
   fleet: [
@@ -218,4 +259,17 @@ export const COMPANY_CONFIG = {
       status: 'ATIVA',
     },
   ] as UnitRegistration[],
+
+  // Centralized legal & privacy governance data
+  privacy: {
+    controller: 'Vapt Vupt Remoção de Veículos LTDA.',
+    cnpjMatriz: '03.235.721/0001-79',
+    dpoChannel: {
+      // TODO-CONFIRMAR-EMAIL-PRIVACIDADE: E-mail específico de privacidade pendente de confirmação com a empresa
+      email: 'TODO-CONFIRMAR-EMAIL-PRIVACIDADE',
+      whatsapp: '(11) 91372-1849',
+      address: 'Rua Padre Adelino, 2074 - Andar 12, Conjunto 121, São Paulo - SP, CEP 03303-000',
+    },
+    lastUpdated: '03 de Novembro de 2026',
+  },
 };

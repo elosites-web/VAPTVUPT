@@ -1,78 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { About } from './components/About';
-import { Services } from './components/Services';
-import { FleetGallery } from './components/FleetGallery';
-import { FleetViewer3D } from './components/FleetViewer3D';
-import { HowItWorks } from './components/HowItWorks';
-import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { WhatsAppFloating } from './components/WhatsAppFloating';
+import { ScrollToTop } from './components/ScrollToTop';
+import { DynamicFavicon } from './components/DynamicFavicon';
+
+// Pages
+import { Home } from './pages/Home';
+import { AboutPage } from './pages/AboutPage';
+import { ServicesPage } from './pages/ServicesPage';
+import { ServiceDetailPage } from './pages/ServiceDetailPage';
+import { FleetPage } from './pages/FleetPage';
+import { FAQPage } from './pages/FAQPage';
+import { CareersPage } from './pages/CareersPage';
+import { ContactPage } from './pages/ContactPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { TermsOfUsePage } from './pages/TermsOfUsePage';
 
 export default function App() {
-  const [activeSection, setActiveSection] = useState('inicio');
-
-  useEffect(() => {
-    const sectionIds = [
-      'inicio',
-      'empresa',
-      'servicos',
-      'frota',
-      'modelo-3d',
-      'como-funciona',
-      'contato',
-    ];
-
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
-
-      for (let i = sectionIds.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sectionIds[i]);
-        if (el && el.offsetTop <= scrollPosition) {
-          setActiveSection(sectionIds[i]);
-          break;
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-[#141416] text-neutral-100 flex flex-col font-sans">
-      {/* Fixed Sticky Header */}
-      <Header activeSection={activeSection} />
+    <BrowserRouter>
+      <div className="min-h-screen bg-[#141416] text-neutral-100 flex flex-col font-sans selection:bg-[#B43034] selection:text-white">
+        {/* Scroll restoration helper */}
+        <ScrollToTop />
 
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <Hero />
+        {/* Dynamic Favicon switcher based on theme and priority */}
+        <DynamicFavicon />
 
-        {/* Institutional About Section */}
-        <About />
+        {/* Global Institutional Header */}
+        <Header />
 
-        {/* Specialized Services */}
-        <Services />
+        {/* Dynamic Route Pages */}
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/empresa" element={<AboutPage />} />
+            <Route path="/servicos" element={<ServicesPage />} />
+            <Route path="/servicos/:slug" element={<ServiceDetailPage />} />
+            <Route path="/frota" element={<FleetPage />} />
+            <Route path="/perguntas-frequentes" element={<FAQPage />} />
+            <Route path="/trabalhe-conosco" element={<CareersPage />} />
+            <Route path="/contato" element={<ContactPage />} />
+            <Route path="/politica-de-privacidade" element={<PrivacyPolicyPage />} />
+            <Route path="/termos-de-uso" element={<TermsOfUsePage />} />
+            <Route path="/404" element={<NotFoundPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
 
-        {/* Verified Fleet Photo Gallery */}
-        <FleetGallery />
+        {/* Global Institutional Footer */}
+        <Footer />
 
-        {/* Procedural 3D Fleet Viewer */}
-        <FleetViewer3D />
-
-        {/* How It Works & WhatsApp Inquiry Builder */}
-        <HowItWorks />
-
-        {/* Contact & Conversion Section */}
-        <Contact />
-      </main>
-
-      {/* Footer */}
-      <Footer />
-
-      {/* Persistent Floating WhatsApp CTA */}
-      <WhatsAppFloating />
-    </div>
+        {/* Persistent Floating WhatsApp CTA */}
+        <WhatsAppFloating />
+      </div>
+    </BrowserRouter>
   );
 }

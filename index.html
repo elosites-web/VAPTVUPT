@@ -8,8 +8,78 @@
       name="description"
       content="Conheça a Vapt Vupt Remoção de Veículos. Soluções em remoção de veículos leves e pesados. Entre em contato para consultar atendimento."
     />
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/aistudio/favicon-32_b115d75d.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/aistudio/favicon-180_32da0536.png" />
+    <!-- Favicons Oficiais da Marca Vapt Vupt -->
+    <link id="app-favicon" rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicons/favicon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/brand/favicons/favicon-512x512.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!-- Script de Alternância Dinâmica de Favicon por Tema e Estado de Atendimento -->
+    <script>
+      (function() {
+        // Mapeamento dos símbolos autênticos da Vapt Vupt por contexto
+        var BRAND_FAVICONS = {
+          // Em abas escuras do navegador: símbolo branco com faixa vermelha para alto contraste
+          dark: '/brand/favicons/vaptvupt-dark.png',
+          // Em abas claras do navegador: símbolo original grafite com faixa vermelha
+          light: '/brand/favicons/vaptvupt-light.png',
+          // Modo de alta prioridade / solicitação ativa de socorro / alerta
+          priority: '/brand/favicons/vaptvupt-priority.png',
+          // Padrão compacto de 32x32px
+          default: '/brand/favicons/favicon-32x32.png'
+        };
+
+        var isHighPriority = false;
+
+        function applyFavicon() {
+          var targetHref = BRAND_FAVICONS.default;
+
+          if (isHighPriority) {
+            targetHref = BRAND_FAVICONS.priority;
+          } else {
+            var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            targetHref = prefersDark ? BRAND_FAVICONS.dark : BRAND_FAVICONS.light;
+          }
+
+          // Atualiza o link principal com id app-favicon e quaisquer outros links de ícone
+          var primaryFavicon = document.getElementById('app-favicon');
+          if (primaryFavicon) {
+            primaryFavicon.href = targetHref;
+          }
+
+          var allIconLinks = document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon']");
+          for (var i = 0; i < allIconLinks.length; i++) {
+            if (allIconLinks[i].sizes && allIconLinks[i].sizes.contains && allIconLinks[i].sizes.contains('32x32')) {
+              allIconLinks[i].href = targetHref;
+            }
+          }
+        }
+
+        // API global para chaveamento dinâmico (acionada pelo React ao entrar em contato/emergência)
+        window.setFaviconPriority = function(priority) {
+          isHighPriority = Boolean(priority);
+          applyFavicon();
+        };
+
+        // Escuta alterações de tema do sistema operacional/navegador
+        if (window.matchMedia) {
+          var colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+          if (colorSchemeQuery.addEventListener) {
+            colorSchemeQuery.addEventListener('change', applyFavicon);
+          } else if (colorSchemeQuery.addListener) {
+            colorSchemeQuery.addListener(applyFavicon);
+          }
+        }
+
+        // Aplicação imediata no carregamento do documento
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', applyFavicon);
+        } else {
+          applyFavicon();
+        }
+      })();
+    </script>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -18,7 +88,7 @@
       property="og:description"
       content="Conheça a Vapt Vupt Remoção de Veículos. Soluções em remoção de veículos leves e pesados. Entre em contato para consultar atendimento."
     />
-    <meta property="og:image" content="/assets/aistudio/logo-hero-cabecalho-rodape_f88bdb07.png" />
+    <meta property="og:image" content="/brand/logo-vaptvupt-share.png" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -27,7 +97,7 @@
       name="twitter:description"
       content="Conheça a Vapt Vupt Remoção de Veículos. Soluções em remoção de veículos leves e pesados. Entre em contato para consultar atendimento."
     />
-    <meta name="twitter:image" content="/assets/aistudio/logo-hero-cabecalho-rodape_f88bdb07.png" />
+    <meta name="twitter:image" content="/brand/logo-vaptvupt-share.png" />
 
     <!-- Fonts: Barlow Condensed & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -44,7 +114,7 @@
         "@type": "AutoRepair",
         "name": "Vapt Vupt Remoção de Veículos",
         "description": "Transporte, guincho e remoção de veículos leves e pesados.",
-        "image": "/assets/aistudio/logo-hero-cabecalho-rodape_f88bdb07.png",
+        "image": "/brand/logo-vaptvupt-share.png",
         "telephone": "+55-11-91372-1849",
         "priceRange": "$$",
         "address": {

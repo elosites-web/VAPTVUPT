@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RotateCw, Eye, Sliders, ChevronDown, ChevronUp, Play, Pause, Sparkles, Check } from 'lucide-react';
+import { RotateCw, Eye, Sliders, ChevronDown, ChevronUp, Play, Pause, Sparkles, AlertTriangle, Layers, Info } from 'lucide-react';
+import { COMPANY_CONFIG } from '../data/companyData';
 
 export const FleetViewer3D: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activePreset, setActivePreset] = useState<'geral' | 'plataforma' | 'cabine'>('geral');
+  const [webGlSupported, setWebGlSupported] = useState<boolean>(true);
   
   // Operation cycle progress: 0 to 100%
   // 0% - 35%: Phase 1 - Horizontal rollback (30-35% of deck length)
@@ -33,6 +35,17 @@ export const FleetViewer3D: React.FC = () => {
   const cycleProgressRef = useRef(65);
   const autoCycleDirRef = useRef<1 | -1>(1);
 
+  // Check prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) {
+        setIsRotating(false);
+        isRotatingRef.current = false;
+      }
+    }
+  }, []);
+
   useEffect(() => {
     isRotatingRef.current = isRotating;
   }, [isRotating]);
@@ -49,40 +62,66 @@ export const FleetViewer3D: React.FC = () => {
     const container = mountRef.current;
     if (!container) return;
 
+    // Detect WebGL capability safely
+    let gl: WebGL2RenderingContext | RenderingContext | null = null;
+    try {
+      const testCanvas = document.createElement('canvas');
+      gl = testCanvas.getContext('webgl2') || testCanvas.getContext('webgl');
+    } catch {
+      gl = null;
+    }
+
+    if (!gl) {
+      setWebGlSupported(false);
+      return;
+    }
+
     // Detect software WebGL guard
-    const isSoftwareGl = (() => {
-      const gl = document.createElement('canvas').getContext('webgl2');
-      if (!gl) return true;
-      const ext = gl.getExtension('WEBGL_debug_renderer_info');
-      const param = ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER;
-      const gpu = String(gl.getParameter(param));
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
-      return /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
-    })();
+    let isSoftwareGl = false;
+    try {
+      const ext = (gl as WebGLRenderingContext).getExtension('WEBGL_debug_renderer_info');
+      const param = ext ? ext.UNMASKED_RENDERER_WEBGL : (gl as WebGLRenderingContext).RENDERER;
+      const gpu = String((gl as WebGLRenderingContext).getParameter(param));
+      (gl as WebGLRenderingContext).getExtension('WEBGL_lose_context')?.loseContext();
+      isSoftwareGl = /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
+    } catch {
+      isSoftwareGl = false;
+    }
 
     // Initialize Renderer
     const width = container.clientWidth;
     const height = container.clientHeight || 540;
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: !isSoftwareGl,
-      powerPreference: 'high-performance',
-      alpha: false,
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: !isSoftwareGl,
+        powerPreference: 'high-performance',
+        alpha: false,
+      });
+    } catch (e) {
+      console.warn('WebGL Renderer initialization failed:', e);
+      setWebGlSupported(false);
+      return;
+    }
+
     renderer.setSize(width, height);
     renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.2;
     renderer.shadowMap.enabled = !isSoftwareGl;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     container.appendChild(renderer.domElement);
 
-    // Scene & Horizon Fog
+    // ==========================================
+    // INDUSTRIAL LOGISTICS SCENERY & HORIZON FOG
+    // ==========================================
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x141416);
-    scene.fog = new THREE.Fog(0x141416, 20, 60);
+    scene.background = new THREE.Color(0x131316);
+    // Subtle atmospheric fog connecting ground to warehouse horizon
+    scene.fog = new THREE.Fog(0x131316, 14, 52);
     sceneRef.current = scene;
 
     // Camera setup
@@ -96,7 +135,7 @@ export const FleetViewer3D: React.FC = () => {
     controls.dampingFactor = 0.05;
     controls.maxPolarAngle = Math.PI / 2 - 0.04;
     controls.minDistance = 6;
-    controls.maxDistance = 30;
+    controls.maxDistance = 28;
     controls.target.set(0, 1.8, 0);
     controlsRef.current = controls;
 
@@ -105,12 +144,15 @@ export const FleetViewer3D: React.FC = () => {
     scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
     pmremGenerator.dispose();
 
-    // Lighting: Warm key light + Cool Hemisphere fill
-    const hemiLight = new THREE.HemisphereLight(0xfff5ea, 0x1a202c, 0.7);
+    // ==========================================
+    // CINEMATIC INDUSTRIAL LIGHTING
+    // Key Warm Floodlight + Cool Hemisphere + Institutional Red Rim Light
+    // ==========================================
+    const hemiLight = new THREE.HemisphereLight(0xe4e7eb, 0x18181c, 0.85);
     scene.add(hemiLight);
 
     const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
-    keyLight.position.set(15, 20, 12);
+    keyLight.position.set(14, 18, 12);
     keyLight.castShadow = !isSoftwareGl;
     if (keyLight.castShadow) {
       keyLight.shadow.mapSize.width = 1024;
@@ -127,16 +169,73 @@ export const FleetViewer3D: React.FC = () => {
     }
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0xb43034, 0.5);
-    fillLight.position.set(-15, 8, -10);
+    // Corporate red edge accent light (#B43034)
+    const redAccentLight = new THREE.DirectionalLight(0xb43034, 1.2);
+    redAccentLight.position.set(-14, 7, -9);
+    scene.add(redAccentLight);
+
+    // Front soft fill
+    const fillLight = new THREE.DirectionalLight(0x71717a, 0.7);
+    fillLight.position.set(6, 4, 14);
     scene.add(fillLight);
 
-    // Floor & Contact Shadow
-    const floorGeo = new THREE.PlaneGeometry(80, 80);
+    // ==========================================
+    // PROCEDURAL CONCRETE / ASPHALT FLOOR WITH PERSPECTIVE
+    // ==========================================
+    const createAsphaltTexture = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      // Dark asphalt tone
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Procedural aggregate noise
+      for (let i = 0; i < 7000; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        const shade = Math.floor(Math.random() * 25) + 24;
+        ctx.fillStyle = `rgba(${shade}, ${shade}, ${shade + 3}, 0.35)`;
+        ctx.fillRect(x, y, 2, 2);
+      }
+
+      // Concrete expansion joint grid lines
+      ctx.strokeStyle = '#27272a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 256);
+      ctx.lineTo(512, 256);
+      ctx.moveTo(256, 0);
+      ctx.lineTo(256, 512);
+      ctx.stroke();
+
+      // Yellow industrial logistics demarcation dashed line
+      ctx.strokeStyle = 'rgba(217, 119, 6, 0.45)';
+      ctx.lineWidth = 5;
+      ctx.setLineDash([20, 16]);
+      ctx.beginPath();
+      ctx.moveTo(28, 0);
+      ctx.lineTo(28, 512);
+      ctx.stroke();
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(10, 10);
+      return texture;
+    };
+
+    const asphaltTexture = createAsphaltTexture();
+
+    const floorGeo = new THREE.PlaneGeometry(120, 120);
     const floorMat = new THREE.MeshStandardMaterial({
-      color: 0x111113,
-      roughness: 0.9,
-      metalness: 0.1,
+      color: 0x202024,
+      roughness: 0.85,
+      metalness: 0.12,
+      map: asphaltTexture || undefined,
     });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
@@ -144,31 +243,93 @@ export const FleetViewer3D: React.FC = () => {
     floor.receiveShadow = !isSoftwareGl;
     scene.add(floor);
 
-    // Circular ground marker
-    const ringGeo = new THREE.RingGeometry(5.2, 5.3, 64);
+    // Logistics operational staging bay boundary ring
+    const ringGeo = new THREE.RingGeometry(6.4, 6.55, 64);
     const ringMat = new THREE.MeshBasicMaterial({
       color: 0xb43034,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.4,
+      opacity: 0.35,
     });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.rotation.x = -Math.PI / 2;
-    ring.position.y = 0.01;
+    ring.position.y = 0.012;
     scene.add(ring);
 
-    // Contact shadow beneath truck
-    const shadowGeo = new THREE.PlaneGeometry(13, 4.5);
+    // Soft contact shadow beneath truck
+    const shadowGeo = new THREE.PlaneGeometry(13.5, 4.8);
     const shadowMat = new THREE.MeshBasicMaterial({
       color: 0x000000,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.65,
       depthWrite: false,
     });
     const shadow = new THREE.Mesh(shadowGeo, shadowMat);
     shadow.rotation.x = -Math.PI / 2;
     shadow.position.set(-0.5, 0.02, 0);
     scene.add(shadow);
+
+    // ==========================================
+    // DISCRETE BACKGROUND INDUSTRIAL LOGISTICS STRUCTURES
+    // Subtle steel warehouse columns & overhead gantry
+    // ==========================================
+    const industrialGroup = new THREE.Group();
+
+    const steelColumnMat = new THREE.MeshStandardMaterial({
+      color: 0x1e1e24,
+      roughness: 0.6,
+      metalness: 0.8,
+    });
+
+    const steelBeamMat = new THREE.MeshStandardMaterial({
+      color: 0x25252c,
+      roughness: 0.5,
+      metalness: 0.85,
+    });
+
+    // 6 Structural I-Beam Columns along rear warehouse bay line
+    const colXPositions = [-14, -8, -2, 4, 10, 16];
+    colXPositions.forEach((xPos) => {
+      const colGeo = new THREE.BoxGeometry(0.5, 12, 0.5);
+      const column = new THREE.Mesh(colGeo, steelColumnMat);
+      column.position.set(xPos, 6, -14);
+      column.castShadow = !isSoftwareGl;
+      industrialGroup.add(column);
+
+      // Base plate
+      const baseGeo = new THREE.BoxGeometry(1.2, 0.25, 1.2);
+      const basePlate = new THREE.Mesh(baseGeo, steelColumnMat);
+      basePlate.position.set(xPos, 0.125, -14);
+      industrialGroup.add(basePlate);
+    });
+
+    // Overhead logistics gantry horizontal truss beam spanning rear
+    const trussGeo = new THREE.BoxGeometry(34, 0.65, 0.7);
+    const trussBeam = new THREE.Mesh(trussGeo, steelBeamMat);
+    trussBeam.position.set(1, 10.5, -14);
+    industrialGroup.add(trussBeam);
+
+    // Subtle safety stripes along overhead beam
+    const stripeGeo = new THREE.BoxGeometry(0.35, 0.67, 0.72);
+    const stripeMat = new THREE.MeshBasicMaterial({ color: 0xb43034 });
+    for (let s = -13; s <= 15; s += 2.5) {
+      const stripe = new THREE.Mesh(stripeGeo, stripeMat);
+      stripe.position.set(s, 10.5, -14);
+      industrialGroup.add(stripe);
+    }
+
+    // Rear industrial bay background wall with low silhouette
+    const backWallGeo = new THREE.PlaneGeometry(60, 18);
+    const backWallMat = new THREE.MeshStandardMaterial({
+      color: 0x141418,
+      roughness: 0.95,
+      metalness: 0.05,
+    });
+    const backWall = new THREE.Mesh(backWallGeo, backWallMat);
+    backWall.position.set(0, 9, -20);
+    industrialGroup.add(backWall);
+
+    scene.add(industrialGroup);
 
     // ==========================================
     // PROCEDURAL COMPOSITE TRUCK MODEL (THREE.Group)
@@ -465,7 +626,6 @@ export const FleetViewer3D: React.FC = () => {
       // Handle Auto-Cycle Demonstration if active
       if (isAutoCycleRef.current) {
         autoTimer += delta;
-        // Cycle completes in ~6 seconds
         const speed = 25 * autoCycleDirRef.current;
         let next = cycleProgressRef.current + speed * delta;
         if (next >= 100) {
@@ -487,7 +647,7 @@ export const FleetViewer3D: React.FC = () => {
 
       // ==========================================
       // TWO-PHASE ROLLBACK & TILT MECHANICAL LOGIC
-      // Phase 1 (0% - 35%): Horizontal slide backward (30-35% of deck length = 2.5m)
+      // Phase 1 (0% - 35%): Horizontal slide backward (33% of deck length = 2.5m)
       // Phase 2 (35% - 100%): Hydraulic tilt (0° to 16°)
       // ==========================================
       const p = Math.max(0, Math.min(100, cycleProgressRef.current)) / 100;
@@ -497,13 +657,13 @@ export const FleetViewer3D: React.FC = () => {
       if (p <= 0.35) {
         // Phase 1: Pure horizontal slide backwards. Tilt is zero!
         const slideFraction = p / 0.35;
-        targetSlide = slideFraction * 2.5; // Up to 33% of 7.6m deck length
+        targetSlide = slideFraction * 2.5;
         targetTilt = 0;
       } else {
         // Phase 2: Deck remains at full rear slide, subframe tilts!
         targetSlide = 2.5;
         const tiltFraction = (p - 0.35) / 0.65;
-        targetTilt = tiltFraction * 16.0; // 0° to 16°
+        targetTilt = tiltFraction * 16.0;
       }
 
       // Smooth damping
@@ -524,7 +684,7 @@ export const FleetViewer3D: React.FC = () => {
       // Kinematic update of hydraulic lifting rams
       const baseX = -1.8;
       const baseY = 0.85;
-      const R = 2.4; // Bracket point on tilting subframe
+      const R = 2.4;
       const topX = -3.6 + R * Math.cos(rad);
       const topY = 1.1 + R * Math.sin(rad);
       const dx = topX - baseX;
@@ -544,7 +704,7 @@ export const FleetViewer3D: React.FC = () => {
         pistonRRef.current.rotation.z = angleZ;
       }
 
-      // Slow showcase rotation
+      // Slow showcase rotation (respects user toggle & prefers-reduced-motion)
       if (isRotatingRef.current) {
         truckGroup.rotation.y += 0.005;
       }
@@ -628,24 +788,32 @@ export const FleetViewer3D: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2">
+            <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
               <span className="w-6 h-0.5 bg-[#B43034]" />
-              <span>Simulação Mecânica Real</span>
+              <span>Ambiente Industrial & Simulação Técnica</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase font-heading">
               OPERAÇÃO DA PLATAFORMA: RECUO & BASCULAMENTO
             </h2>
-            <p className="mt-2 text-sm sm:text-base text-neutral-300 max-w-2xl">
+            <p className="mt-2 text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed">
               Ciclo real de funcionamento: primeiro a rampa desloca-se <strong>33% na horizontal para trás</strong> ao longo das guias, e somente após o recuo realiza o <strong>basculamento hidráulico</strong> para o embarque seguro do veículo.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <span className="inline-flex items-center gap-1.5 text-xs text-neutral-400 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded">
               <Sparkles className="w-3.5 h-3.5 text-[#B43034]" />
-              <span>Gire e inspecione em qualquer ângulo 3D</span>
+              <span>Gire e inspecione em 360°</span>
             </span>
           </div>
+        </div>
+
+        {/* Legal Disclaimer Pill regarding 3D Illustration */}
+        <div className="mt-4 p-3 rounded-lg bg-neutral-900/60 border border-neutral-800/80 flex items-start gap-2.5 text-xs text-neutral-400">
+          <Info className="w-4 h-4 text-[#B43034] shrink-0 mt-0.5" />
+          <p>
+            <strong>Nota de Transparência:</strong> Este visualizador é uma <em>simulação mecânica e técnica ilustrativa</em> para demonstrar a cinemática de içamento de rampa hidráulica. O modelo tridimensional e o cenário industrial de fundo têm caráter demonstrativo e não representam reprodução de instalação física específica nem a totalidade dos veículos da frota da empresa.
+          </p>
         </div>
       </div>
 
@@ -653,13 +821,30 @@ export const FleetViewer3D: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative w-full h-[520px] sm:h-[620px] bg-[#111113] rounded-2xl border border-neutral-800 overflow-hidden shadow-2xl">
           
-          {/* WebGL Canvas Mount */}
-          <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+          {/* WebGL Canvas Mount or Fallback */}
+          {webGlSupported ? (
+            <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-neutral-950 space-y-4">
+              <AlertTriangle className="w-10 h-10 text-amber-500" />
+              <h3 className="text-xl font-bold text-white font-heading uppercase">
+                Aceleração WebGL Indisponível no Navegador
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-400 max-w-md">
+                Seu dispositivo ou navegador não possui suporte ativo para aceleração 3D WebGL. Você pode conferir nossas fotografias reais da frota na galeria logo acima.
+              </p>
+              <img
+                src={COMPANY_CONFIG.fleet[1].image}
+                alt="Plataforma de veículos leves"
+                className="max-w-sm rounded-lg border border-neutral-800 shadow-md max-h-48 object-cover"
+              />
+            </div>
+          )}
 
           {/* Minimal Top Badges */}
-          <div className="absolute top-4 left-4 pointer-events-none flex flex-col sm:flex-row items-start sm:items-center gap-2">
-            <span className="bg-neutral-900/90 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded border border-neutral-800 backdrop-blur-sm">
-              Visualizador PBR Three.js
+          <div className="absolute top-4 left-4 pointer-events-none flex flex-col sm:flex-row items-start sm:items-center gap-2 z-10">
+            <span className="bg-neutral-900/90 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded border border-neutral-800 backdrop-blur-sm font-heading">
+              Cenário Industrial PBR
             </span>
             <span className="bg-red-950/90 text-red-300 text-[11px] font-semibold tracking-wider px-2.5 py-1 rounded border border-red-900/60 backdrop-blur-sm">
               {status.phase}: {status.badge}
@@ -674,7 +859,7 @@ export const FleetViewer3D: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="bg-neutral-900/95 hover:bg-neutral-850 text-neutral-300 hover:text-white text-xs font-semibold px-4 py-1.5 rounded-t-lg border-t border-x border-neutral-700/80 flex items-center gap-1.5 shadow-lg transition-colors"
+                className="bg-neutral-900/95 hover:bg-neutral-850 text-neutral-300 hover:text-white text-xs font-semibold px-4 py-1.5 rounded-t-lg border-t border-x border-neutral-700/80 flex items-center gap-1.5 shadow-lg transition-colors font-heading"
                 aria-label={isCollapsed ? 'Mostrar controles 3D' : 'Ocultar controles 3D'}
               >
                 {isCollapsed ? (
@@ -699,7 +884,7 @@ export const FleetViewer3D: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-neutral-950/80 px-3 py-2 rounded-lg border border-neutral-800/80 text-xs gap-2">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#B43034]" />
-                    <span className="font-bold text-white uppercase tracking-wider">{status.phase}</span>
+                    <span className="font-bold text-white uppercase tracking-wider font-heading">{status.phase}</span>
                     <span className="text-neutral-400 hidden sm:inline">—</span>
                     <span className="text-neutral-300 text-[11px]">{status.detail}</span>
                   </div>
@@ -712,7 +897,7 @@ export const FleetViewer3D: React.FC = () => {
                   
                   {/* Slider: Two-Phase Operational Cycle */}
                   <div className="md:col-span-7 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between text-[11px] text-neutral-400 font-semibold uppercase tracking-wider">
+                    <div className="flex items-center justify-between text-[11px] text-neutral-400 font-semibold uppercase tracking-wider font-heading">
                       <span className="flex items-center gap-1">
                         <Sliders className="w-3 h-3 text-[#B43034]" />
                         <span>Ciclo de Operação:</span>
@@ -736,7 +921,7 @@ export const FleetViewer3D: React.FC = () => {
                     />
 
                     {/* Step presets */}
-                    <div className="flex items-center justify-between gap-1 pt-1">
+                    <div className="flex items-center justify-between gap-1 pt-1 font-heading">
                       <button
                         type="button"
                         onClick={() => {
@@ -783,7 +968,7 @@ export const FleetViewer3D: React.FC = () => {
                   </div>
 
                   {/* Actions & Presets */}
-                  <div className="md:col-span-5 flex flex-wrap items-center justify-between sm:justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-neutral-800">
+                  <div className="md:col-span-5 flex flex-wrap items-center justify-between sm:justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-neutral-800 font-heading">
                     
                     {/* Camera view buttons */}
                     <div className="flex items-center gap-1 bg-neutral-950 p-1 rounded-lg border border-neutral-800">
