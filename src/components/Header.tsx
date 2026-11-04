@@ -122,8 +122,8 @@ export const Header: React.FC = () => {
           aria-hidden="true"
         />
 
-        <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 box-border">
-          <div className="flex items-center justify-between gap-2 sm:gap-3 xl:gap-4 w-full min-w-0">
+        <div className="w-full max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-4 xl:px-6 box-border">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2.5 xl:gap-3 w-full min-w-0">
             {/* Brand Logo with adaptive theme and responsive width limit */}
             <Link
               to="/"
@@ -137,17 +137,17 @@ export const Header: React.FC = () => {
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
                 alt="Vapt Vupt Remoção de Veículos"
-                className="h-7 sm:h-8 lg:h-8 xl:h-9 w-auto max-w-[125px] xs:max-w-[140px] sm:max-w-[155px] xl:max-w-[170px] object-contain transition-opacity duration-300"
+                className="h-6 sm:h-7 lg:h-7 xl:h-8 w-auto max-w-[115px] sm:max-w-[135px] lg:max-w-[125px] xl:max-w-[148px] 2xl:max-w-[165px] object-contain transition-opacity duration-300"
               />
             </Link>
 
             {/* Desktop Navigation Capsule */}
             <nav
-              className="navbar hidden lg:flex items-center justify-center flex-1 min-w-0 mx-1 xl:mx-2 overflow-x-clip"
+              className="navbar hidden lg:flex items-center justify-center flex-1 min-w-0 mx-0.5 xl:mx-1.5"
               aria-label="Navegação Principal"
             >
               <div
-                className={`navbar-container inline-flex items-center justify-center gap-0.5 xl:gap-1 px-2 xl:px-2.5 py-1.5 rounded-full transition-colors duration-300 max-w-full ${
+                className={`navbar-container inline-flex items-center justify-start gap-0.5 xl:gap-1 px-1.5 xl:px-2 py-1 xl:py-1.5 rounded-full transition-colors duration-300 max-w-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
                   isDarkMode
                     ? 'bg-neutral-900/90 border border-neutral-800/90 shadow-inner shadow-black/40 backdrop-blur-md'
                     : 'bg-slate-100/95 border border-slate-200/90 shadow-inner backdrop-blur-md'
@@ -159,7 +159,7 @@ export const Header: React.FC = () => {
                     to={link.path}
                     end={link.path === '/'}
                     className={({ isActive }) =>
-                      `px-2 xl:px-3 py-1.5 font-heading text-[11px] xl:text-xs font-bold tracking-wider transition-colors duration-200 rounded-full flex items-center justify-center text-center whitespace-nowrap leading-none ${
+                      `shrink-0 px-1.5 xl:px-2.5 2xl:px-3 py-1 xl:py-1.5 text-[10px] xl:text-[11px] 2xl:text-xs font-bold transition-colors duration-200 rounded-full flex items-center justify-center text-center whitespace-nowrap leading-none ${
                         isActive
                           ? 'text-white bg-gradient-to-r from-[#B43034] to-[#982226] shadow-md shadow-red-950/60'
                           : isDarkMode
@@ -175,7 +175,7 @@ export const Header: React.FC = () => {
             </nav>
 
             {/* Action CTAs */}
-            <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-2.5 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {/* Theme Toggle Component (Light / Dark / Auto) - Oculto quando menu mobile estiver aberto */}
               {!mobileMenuOpen && (
                 <div className="shrink-0 transition-opacity duration-200" title="Alternar Modo de Tema">
@@ -191,11 +191,11 @@ export const Header: React.FC = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group button-3d relative inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-xs font-bold uppercase tracking-wider p-2 sm:px-3.5 sm:py-2 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
+                  className="group button-3d relative inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-[11px] xl:text-xs font-bold uppercase tracking-wider p-2 sm:px-3 xl:px-3.5 sm:py-1.5 xl:py-2 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
                   aria-label="Atendimento via WhatsApp"
                   title="Atendimento no WhatsApp"
                 >
-                  <WhatsAppIcon className="w-4 h-4 text-white fill-white shrink-0" />
+                  <WhatsAppIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-white fill-white shrink-0" />
                   <span className="hidden sm:inline whitespace-nowrap">Atendimento</span>
                 </a>
               )}

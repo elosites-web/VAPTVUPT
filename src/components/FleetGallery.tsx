@@ -48,9 +48,12 @@ export const FleetGallery: React.FC = () => {
               <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-neutral-950">
                 <img
                   src={item.image}
+                  srcSet={`${item.image} 480w, ${item.image} 800w, ${item.image} 1200w`}
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   alt={item.title}
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
 
@@ -128,6 +131,10 @@ export const FleetGallery: React.FC = () => {
             <div className="relative aspect-[16/10] bg-neutral-950">
               <img
                 src={activeModalItem.image}
+                srcSet={`${activeModalItem.image} 480w, ${activeModalItem.image} 800w, ${activeModalItem.image} 1200w`}
+                sizes="(max-width: 1024px) 95vw, 768px"
+                loading="lazy"
+                decoding="async"
                 alt={activeModalItem.title}
                 className="w-full h-full object-contain"
               />

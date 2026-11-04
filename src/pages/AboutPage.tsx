@@ -84,6 +84,10 @@ export const AboutPage: React.FC = () => {
               <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-2xl bg-slate-100 dark:bg-neutral-950">
                 <img
                   src={COMPANY_CONFIG.heroImage}
+                  srcSet={`${COMPANY_CONFIG.heroImage} 480w, ${COMPANY_CONFIG.heroImage} 800w, ${COMPANY_CONFIG.heroImage} 1200w`}
+                  sizes="(max-width: 1024px) 100vw, 42vw"
+                  loading="lazy"
+                  decoding="async"
                   alt="Cavalo mecânico 1635 Vapt Vupt"
                   className="w-full h-80 object-cover"
                 />

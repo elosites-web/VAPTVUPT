@@ -276,30 +276,35 @@ export const Footer: React.FC = () => {
             isDarkMode ? 'border-neutral-800/60' : 'border-slate-300/80'
           } w-full flex items-center justify-center`}
         >
-          <a
-            href="https://elosites.io.br/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-1 sm:gap-1.5 font-semibold uppercase tracking-tight sm:tracking-wide hover:opacity-90 transition-opacity focus:outline-none focus:ring-1 focus:ring-[#B43034] rounded px-1 py-0.5 text-[clamp(8.5px,2.3vw,12px)] leading-none ${
-              isDarkMode ? 'text-neutral-400 hover:text-neutral-200' : 'text-slate-600 hover:text-slate-900'
+          <div
+            className={`inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-1 sm:gap-1.5 font-medium uppercase tracking-tight sm:tracking-wide text-[clamp(8.5px,2.2vw,11.5px)] leading-none ${
+              isDarkMode ? 'text-neutral-500' : 'text-slate-500'
             }`}
-            aria-label="CRIADO E DESENVOLVIDO POR ēloSites O MELHOR SITE PELO MELHOR PREÇO (abrir em nova aba)"
           >
             <span className="shrink-0 leading-none">CRIADO E DESENVOLVIDO POR</span>
-            {!logoError ? (
-              <img
-                src="/logo-elosites.png"
-                alt="ēloSites"
-                onError={() => setLogoError(true)}
-                className="h-3 sm:h-4 w-auto object-contain shrink-0 inline-block align-middle"
-              />
-            ) : (
-              <span className={`font-bold shrink-0 leading-none ${isDarkMode ? 'text-neutral-200' : 'text-slate-800'}`}>
-                ēloSites
-              </span>
-            )}
+            <a
+              href="https://elosites.io.br/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity focus:outline-none focus:ring-1 focus:ring-[#B43034] rounded"
+              aria-label="Visitar site da ēloSites (abrir em nova aba)"
+              title="ēloSites"
+            >
+              {!logoError ? (
+                <img
+                  src="/logo-elosites.png"
+                  alt="ēloSites"
+                  onError={() => setLogoError(true)}
+                  className="h-3 sm:h-4 w-auto object-contain shrink-0 inline-block align-middle"
+                />
+              ) : (
+                <span className={`font-bold shrink-0 leading-none ${isDarkMode ? 'text-neutral-300' : 'text-slate-800'}`}>
+                  ēloSites
+                </span>
+              )}
+            </a>
             <span className="shrink-0 leading-none">O MELHOR SITE PELO MELHOR PREÇO</span>
-          </a>
+          </div>
         </div>
       </div>
     </footer>

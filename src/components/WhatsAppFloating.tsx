@@ -21,7 +21,7 @@ export const WhatsAppFloating: React.FC = () => {
           <div
             role="status"
             aria-live="polite"
-            className="relative bg-white dark:bg-[#1b1b1f] border-2 border-slate-200 dark:border-neutral-700 text-slate-900 dark:text-white px-3.5 py-2.5 rounded-2xl shadow-2xl max-w-[235px] text-xs"
+            className="relative bg-white dark:bg-[#1b1b1f] border-2 border-[#B43034] dark:border-[#B43034] text-slate-900 dark:text-white px-3.5 py-2.5 rounded-2xl shadow-2xl max-w-[235px] text-xs"
           >
             <button
               type="button"
@@ -46,7 +46,7 @@ export const WhatsAppFloating: React.FC = () => {
               className="
                 absolute -bottom-[8px] right-[20px] w-3.5 h-3.5 rotate-45
                 bg-white dark:bg-[#1b1b1f]
-                border-r-2 border-b-2 border-slate-200 dark:border-neutral-700
+                border-r-2 border-b-2 border-[#B43034] dark:border-[#B43034]
               "
             />
           </div>

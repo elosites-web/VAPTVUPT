@@ -21,7 +21,7 @@
 
 @layer base {
   :root {
-    --font-heading: 'Barlow Condensed', sans-serif;
+    --font-heading: 'Montserrat', 'Plus Jakarta Sans', 'Inter', sans-serif;
     --font-sans: 'Inter', sans-serif;
   }
 
@@ -29,6 +29,11 @@
     font-family: var(--font-sans);
     background-color: #161618;
     color: #f4f4f5;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
@@ -38,10 +43,38 @@
     color: #0f172a;
   }
 
-  h1, h2, h3, h4, .font-heading {
+  p,
+  li,
+  dd,
+  blockquote,
+  figcaption,
+  textarea,
+  .long-text {
+    letter-spacing: 0.02em !important;
+    line-height: 1.5 !important;
+    word-spacing: 0.03em;
+    font-kerning: normal;
+  }
+
+  h1, h2, h3, h4, .font-heading:not(header nav a) {
     font-family: var(--font-heading);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.045em !important;
+    word-spacing: 0.08em;
+    font-kerning: normal;
+    font-feature-settings: "kern" 1;
     text-transform: uppercase;
+  }
+
+  header nav a {
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    letter-spacing: 0.015em !important;
+    word-spacing: 0.02em;
+    font-kerning: normal;
+    text-transform: uppercase;
+  }
+
+  h1.font-black, h2.font-black, h3.font-black, .font-heading.font-black {
+    font-weight: 800;
   }
 
   .navbar {
@@ -183,10 +216,10 @@ a[class*="from-[#B43034]"]:active {
 /* 2. Botões Secundários, Controles Interativos e Links em Formato de Botão */
 button:not(:disabled):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):not([role="menuitemradio"]):not([aria-expanded]),
 button[aria-haspopup="menu"]:not(:disabled),
-a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]) {
+a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not(.glass-credit-badge):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]) {
   box-shadow:
     0 4px 10px -2px rgba(0, 0, 0, 0.28),
-    0 2px 4px -2px rgba(0, 0, 0, 0.2),
+  0 2px 4px -2px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -2px 0 rgba(0, 0, 0, 0.22);
   transition:
@@ -199,7 +232,7 @@ a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="b
 
 button:not(:disabled):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):not([role="menuitemradio"]):not([aria-expanded]):hover,
 button[aria-haspopup="menu"]:not(:disabled):hover,
-a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):hover {
+a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not(.glass-credit-badge):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):hover {
   transform: translateY(-1.5px);
   box-shadow:
     0 7px 15px -3px rgba(0, 0, 0, 0.35),
@@ -210,7 +243,7 @@ a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="b
 
 button:not(:disabled):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):not([role="menuitemradio"]):active,
 button[aria-haspopup="menu"]:not(:disabled):active,
-a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):active {
+a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not(.glass-credit-badge):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):active {
   transform: translateY(1.5px) scale(0.985) !important;
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.25),
@@ -220,7 +253,7 @@ a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="b
 /* Ajuste de Sombra e Profundidade para Botões Secundários no Modo Claro (☀️) */
 html.light button:not(:disabled):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):not([role="menuitemradio"]):not([aria-expanded]),
 html.light button[aria-haspopup="menu"]:not(:disabled),
-html.light a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]) {
+html.light a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not(.glass-credit-badge):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]) {
   box-shadow:
     0 4px 10px -2px rgba(15, 23, 42, 0.09),
     0 2px 4px -2px rgba(15, 23, 42, 0.06),
@@ -230,7 +263,7 @@ html.light a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not
 
 html.light button:not(:disabled):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):not([role="menuitemradio"]):not([aria-expanded]):hover,
 html.light button[aria-haspopup="menu"]:not(:disabled):hover,
-html.light a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):hover {
+html.light a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not(.glass-credit-badge):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):hover {
   box-shadow:
     0 7px 14px -3px rgba(15, 23, 42, 0.14),
     0 3px 6px -2px rgba(15, 23, 42, 0.08),
@@ -240,7 +273,7 @@ html.light a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not
 
 html.light button:not(:disabled):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):not([role="menuitemradio"]):active,
 html.light button[aria-haspopup="menu"]:not(:disabled):active,
-html.light a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):active {
+html.light a[class*="px-"][class*="py-"][class*="rounded"]:not(header nav a):not(.glass-credit-badge):not([class*="bg-[#B43034]"]):not([class*="from-[#B43034]"]):active {
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.08),
     inset 0 2px 4px rgba(15, 23, 42, 0.16) !important;

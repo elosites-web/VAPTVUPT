@@ -60,6 +60,10 @@ export const Services: React.FC = () => {
                   {service.image && (
                     <img
                       src={service.image}
+                      srcSet={`${service.image} 480w, ${service.image} 800w, ${service.image} 1200w`}
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      loading="lazy"
+                      decoding="async"
                       alt={service.title}
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />

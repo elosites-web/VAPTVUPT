@@ -272,6 +272,10 @@ export const Home: React.FC = () => {
                 <div className="relative h-56 overflow-hidden bg-slate-100 dark:bg-neutral-950 flex items-center justify-center">
                   <img
                     src={item.image}
+                    srcSet={`${item.image} 480w, ${item.image} 800w, ${item.image} 1200w`}
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    loading="lazy"
+                    decoding="async"
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />

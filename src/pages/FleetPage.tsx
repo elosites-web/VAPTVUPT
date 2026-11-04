@@ -69,6 +69,10 @@ export const FleetPage: React.FC = () => {
                 >
                   <img
                     src={item.image}
+                    srcSet={`${item.image} 480w, ${item.image} 800w, ${item.image} 1200w`}
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    loading="lazy"
+                    decoding="async"
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -174,6 +178,10 @@ export const FleetPage: React.FC = () => {
             <div className="p-2 bg-neutral-950 flex items-center justify-center">
               <img
                 src={selectedPhoto.image}
+                srcSet={`${selectedPhoto.image} 480w, ${selectedPhoto.image} 800w, ${selectedPhoto.image} 1200w`}
+                sizes="(max-width: 1024px) 95vw, 896px"
+                loading="lazy"
+                decoding="async"
                 alt={selectedPhoto.title}
                 className="max-h-[70vh] w-auto object-contain rounded"
               />

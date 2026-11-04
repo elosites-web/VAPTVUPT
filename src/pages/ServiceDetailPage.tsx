@@ -68,6 +68,10 @@ export const ServiceDetailPage: React.FC = () => {
                 <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-xl bg-slate-100 dark:bg-neutral-950">
                   <img
                     src={currentService.image}
+                    srcSet={`${currentService.image} 480w, ${currentService.image} 800w, ${currentService.image} 1200w`}
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                    loading="lazy"
+                    decoding="async"
                     alt={currentService.title}
                     className="w-full h-80 sm:h-96 object-cover"
                   />
