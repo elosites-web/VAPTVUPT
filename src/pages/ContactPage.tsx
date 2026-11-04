@@ -67,10 +67,10 @@ export const ContactPage: React.FC = () => {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded transition-colors w-full justify-center"
+                    className="inline-flex items-center justify-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-[11px] sm:text-xs font-bold uppercase tracking-tight sm:tracking-wider px-4 py-2.5 rounded transition-colors w-full text-center leading-tight"
                   >
-                    <WhatsAppIcon className="w-4 h-4" />
-                    <span>Iniciar Conversa Direta</span>
+                    <WhatsAppIcon className="w-4 h-4 shrink-0" />
+                    <span className="whitespace-normal sm:whitespace-nowrap">Iniciar Conversa Direta</span>
                   </a>
                 </div>
               </div>

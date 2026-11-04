@@ -113,7 +113,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
+        className={`inline-flex items-center gap-1.5 px-2.5 xl:px-3 h-8 sm:h-9 rounded-lg text-xs font-bold border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
           isDarkMode
             ? 'bg-neutral-900/90 text-neutral-100 border-neutral-700/90 hover:bg-neutral-800 hover:text-white shadow-md shadow-black/30'
             : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200/80 hover:border-slate-400 shadow-xs'

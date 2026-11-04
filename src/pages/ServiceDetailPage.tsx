@@ -192,10 +192,10 @@ export const ServiceDetailPage: React.FC = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full button-3d inline-flex items-center justify-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded shadow-lg transition-colors"
+                  className="w-full button-3d inline-flex items-center justify-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-[11px] min-[360px]:text-xs sm:text-xs font-bold uppercase tracking-tight sm:tracking-wider px-3 sm:px-4 py-3 rounded shadow-lg transition-colors text-center leading-tight"
                 >
-                  <WhatsAppIcon className="w-4 h-4" />
-                  <span>Consultar no WhatsApp</span>
+                  <WhatsAppIcon className="w-4 h-4 shrink-0" />
+                  <span className="whitespace-normal sm:whitespace-nowrap">Consultar no WhatsApp</span>
                 </a>
               </div>
 

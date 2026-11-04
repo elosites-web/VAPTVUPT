@@ -63,17 +63,40 @@ export const PrivacyPolicyPage: React.FC = () => {
               2. Dados Pessoais Coletados e Tratados
             </h2>
             <p className="text-slate-700 dark:text-neutral-300">
-              Em estrita observância ao princípio da necessidade e minimização de dados previsto no artigo 6º, III da LGPD, nosso site solicita apenas as informações estritamente indispensáveis para o dimensionamento do atendimento:
+              Em estrita observância aos princípios da finalidade, necessidade e minimização de dados previstos no artigo 6º da LGPD, os formulários institucionais deste site solicitam exclusivamente as informações indispensáveis para cada propósito:
             </p>
-            <ul className="space-y-2 list-disc list-inside text-slate-700 dark:text-neutral-300 pl-2">
-              <li><strong className="text-slate-900 dark:text-white">Nome ou Identificação:</strong> para identificar o solicitante no atendimento;</li>
-              <li><strong className="text-slate-900 dark:text-white">Tipo de Atendimento Solicitado:</strong> se guincho para veículo leve, pesado ou logística;</li>
-              <li><strong className="text-slate-900 dark:text-white">Tipo de Veículo:</strong> modelo, categoria ou porte do automóvel/caminhão para envio da plataforma correta;</li>
-              <li><strong className="text-slate-900 dark:text-white">Cidade ou Região:</strong> localização aproximada para cálculo preliminar de rota e disponibilidade;</li>
-              <li><strong className="text-slate-900 dark:text-white">Descrição da Necessidade:</strong> situação mecânica ou imprevisto veicular para preparar os equipamentos de resgate.</li>
-            </ul>
+
+            <div className="space-y-3">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 space-y-2">
+                <strong className="text-slate-900 dark:text-white block text-sm font-heading uppercase tracking-wide">
+                  A. Formulário de Atendimento e Orçamento (Serviços e Contato):
+                </strong>
+                <ul className="space-y-1.5 list-disc list-inside text-xs sm:text-sm text-slate-700 dark:text-neutral-300 pl-1">
+                  <li><strong className="text-slate-900 dark:text-white">Nome ou Identificação:</strong> para identificação do solicitante no atendimento;</li>
+                  <li><strong className="text-slate-900 dark:text-white">Tipo de Atendimento Solicitado:</strong> se remoção de veículo leve, pesado ou logística;</li>
+                  <li><strong className="text-slate-900 dark:text-white">Tipo de Veículo:</strong> modelo, categoria ou porte do veículo para dimensionamento da plataforma correta;</li>
+                  <li><strong className="text-slate-900 dark:text-white">Cidade ou Região:</strong> localização aproximada para estimativa preliminar de rota e disponibilidade;</li>
+                  <li><strong className="text-slate-900 dark:text-white">Descrição da Necessidade:</strong> situação mecânica ou imprevisto veicular para preparo operacional.</li>
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 space-y-2">
+                <strong className="text-slate-900 dark:text-white block text-sm font-heading uppercase tracking-wide">
+                  B. Formulário de Recrutamento Operacional (Trabalhe Conosco):
+                </strong>
+                <ul className="space-y-1.5 list-disc list-inside text-xs sm:text-sm text-slate-700 dark:text-neutral-300 pl-1">
+                  <li><strong className="text-slate-900 dark:text-white">Nome Completo:</strong> identificação civil do candidato;</li>
+                  <li><strong className="text-slate-900 dark:text-white">E-mail para Contato:</strong> canal eletrônico para retorno sobre processos seletivos;</li>
+                  <li><strong className="text-slate-900 dark:text-white">Telefone / WhatsApp:</strong> contato telefônico direto para agendamento de entrevistas;</li>
+                  <li><strong className="text-slate-900 dark:text-white">Cidade e Bairro de Residência:</strong> avaliação de compatibilidade de deslocamento com a base operacional;</li>
+                  <li><strong className="text-slate-900 dark:text-white">Categoria da CNH:</strong> verificação preliminar da habilitação exigida para o equipamento (sem coleta de número de registro, CPF ou fotos de documentos nesta fase);</li>
+                  <li><strong className="text-slate-900 dark:text-white">Vaga ou Área de Interesse:</strong> função pretendida no banco de talentos operacional.</li>
+                </ul>
+              </div>
+            </div>
+
             <p className="text-slate-600 dark:text-neutral-400 text-xs sm:text-sm italic bg-slate-50 dark:bg-neutral-900/60 p-3 rounded-lg border border-slate-200 dark:border-neutral-800">
-              Não solicitamos nem tratamos dados sensíveis (origem racial, convicção religiosa, saúde etc.) e não exigimos documentos pessoais (CPF, CNH ou RG) no formulário público inicial.
+              Não solicitamos nem tratamos dados sensíveis (origem racial, convicção religiosa, saúde etc.) e não exigimos cópias de documentos pessoais (CPF, RG ou fotos de CNH) nos formulários públicos do site.
             </p>
           </div>
 
@@ -84,33 +107,48 @@ export const PrivacyPolicyPage: React.FC = () => {
               3. Finalidades e Bases Legais Aplicáveis
             </h2>
             <p className="text-slate-700 dark:text-neutral-300">
-              A coleta e utilização dos dados descritos possuem finalidade exclusiva de prestar atendimento operacional pré-contratual e viabilizar o orçamento técnico de guincho e remoção.
+              O tratamento de dados pessoais no âmbito da empresa atende a finalidades legítimas e determinadas:
             </p>
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 space-y-2 text-xs sm:text-sm">
-              <div className="text-slate-900 dark:text-white font-bold flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#B43034]" />
-                <span>Base Legal Aplicada: Art. 7º, inciso V da LGPD (Lei nº 13.709/2018)</span>
+            <div className="space-y-3">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 space-y-2 text-xs sm:text-sm">
+                <div className="text-slate-900 dark:text-white font-bold flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#B43034]" />
+                  <span>Atendimento a Clientes: Execução de Procedimentos Preliminares (Art. 7º, V da LGPD)</span>
+                </div>
+                <p className="text-slate-700 dark:text-neutral-300">
+                  Os dados de atendimento são tratados para viabilizar orçamentos, verificar disponibilidade operacional e realizar atos preparatórios à prestação de serviços de guincho e remoção veicular a pedido do titular.
+                </p>
               </div>
-              <p className="text-slate-700 dark:text-neutral-300">
-                O tratamento é realizado para a <em>execução de contrato ou de procedimentos preliminares relacionados a contrato do qual seja parte o titular, a pedido do titular dos dados</em>. Não realizamos disparos de marketing nem compartilhamento com agências de publicidade.
-              </p>
+
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 space-y-2 text-xs sm:text-sm">
+                <div className="text-slate-900 dark:text-white font-bold flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#B43034]" />
+                  <span>Recrutamento e Seleção: Consentimento e Procedimentos Preliminares (Art. 7º, I e V da LGPD)</span>
+                </div>
+                <p className="text-slate-700 dark:text-neutral-300">
+                  A submissão de dados de candidatura fundamenta-se na manifestação afirmativa do candidato (checkbox de consentimento obrigatório) e nos procedimentos pré-contratuais seletivos para inclusão voluntária no banco de talentos e eventual convocação para oportunidades profissionais.
+                </p>
+              </div>
             </div>
+            <p className="text-xs text-slate-500 dark:text-neutral-400 italic">
+              * A indicação das hipóteses legais reflete o modelo técnico-institucional do projeto e deve ser validada pela assessoria jurídica responsável da empresa.
+            </p>
           </div>
 
-          {/* 4. Funcionamento do Formulário e Redirecionamento ao WhatsApp */}
+          {/* 4. Funcionamento dos Formulários, Consentimento e Redirecionamento ao WhatsApp */}
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2 font-heading">
               <span className="w-2 h-5 bg-[#B43034] inline-block rounded-sm" />
-              4. Funcionamento do Formulário e Redirecionamento para o WhatsApp
+              4. Funcionamento dos Formulários e Redirecionamento para o WhatsApp
             </h2>
             <p className="text-slate-700 dark:text-neutral-300">
-              O formulário de contato disponibilizado no site possui funcionamento 100% cliente (client-side):
+              Todos os formulários disponibilizados no site possuem funcionamento 100% cliente (client-side) executado no navegador do visitante:
             </p>
-            <ul className="space-y-2 list-disc list-inside text-slate-700 dark:text-neutral-300 pl-2">
-              <li><strong className="text-slate-900 dark:text-white">Ausência de Banco de Dados Próprio:</strong> As informações digitadas não são gravadas em servidores de backend, banco de dados ou arquivos de armazenamento do site.</li>
-              <li><strong className="text-slate-900 dark:text-white">Processamento em Memória:</strong> O código executado no navegador do visitante apenas formata o texto da mensagem e monta o link de redirecionamento oficial do WhatsApp (<code>https://wa.me/...</code>).</li>
-              <li><strong className="text-slate-900 dark:text-white">Controle do Envio:</strong> O site não envia a mensagem automaticamente. Ao clicar no botão, o aplicativo do WhatsApp é aberto no dispositivo do usuário com o texto pré-digitado. Cabe exclusivamente ao visitante decidir acionar o botão de envio dentro do aplicativo.</li>
-              <li><strong className="text-slate-900 dark:text-white">Compartilhamento com Plataforma Externa:</strong> Ao dar seguimento no WhatsApp, o conteúdo passa a ser processado pela infraestrutura da Meta Platforms Inc., conforme os Termos e Políticas de Privacidade do próprio WhatsApp.</li>
+            <ul className="space-y-2.5 list-disc list-inside text-slate-700 dark:text-neutral-300 pl-2 text-xs sm:text-sm">
+              <li><strong className="text-slate-900 dark:text-white">Processamento Exclusivo em Memória:</strong> As informações preenchidas permanecem exclusivamente no estado transitório do componente em seu navegador. O website não armazena os dados em banco de dados de backend, cookies, <code>localStorage</code> ou <code>sessionStorage</code>.</li>
+              <li><strong className="text-slate-900 dark:text-white">Consentimento Afirmativo Obrigatório:</strong> Em conformidade com a LGPD, todo envio exige a marcação ativa de checkbox de consentimento prévio, não pré-selecionado, sem o qual o formulário bloqueia qualquer redirecionamento.</li>
+              <li><strong className="text-slate-900 dark:text-white">Controle Total do Usuário:</strong> O site não transmite a mensagem de forma automática. Ao clicar no botão de envio, é gerado um link oficial do WhatsApp (<code>https://wa.me/5511913721849</code>) contendo o texto pré-formatado. Cabe exclusivamente ao usuário revisar a mensagem e acionar o envio final dentro do aplicativo WhatsApp.</li>
+              <li><strong className="text-slate-900 dark:text-white">Compartilhamento e Plataforma Externa:</strong> Ao dar seguimento pelo WhatsApp, os dados trafegam pela infraestrutura da Meta Platforms Inc. (WhatsApp), ficando sujeitos aos Termos de Serviço e à Política de Privacidade da referida plataforma externa.</li>
             </ul>
           </div>
 
@@ -124,7 +162,7 @@ export const PrivacyPolicyPage: React.FC = () => {
               Este site opera de forma institucional no navegador do visitante e disponibiliza links diretos para plataformas externas de comunicação (como WhatsApp e Instagram) apenas quando acionados voluntariamente pelo usuário.
             </p>
             <p className="text-slate-700 dark:text-neutral-300">
-              Caso ferramentas adicionais de análise de tráfego ou formulários externos venham a ser ativadas futuramente pela administração da empresa, este documento deverá ser atualizado para refletir tais integrações.
+              Caso ferramentas adicionais de análise de tráfego venham a ser ativadas futuramente pela administração da empresa, este documento deverá ser atualizado para refletir tais integrações.
             </p>
           </div>
 
@@ -135,10 +173,10 @@ export const PrivacyPolicyPage: React.FC = () => {
               6. Retenção e Descarte de Dados
             </h2>
             <p className="text-slate-700 dark:text-neutral-300">
-              <strong className="text-slate-900 dark:text-white">No ambiente deste site:</strong> o site não armazena nem retém dados pessoais do formulário em banco de dados próprio. Ao fechar ou recarregar a página, os campos preenchidos e não enviados deixam de existir na sessão do navegador.
+              <strong className="text-slate-900 dark:text-white">No ambiente deste site:</strong> nenhum dado digitado nos formulários é gravado em banco de dados próprio ou persistido no navegador. Ao fechar a aba ou recarregar a página, as informações não submetidas deixam de existir na memória da aplicação.
             </p>
             <p className="text-slate-700 dark:text-neutral-300">
-              <strong className="text-slate-900 dark:text-white">No atendimento via WhatsApp:</strong> caso o visitante decida enviar a mensagem pelo aplicativo WhatsApp, o tratamento e o tempo de guarda das informações seguem os procedimentos administrativos internos da empresa controladora e as normas legais aplicáveis à prestação do serviço contratado.
+              <strong className="text-slate-900 dark:text-white">No atendimento via WhatsApp e Recrutamento:</strong> após o envio voluntário pelo aplicativo WhatsApp, as informações são recebidas pelos canais operacionais da <em>{COMPANY_CONFIG.legalName}</em>. Os dados de candidatos são utilizados para avaliação no banco de talentos conforme as práticas administrativas e prazos de retenção da empresa, assegurado ao titular o direito de solicitar a eliminação a qualquer momento.
             </p>
           </div>
 

@@ -58,18 +58,18 @@ export const Home: React.FC = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 py-3.5 rounded-lg shadow-xl transition-colors duration-200"
+                  className="button-3d inline-flex items-center justify-center gap-2 sm:gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-[11px] min-[360px]:text-xs sm:text-sm font-bold uppercase tracking-tight min-[400px]:tracking-normal sm:tracking-wider px-4 sm:px-6 py-3 sm:py-3.5 rounded-lg shadow-xl transition-colors duration-200 text-center leading-tight"
                 >
-                  <WhatsAppIcon className="w-5 h-5 shrink-0" />
-                  <span>Solicitar Atendimento no WhatsApp</span>
+                  <WhatsAppIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+                  <span className="whitespace-normal sm:whitespace-nowrap">Solicitar Atendimento no WhatsApp</span>
                 </a>
 
                 <a
                   href="#solicitar-atendimento"
-                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg border border-white/25 transition-all backdrop-blur-md shadow-lg"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-[11px] min-[360px]:text-xs sm:text-sm font-bold uppercase tracking-tight min-[400px]:tracking-normal sm:tracking-wider px-4 sm:px-5 py-3 sm:py-3.5 rounded-lg border border-white/25 transition-all backdrop-blur-md shadow-lg text-center leading-tight"
                 >
-                  <span>Preencher Solicitação</span>
-                  <ArrowRight className="w-4 h-4 text-[#B43034]" />
+                  <span className="whitespace-normal sm:whitespace-nowrap">Preencher Solicitação</span>
+                  <ArrowRight className="w-4 h-4 text-[#B43034] shrink-0" />
                 </a>
               </div>
 

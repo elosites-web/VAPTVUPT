@@ -176,10 +176,10 @@ export const HowItWorks: React.FC = () => {
               href={handleGenerateWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[#B43034] hover:bg-[#8F2428] text-white text-sm font-bold uppercase tracking-wider px-8 py-3.5 rounded-lg shadow-lg shadow-red-950/50 transition-all transform hover:-translate-y-0.5"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-[11px] min-[360px]:text-xs sm:text-sm font-bold uppercase tracking-tight min-[400px]:tracking-normal sm:tracking-wider px-5 sm:px-8 py-3 sm:py-3.5 rounded-lg shadow-lg shadow-red-950/50 transition-all transform hover:-translate-y-0.5 text-center leading-tight"
             >
-              <WhatsAppIcon className="w-4 h-4" />
-              <span>Enviar Consulta no WhatsApp</span>
+              <WhatsAppIcon className="w-4 h-4 shrink-0" />
+              <span className="whitespace-normal sm:whitespace-nowrap">Enviar Consulta no WhatsApp</span>
             </a>
           </div>
         </div>

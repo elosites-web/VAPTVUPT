@@ -7,7 +7,7 @@ import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const Footer: React.FC = () => {
   const { isDarkMode } = useTheme();
-  const [logoSrc, setLogoSrc] = useState<string>('/logo-traco-elosites.png');
+  const [logoSrc, setLogoSrc] = useState<string>('/logo-elosites.png');
   const [logoError, setLogoError] = useState(false);
 
   const handleScrollToTop = () => {
@@ -15,8 +15,8 @@ export const Footer: React.FC = () => {
   };
 
   const handleLogoError = () => {
-    if (logoSrc === '/logo-traco-elosites.png') {
-      setLogoSrc('/logo-elosites.png');
+    if (logoSrc === '/logo-elosites.png') {
+      setLogoSrc('/logo-traco-elosites.png');
     } else {
       setLogoError(true);
     }
@@ -280,39 +280,41 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Minimalist Single-Line Credit: Desenvolvido por [logotipo ēloSites] */}
+        {/* Single-Line Credit: CRIADO E DESENVOLVIDO POR [logo-elosites.png] O MELHOR SITE PELO MELHOR PREÇO */}
         <div
           className={`mt-6 pt-4 border-t ${
             isDarkMode ? 'border-neutral-800/60' : 'border-slate-300/80'
-          } w-full flex items-center justify-center`}
+          } w-full flex items-center justify-center overflow-x-auto`}
         >
           <div
-            className={`inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-1.5 text-xs leading-none ${
+            className={`inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-1 sm:gap-1.5 font-bold uppercase tracking-tight sm:tracking-normal leading-none select-none ${
               isDarkMode ? 'text-neutral-400' : 'text-slate-600'
             }`}
+            style={{ fontSize: 'clamp(7.5px, 2.1vw, 11px)' }}
           >
-            <span className="shrink-0 leading-none">Desenvolvido por</span>
+            <span className="shrink-0 leading-none">CRIADO E DESENVOLVIDO POR</span>
             <a
               href="https://elosites.io.br/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity focus:outline-none focus:ring-1 focus:ring-[#B43034] rounded px-0.5"
-              aria-label="Visitar site da ēloSites (abrir em nova aba)"
-              title="ēloSites"
+              aria-label="Visitar site da ēloSites - O melhor site pelo melhor preço"
+              title="ēloSites - O melhor site pelo melhor preço"
             >
               {!logoError ? (
                 <img
                   src={logoSrc}
                   alt="ēloSites"
                   onError={handleLogoError}
-                  className="h-3.5 sm:h-4 w-auto object-contain shrink-0 inline-block align-middle"
+                  className="h-2.5 min-[360px]:h-3 sm:h-3.5 w-auto object-contain shrink-0 inline-block align-middle"
                 />
               ) : (
                 <span className={`font-bold shrink-0 leading-none ${isDarkMode ? 'text-neutral-200' : 'text-slate-800'}`}>
-                  ēloSites
+                  ĒLOSITES
                 </span>
               )}
             </a>
+            <span className="shrink-0 leading-none">O MELHOR SITE PELO MELHOR PREÇO</span>
           </div>
         </div>
       </div>

@@ -15,6 +15,7 @@ interface FormState {
   tipoVeiculo: string;
   cidadeRegiao: string;
   descricaoNecessidade: string;
+  consentimento: boolean;
 }
 
 const INITIAL_STATE: FormState = {
@@ -23,6 +24,7 @@ const INITIAL_STATE: FormState = {
   tipoVeiculo: 'Automóvel de Passeio (Hatch / Sedã)',
   cidadeRegiao: '',
   descricaoNecessidade: '',
+  consentimento: false,
 };
 
 export const WhatsAppContactForm: React.FC<WhatsAppContactFormProps> = ({
@@ -53,6 +55,7 @@ export const WhatsAppContactForm: React.FC<WhatsAppContactFormProps> = ({
   const veiculoSelectRef = useRef<HTMLSelectElement>(null);
   const cidadeInputRef = useRef<HTMLInputElement>(null);
   const descricaoTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const consentCheckboxRef = useRef<HTMLInputElement>(null);
 
   const validate = (): Partial<Record<keyof FormState, string>> => {
     const newErrors: Partial<Record<keyof FormState, string>> = {};
@@ -79,23 +82,56 @@ export const WhatsAppContactForm: React.FC<WhatsAppContactFormProps> = ({
       newErrors.descricaoNecessidade = 'Descreva resumidamente a situação do veículo.';
     }
 
+    if (!formData.consentimento) {
+      newErrors.consentimento = 'É necessário autorizar o envio dos dados para solicitar o atendimento.';
+    }
+
     setErrors(newErrors);
     return newErrors;
+  };
+
+  const focusField = (element: HTMLElement | null) => {
+    if (!element) return;
+    try {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch {
+      // Fallback se scrollIntoView não for suportado
+    }
+    element.focus();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const validationErrors = validate();
-    const errorKeys = Object.keys(validationErrors) as (keyof FormState)[];
+    const orderedFields: (keyof FormState)[] = [
+      'nome',
+      'tipoAtendimento',
+      'tipoVeiculo',
+      'cidadeRegiao',
+      'descricaoNecessidade',
+      'consentimento',
+    ];
 
-    if (errorKeys.length > 0) {
-      const firstError = errorKeys[0];
-      if (firstError === 'nome') nomeInputRef.current?.focus();
-      else if (firstError === 'tipoAtendimento') atendimentoSelectRef.current?.focus();
-      else if (firstError === 'tipoVeiculo') veiculoSelectRef.current?.focus();
-      else if (firstError === 'cidadeRegiao') cidadeInputRef.current?.focus();
-      else if (firstError === 'descricaoNecessidade') descricaoTextareaRef.current?.focus();
+    const firstInvalidKey = orderedFields.find((key) => Boolean(validationErrors[key]));
+
+    if (firstInvalidKey) {
+      const fieldRefMap: Record<keyof FormState, React.RefObject<HTMLElement | null>> = {
+        nome: nomeInputRef,
+        tipoAtendimento: atendimentoSelectRef,
+        tipoVeiculo: veiculoSelectRef,
+        cidadeRegiao: cidadeInputRef,
+        descricaoNecessidade: descricaoTextareaRef,
+        consentimento: consentCheckboxRef,
+      };
+
+      focusField(fieldRefMap[firstInvalidKey]?.current || null);
+      return;
+    }
+
+    // Bloqueio rigoroso garantido: submissão estritamente impossível sem consentimento explícito
+    if (!formData.consentimento) {
+      focusField(consentCheckboxRef.current);
       return;
     }
 
@@ -338,6 +374,63 @@ export const WhatsAppContactForm: React.FC<WhatsAppContactFormProps> = ({
           )}
         </div>
 
+        {/* Checkbox de Consentimento Obrigatório (LGPD) */}
+        <div className="pt-1">
+          <div
+            className={`p-3.5 sm:p-4 rounded-xl border transition-colors ${
+              errors.consentimento
+                ? 'border-red-500 bg-red-50/50 dark:bg-red-950/20'
+                : 'border-slate-300 dark:border-neutral-800 bg-slate-50/80 dark:bg-neutral-950/60'
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <input
+                ref={consentCheckboxRef}
+                type="checkbox"
+                id="contact-consent"
+                name="consentimento"
+                required
+                aria-required="true"
+                aria-invalid={Boolean(errors.consentimento)}
+                aria-describedby={errors.consentimento ? 'error-contact-consent' : undefined}
+                checked={formData.consentimento}
+                onChange={(e) => {
+                  setFormData((prev) => ({ ...prev, consentimento: e.target.checked }));
+                  if (errors.consentimento) {
+                    setErrors((prev) => ({ ...prev, consentimento: undefined }));
+                  }
+                }}
+                className="mt-1 h-4 w-4 rounded border-slate-300 dark:border-neutral-700 text-[#B43034] focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:outline-none accent-[#B43034] cursor-pointer shrink-0"
+              />
+              <label
+                htmlFor="contact-consent"
+                className="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed cursor-pointer select-none"
+              >
+                Autorizo o envio dos dados informados à Vapt Vupt Remoção de Veículos para análise e atendimento da minha solicitação, conforme a{' '}
+                <Link
+                  to="/politica-de-privacidade"
+                  className="text-[#B43034] hover:underline font-semibold inline-flex items-center gap-0.5"
+                >
+                  <span>Política de Privacidade</span>
+                  <ArrowUpRight className="w-3 h-3 inline" aria-hidden="true" />
+                </Link>
+                .{' '}
+                <span className="text-[#B43034] font-bold" aria-hidden="true">*</span>
+              </label>
+            </div>
+          </div>
+          {errors.consentimento && (
+            <p
+              id="error-contact-consent"
+              role="alert"
+              className="text-xs text-red-600 dark:text-red-400 mt-1.5 flex items-center gap-1.5"
+            >
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              <span>{errors.consentimento}</span>
+            </p>
+          )}
+        </div>
+
         {/* Mandatory Transparency & Privacy Notice */}
         <div className="p-4 rounded-xl bg-slate-100 dark:bg-neutral-950/90 border border-slate-200 dark:border-neutral-800 text-xs text-slate-700 dark:text-neutral-300 leading-relaxed space-y-2">
           <div className="flex items-start gap-2.5">
@@ -359,10 +452,12 @@ export const WhatsAppContactForm: React.FC<WhatsAppContactFormProps> = ({
         {/* Action Button */}
         <button
           type="submit"
-          className="w-full button-3d flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider py-4 rounded-lg shadow-xl transition-colors font-heading cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#B43034]"
+          className="w-full button-3d flex items-center justify-center gap-2 sm:gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-[11px] min-[360px]:text-xs sm:text-sm font-bold uppercase tracking-tight min-[400px]:tracking-normal sm:tracking-wider px-3 sm:px-5 py-3 sm:py-3.5 rounded-lg shadow-xl transition-colors font-heading cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#B43034]"
         >
-          <WhatsAppIcon className="w-5 h-5 shrink-0" />
-          <span>Continuar e Abrir Mensagem no WhatsApp</span>
+          <WhatsAppIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+          <span className="text-center leading-tight whitespace-normal sm:whitespace-nowrap">
+            Continuar e Abrir Mensagem no WhatsApp
+          </span>
         </button>
 
         <p className="text-[11px] text-slate-500 dark:text-neutral-500 text-center">

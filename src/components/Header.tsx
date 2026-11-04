@@ -147,7 +147,7 @@ export const Header: React.FC = () => {
         </div>
 
         <div className="w-full max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-4 xl:px-6 pt-2 sm:pt-2.5 box-border">
-          <div className="relative flex items-center justify-between gap-1.5 sm:gap-2.5 xl:gap-3 w-full min-w-0 min-h-[36px] sm:min-h-[40px]">
+          <div className="relative flex items-center justify-between gap-1.5 sm:gap-2.5 xl:gap-3 w-full min-w-0 min-h-[40px] sm:min-h-[44px]">
             {/* Brand Logo with adaptive theme and true horizontal centering when mobile menu is open (ignoring the X button) */}
             <Link
               to="/"
@@ -165,7 +165,7 @@ export const Header: React.FC = () => {
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
                 alt="Vapt Vupt Remoção de Veículos"
-                className="block mx-auto h-6 sm:h-7 lg:h-7 xl:h-8 w-auto max-w-[115px] sm:max-w-[135px] lg:max-w-[125px] xl:max-w-[148px] 2xl:max-w-[165px] object-contain object-center transition-opacity duration-300"
+                className="block mx-auto h-8 sm:h-9 lg:h-9 xl:h-10 w-auto max-w-[135px] sm:max-w-[160px] lg:max-w-[160px] xl:max-w-[185px] 2xl:max-w-[205px] object-contain object-center transition-opacity duration-300"
               />
             </Link>
 
@@ -219,7 +219,7 @@ export const Header: React.FC = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group button-3d relative inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-[11px] xl:text-xs font-bold uppercase tracking-wider p-2 sm:px-3 xl:px-3.5 sm:py-1.5 xl:py-2 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
+                  className="group button-3d relative inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-[11px] xl:text-xs font-bold uppercase tracking-wider h-8 sm:h-9 px-2.5 sm:px-3 xl:px-3.5 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
                   aria-label="Atendimento via WhatsApp"
                   title="Atendimento no WhatsApp"
                 >
@@ -234,7 +234,7 @@ export const Header: React.FC = () => {
                   ref={toggleButtonRef}
                   type="button"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className={`p-2 transition-colors rounded-lg border shrink-0 relative z-30 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
+                  className={`h-8 w-8 sm:h-9 sm:w-9 p-0 inline-flex items-center justify-center transition-colors rounded-lg border shrink-0 relative z-30 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
                     isDarkMode
                       ? 'text-neutral-300 hover:text-white bg-neutral-900/90 border-neutral-800 hover:bg-neutral-800'
                       : 'text-neutral-700 hover:text-neutral-900 bg-white/90 border-neutral-300 hover:bg-neutral-100'
@@ -353,10 +353,10 @@ export const Header: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full button-3d flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white font-bold uppercase tracking-wider py-3.5 rounded-lg text-xs shadow-xl focus:outline-none focus:ring-2 focus:ring-[#B43034]"
+                className="w-full button-3d flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white font-bold uppercase tracking-tight sm:tracking-wider py-3.5 rounded-lg text-[11px] sm:text-xs shadow-xl focus:outline-none focus:ring-2 focus:ring-[#B43034] text-center leading-tight"
               >
                 <WhatsAppIcon className="w-4 h-4 text-white fill-white shrink-0" />
-                <span>Chamar no WhatsApp Oficial</span>
+                <span className="whitespace-normal sm:whitespace-nowrap">Chamar no WhatsApp Oficial</span>
               </a>
 
               <div
