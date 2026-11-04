@@ -207,46 +207,36 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   }, [performSeek]);
 
   /**
-   * Smooth, highly responsive rAF scrub loop:
-   * Interpolation factor tuned to 0.65 to settle promptly on the exact frame
-   * when scrolling ceases, completely eliminating perceptible trailing lag.
+   * Direct progress synchronization batched via requestAnimationFrame:
+   * Uses the latest scroll-derived progress directly as the source of truth,
+   * completely eliminating smoothing lag, easing latency, or visual drift.
    */
-  const updateScrub = useCallback(() => {
-    const video = videoRef.current;
-    if (!video || !videoDuration) return;
+  const syncToScrollProgress = useCallback(() => {
+    rafIdRef.current = null;
 
-    const diff = targetProgressRef.current - currentProgressRef.current;
+    const prog = targetProgressRef.current;
+    currentProgressRef.current = prog;
 
-    // Fast-settling lerp: snaps cleanly when close to target or at extremities
-    if (targetProgressRef.current === 0 && currentProgressRef.current < 0.005) {
-      currentProgressRef.current = 0;
-    } else if (targetProgressRef.current === 1 && currentProgressRef.current > 0.995) {
-      currentProgressRef.current = 1;
-    } else if (Math.abs(diff) > 0.001) {
-      currentProgressRef.current += diff * 0.65;
-    } else {
-      currentProgressRef.current = targetProgressRef.current;
-    }
-
-    const prog = currentProgressRef.current;
-
-    // Apply visual styling across all stages
+    // 1. Immediately apply DOM transforms & opacities
     applyProgressStyles(prog);
 
-    // Calculate clamped time: clamps just before videoDuration to prevent 'ended' black flash
-    const maxSafeTime = videoDuration > 0.05 ? videoDuration - 0.04 : videoDuration;
-    const targetTime = Math.min(maxSafeTime, Math.max(0, prog * videoDuration));
+    // 2. Hardware-accurate video seek
+    const video = videoRef.current;
+    if (video && videoDuration) {
+      const maxSafeTime = videoDuration > 0.05 ? videoDuration - 0.04 : videoDuration;
+      const targetTime =
+        prog === 0
+          ? 0
+          : prog === 1
+            ? maxSafeTime
+            : Math.min(maxSafeTime, Math.max(0, prog * videoDuration));
 
-    const timeDiff = Math.abs(video.currentTime - targetTime);
-    if (timeDiff > 0.015) {
       performSeek(targetTime);
     }
 
-    // Continue loop if still interpolating, otherwise park the rAF loop
-    if (Math.abs(targetProgressRef.current - currentProgressRef.current) > 0.001) {
-      rafIdRef.current = requestAnimationFrame(updateScrub);
-    } else {
-      rafIdRef.current = null;
+    // 3. If a new scroll event updated targetProgressRef during execution, schedule one follow-up frame
+    if (targetProgressRef.current !== currentProgressRef.current) {
+      rafIdRef.current = requestAnimationFrame(syncToScrollProgress);
     }
   }, [videoDuration, applyProgressStyles, performSeek]);
 
@@ -271,9 +261,9 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     targetProgressRef.current = clampedProgress;
 
     if (!rafIdRef.current) {
-      rafIdRef.current = requestAnimationFrame(updateScrub);
+      rafIdRef.current = requestAnimationFrame(syncToScrollProgress);
     }
-  }, [isReducedMotion, videoFailed, updateScrub]);
+  }, [isReducedMotion, videoFailed, syncToScrollProgress]);
 
   // Setup scroll and resize listeners with passive flags
   useEffect(() => {
@@ -295,21 +285,57 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     };
   }, [isReducedMotion, videoFailed, handleScroll]);
 
-  // Video loaded metadata handler: reads exact duration and freezes on initial frame
+  // Video loaded metadata handler: reads exact duration and synchronizes immediately to current scroll position
   const handleLoadedMetadata = () => {
     const video = videoRef.current;
-    if (video) {
-      const dur = video.duration && !isNaN(video.duration) ? video.duration : 6.334;
-      setVideoDuration(dur);
-      setVideoReady(true);
-      // Ensure video is paused and cued to start
-      video.pause();
-      video.currentTime = 0;
+    if (!video) return;
+
+    const dur = video.duration && !isNaN(video.duration) ? video.duration : 6.334;
+    setVideoDuration(dur);
+    setVideoReady(true);
+
+    // Enforce pause so video never autoplays independently
+    video.pause();
+
+    // Check if user is already scrolled into the Hero when metadata finishes loading
+    const track = trackRef.current;
+    let initialProg = 0;
+    if (track) {
+      const rect = track.getBoundingClientRect();
+      const trackHeight = track.offsetHeight;
+      const viewportHeight = window.innerHeight;
+      const scrollDistance = trackHeight - viewportHeight;
+      if (scrollDistance > 0) {
+        initialProg = Math.max(0, Math.min(1, -rect.top / scrollDistance));
+      }
+    }
+
+    targetProgressRef.current = initialProg;
+    currentProgressRef.current = initialProg;
+    applyProgressStyles(initialProg);
+
+    const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
+    const initialTime =
+      initialProg === 0
+        ? 0
+        : initialProg === 1
+          ? maxSafeTime
+          : Math.min(maxSafeTime, Math.max(0, initialProg * dur));
+
+    try {
+      video.currentTime = initialTime;
+    } catch {
+      // Graceful fallback
     }
   };
 
   const handleVideoError = () => {
     setVideoFailed(true);
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    pendingSeekRef.current = null;
   };
 
   // Replay helper: smoothly scrolls back to the beginning of the track
@@ -459,6 +485,9 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               onError={() => setPosterFailed(true)}
               className="absolute inset-0 w-full h-full object-cover object-center select-none"
             />
+          )}
+          {!videoReady && posterFailed && (
+            <div className="absolute inset-0 w-full h-full bg-[#141416] industrial-grid" />
           )}
         </div>
 
