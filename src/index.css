@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Barlow Condensed', sans-serif;
+    --font-sans: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #161618;
+    color: #f4f4f5;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+}
+
+/* Custom industrial theme variables */
+:root {
+  --color-brand-red: #B43034;
+  --color-brand-red-dark: #8F2428;
+  --color-brand-graphite: #242424;
+  --color-brand-black: #141416;
+}
+
+/* Custom speed-line styling matching logo accents */
+.speed-gradient {
+  background: linear-gradient(135deg, #B43034 0%, #D4383D 60%, #E84D52 100%);
+}
+
+.graphite-pattern {
+  background-color: #18181b;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.industrial-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Diagonal slice cut styling */
+.clip-diagonal {
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+}
+
+.clip-diagonal-rev {
+  clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #18181b;
+}
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B43034;
+}

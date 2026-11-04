@@ -1,0 +1,6 @@
+{
+  "name": "Vapt Vupt Remoção de Veículos | Guincho Leve e Pesado",
+  "description": "Conheça a Vapt Vupt Remoção de Veículos. Soluções em remoção de veículos leves e pesados. Entre em contato para consultar atendimento.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
