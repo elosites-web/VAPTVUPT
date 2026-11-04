@@ -190,10 +190,10 @@ export const AboutPage: React.FC = () => {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded shadow-lg transition-colors font-heading"
+              className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg shadow-lg transition-all font-heading"
             >
-              <WhatsAppIcon className="w-4 h-4" />
-              <span>Chamar no WhatsApp ({COMPANY_CONFIG.whatsapp.display})</span>
+              <WhatsAppIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span className="whitespace-nowrap">CHAMAR NO WHATSAPP</span>
             </a>
             <Link
               to="/contato"

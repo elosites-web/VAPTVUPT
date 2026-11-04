@@ -353,10 +353,10 @@ export const Header: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full button-3d flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white font-bold uppercase tracking-tight sm:tracking-wider py-3.5 rounded-lg text-[11px] sm:text-xs shadow-xl focus:outline-none focus:ring-2 focus:ring-[#B43034] text-center leading-tight"
+                className="whatsapp-cta-button button-3d w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white font-bold uppercase tracking-wider py-3.5 rounded-lg text-xs shadow-xl focus:outline-none focus:ring-2 focus:ring-[#B43034] text-center"
               >
                 <WhatsAppIcon className="w-4 h-4 text-white fill-white shrink-0" />
-                <span className="whitespace-normal sm:whitespace-nowrap">Chamar no WhatsApp Oficial</span>
+                <span className="whitespace-nowrap">CHAMAR NO WHATSAPP</span>
               </a>
 
               <div

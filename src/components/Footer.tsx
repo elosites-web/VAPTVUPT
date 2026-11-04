@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Briefcase, ChevronRight, HelpCircle, ArrowUp } from 'lucide-react';
+import { Instagram, Facebook, Briefcase, ChevronRight, HelpCircle, ArrowUp } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { useTheme } from '../context/ThemeContext';
 import { WhatsAppIcon } from './WhatsAppIcon';
@@ -143,7 +143,7 @@ export const Footer: React.FC = () => {
                   isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
                 }`}
               >
-                <WhatsAppIcon className="w-4 h-4 text-[#B43034] shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 text-current transition-colors shrink-0" />
                 <span className="font-medium">WhatsApp: {COMPANY_CONFIG.whatsapp.display}</span>
               </a>
 
@@ -155,8 +155,20 @@ export const Footer: React.FC = () => {
                   isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
                 }`}
               >
-                <Instagram className="w-4 h-4 text-[#B43034] shrink-0" />
+                <Instagram className="w-4 h-4 text-current transition-colors shrink-0" />
                 <span className="font-medium">Instagram: {COMPANY_CONFIG.instagram.handle}</span>
+              </a>
+
+              <a
+                href={COMPANY_CONFIG.facebook.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center gap-2 transition-colors group ${
+                  isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
+                }`}
+              >
+                <Facebook className="w-4 h-4 text-current transition-colors shrink-0" />
+                <span className="font-medium">Facebook: {COMPANY_CONFIG.facebook.handle}</span>
               </a>
             </div>
 
@@ -209,37 +221,44 @@ export const Footer: React.FC = () => {
           <span>{COMPANY_CONFIG.prototype.shortNotice}</span>
         </div>
 
-        {/* Bottom Bar: Copyright, Verified Social Icons & Institutional Links */}
+        {/* Bottom Bar: Main Company Credits with Legal Links & Monochromatic Adaptive Social Icons */}
         <div
-          className={`pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-4 text-xs ${
+          className={`pt-6 border-t flex flex-col lg:flex-row items-center justify-between gap-4 text-xs ${
             isDarkMode ? 'border-neutral-800/80 text-neutral-400' : 'border-slate-200 text-slate-600'
           }`}
         >
-          <div className="text-center md:text-left">
-            © {new Date().getFullYear()} {COMPANY_CONFIG.legalName} • Controladora responsável pelos dados pessoais.
+          {/* Main Company Credits and Legal Links positioned elegantly beside them */}
+          <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 flex-wrap">
+            <span className="font-normal">
+              © {new Date().getFullYear()} {COMPANY_CONFIG.legalName}
+            </span>
+            <span className="hidden sm:inline text-neutral-400 dark:text-neutral-600 select-none">•</span>
+            <div className="flex items-center gap-2.5 font-medium">
+              <Link
+                to="/politica-de-privacidade"
+                className={`transition-colors duration-200 underline-offset-4 hover:underline ${
+                  isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
+                }`}
+              >
+                Política de Privacidade
+              </Link>
+              <span className="select-none text-neutral-400 dark:text-neutral-600">•</span>
+              <Link
+                to="/termos-de-uso"
+                className={`transition-colors duration-200 underline-offset-4 hover:underline ${
+                  isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
+                }`}
+              >
+                Termos de Uso
+              </Link>
+            </div>
           </div>
 
-          {/* Row of Verified Social Media Icons (WhatsApp & Instagram) */}
+          {/* Row of Monochromatic Social Media Icons (Adapting to Theme) */}
           <div
             className="inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-2.5 shrink-0"
-            aria-label="Canais Oficiais Verificados"
+            aria-label="Redes Sociais e Canais Oficiais"
           >
-            <a
-              href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
-                COMPANY_CONFIG.whatsapp.defaultMessage
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp Oficial"
-              title="WhatsApp Oficial"
-              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200 ease-out transform hover:-translate-y-0.5 active:translate-y-0 shrink-0 ${
-                isDarkMode
-                  ? 'bg-neutral-900/90 border-neutral-800 text-neutral-300 hover:text-white hover:border-[#B43034]'
-                  : 'bg-white border-slate-300 text-slate-700 hover:text-[#B43034] hover:border-[#B43034]'
-              }`}
-            >
-              <WhatsAppIcon className="w-4 h-4 text-[#B43034] shrink-0" />
-            </a>
             <a
               href={COMPANY_CONFIG.instagram.url}
               target="_blank"
@@ -248,53 +267,45 @@ export const Footer: React.FC = () => {
               title="Instagram Oficial"
               className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200 ease-out transform hover:-translate-y-0.5 active:translate-y-0 shrink-0 ${
                 isDarkMode
-                  ? 'bg-neutral-900/90 border-neutral-800 text-neutral-300 hover:text-white hover:border-[#B43034]'
-                  : 'bg-white border-slate-300 text-slate-700 hover:text-[#B43034] hover:border-[#B43034]'
+                  ? 'bg-neutral-900 border-neutral-800 text-neutral-200 hover:text-white hover:border-neutral-700 hover:bg-neutral-800'
+                  : 'bg-white border-slate-300 text-slate-700 hover:text-slate-950 hover:border-slate-400 hover:bg-slate-100'
               }`}
             >
-              <Instagram className="w-4 h-4 text-[#B43034] shrink-0" />
+              <Instagram className="w-4 h-4 text-current shrink-0" />
             </a>
-          </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[11px]">
-            <Link
-              to="/politica-de-privacidade"
-              className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950'}`}
+            <a
+              href={COMPANY_CONFIG.facebook.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook Oficial"
+              title="Facebook Oficial"
+              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200 ease-out transform hover:-translate-y-0.5 active:translate-y-0 shrink-0 ${
+                isDarkMode
+                  ? 'bg-neutral-900 border-neutral-800 text-neutral-200 hover:text-white hover:border-neutral-700 hover:bg-neutral-800'
+                  : 'bg-white border-slate-300 text-slate-700 hover:text-slate-950 hover:border-slate-400 hover:bg-slate-100'
+              }`}
             >
-              Política de Privacidade
-            </Link>
-            <span>•</span>
-            <Link
-              to="/termos-de-uso"
-              className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950'}`}
-            >
-              Termos de Uso
-            </Link>
-            <span>•</span>
-            <Link
-              to="/contato"
-              className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950'}`}
-            >
-              Canais Oficiais
-            </Link>
+              <Facebook className="w-4 h-4 text-current shrink-0" />
+            </a>
           </div>
         </div>
 
-        {/* Single-Line Credit: CRIADO E DESENVOLVIDO POR [logo-elosites.png] O MELHOR SITE PELO MELHOR PREÇO */}
+        {/* Single-Line Developer Credit: CRIADO E DESENVOLVIDO POR [logo-elosites.png] O MELHOR SITE PELO MELHOR PREÇO */}
         <div
           className={`mt-6 pt-4 border-t ${
             isDarkMode ? 'border-neutral-800/60' : 'border-slate-300/80'
           } w-full flex items-center justify-center overflow-x-auto`}
         >
           <div
-            className={`inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-1 sm:gap-1.5 font-bold uppercase tracking-tight sm:tracking-normal leading-none select-none ${
+            className={`inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-1 sm:gap-1.5 font-bold uppercase tracking-tight sm:tracking-normal leading-none select-none shrink-0 ${
               isDarkMode ? 'text-neutral-400' : 'text-slate-600'
             }`}
-            style={{ fontSize: 'clamp(7.5px, 2.1vw, 11px)' }}
+            style={{ fontSize: 'clamp(7.5px, 2.1vw, 11px)', whiteSpace: 'nowrap' }}
           >
             <span className="shrink-0 leading-none">CRIADO E DESENVOLVIDO POR</span>
             <a
-              href="https://elosites.io.br/"
+              href="https://elosites.ia.br"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity focus:outline-none focus:ring-1 focus:ring-[#B43034] rounded px-0.5"
@@ -309,7 +320,7 @@ export const Footer: React.FC = () => {
                   className="h-2.5 min-[360px]:h-3 sm:h-3.5 w-auto object-contain shrink-0 inline-block align-middle"
                 />
               ) : (
-                <span className={`font-bold shrink-0 leading-none ${isDarkMode ? 'text-neutral-200' : 'text-slate-800'}`}>
+                <span className={`font-bold shrink-0 leading-none uppercase ${isDarkMode ? 'text-neutral-200' : 'text-slate-800'}`}>
                   ĒLOSITES
                 </span>
               )}

@@ -8,15 +8,10 @@ import { WhatsAppIcon } from '../components/WhatsAppIcon';
 export const FAQPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('todas');
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [openItems, setOpenItems] = useState<Record<string, boolean>>({
-    'como-solicitar': true, // Open the first item by default for great UX
-  });
+  const [openItemId, setOpenItemId] = useState<string | null>('como-solicitar');
 
   const toggleItem = (id: string) => {
-    setOpenItems((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setOpenItemId((prev) => (prev === id ? null : id));
   };
 
   // Filter items based on category and search query
@@ -151,19 +146,25 @@ export const FAQPage: React.FC = () => {
           {filteredItems.length > 0 ? (
             <div className="space-y-3">
               {filteredItems.map((item) => {
-                const isOpen = Boolean(openItems[item.id]);
+                const isOpen = openItemId === item.id;
                 const categoryObj = FAQ_CATEGORIES.find((c) => c.id === item.category);
 
                 return (
                   <div
                     key={item.id}
-                    className="bg-slate-50 dark:bg-neutral-900/90 rounded-xl border border-slate-200 dark:border-neutral-800 overflow-hidden transition-colors shadow-sm"
+                    className={`rounded-xl border overflow-hidden transition-all duration-200 shadow-sm ${
+                      isOpen
+                        ? 'bg-white dark:bg-neutral-900 border-[#B43034]/40 dark:border-red-900/40 ring-1 ring-[#B43034]/15 dark:ring-red-900/20 shadow-md'
+                        : 'bg-slate-50 dark:bg-neutral-900/80 border-slate-200 dark:border-neutral-800 hover:border-slate-300 dark:hover:border-neutral-700'
+                    }`}
                   >
                     <button
+                      id={`faq-question-${item.id}`}
                       type="button"
                       onClick={() => toggleItem(item.id)}
-                      className="w-full p-5 text-left flex items-start justify-between gap-4 focus:outline-none focus:bg-slate-100 dark:focus:bg-neutral-850"
+                      className="w-full p-5 text-left flex items-start justify-between gap-4 transition-colors hover:bg-slate-100/60 dark:hover:bg-neutral-800/50 active:bg-slate-200/50 dark:active:bg-neutral-800/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B43034] focus-visible:ring-inset"
                       aria-expanded={isOpen}
+                      aria-controls={`faq-answer-${item.id}`}
                     >
                       <div className="space-y-1">
                         {categoryObj && (
@@ -171,14 +172,14 @@ export const FAQPage: React.FC = () => {
                             {categoryObj.name}
                           </span>
                         )}
-                        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug font-heading">
+                        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug font-heading transition-colors">
                           {item.question}
                         </h3>
                       </div>
                       <div
                         className={`p-1.5 rounded-full transition-transform duration-200 shrink-0 mt-1 ${
                           isOpen 
-                            ? 'rotate-180 bg-[#B43034] text-white' 
+                            ? 'rotate-180 bg-[#B43034] text-white shadow-sm' 
                             : 'bg-slate-200 dark:bg-neutral-800 text-slate-600 dark:text-neutral-300'
                         }`}
                       >
@@ -186,11 +187,18 @@ export const FAQPage: React.FC = () => {
                       </div>
                     </button>
 
-                    {isOpen && (
-                      <div className="px-5 pb-5 pt-2 text-sm text-slate-700 dark:text-neutral-300 leading-relaxed border-t border-slate-200 dark:border-neutral-800/80 animate-in fade-in duration-200">
-                        <p>{item.answer}</p>
+                    <div
+                      id={`faq-answer-${item.id}`}
+                      role="region"
+                      aria-labelledby={`faq-question-${item.id}`}
+                      className={`faq-accordion-grid ${isOpen ? 'open' : ''}`}
+                    >
+                      <div className="faq-accordion-inner">
+                        <div className="faq-answer-panel px-5 pb-5 pt-3.5 text-sm text-slate-700 dark:text-neutral-200 leading-relaxed border-t border-slate-200/80 dark:border-neutral-800/80 bg-slate-50/60 dark:bg-neutral-950/40">
+                          <p className="max-w-3xl">{item.answer}</p>
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 );
               })}
@@ -236,10 +244,10 @@ export const FAQPage: React.FC = () => {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded shadow-lg transition-colors shrink-0 font-heading"
+              className="whatsapp-cta-button button-3d inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded shadow-lg transition-colors shrink-0 font-heading"
             >
               <WhatsAppIcon className="w-4 h-4" />
-              <span>Chamar no WhatsApp Oficial</span>
+              <span>CHAMAR NO WHATSAPP</span>
             </a>
           </div>
 

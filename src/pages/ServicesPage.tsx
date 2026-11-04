@@ -52,27 +52,27 @@ export const ServicesPage: React.FC = () => {
                   }`}
                 >
                   {/* Text Details */}
-                  <div className={`lg:col-span-7 space-y-5 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+                  <div className={`lg:col-span-7 space-y-5 flex flex-col items-center text-center ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-slate-200/80 dark:bg-neutral-800 text-[11px] font-bold uppercase tracking-widest text-[#B43034]">
                       {service.tag}
                     </div>
 
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white uppercase tracking-tight font-heading">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white uppercase tracking-tight font-heading text-center">
                       {service.title}
                     </h2>
 
-                    <p className="text-slate-700 dark:text-neutral-300 text-sm sm:text-base leading-relaxed">
+                    <p className="text-slate-700 dark:text-neutral-300 text-sm sm:text-base leading-relaxed text-center max-w-2xl">
                       {service.fullDesc}
                     </p>
 
                     {service.technicalHighlights && (
-                      <div className="space-y-2 pt-2">
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-neutral-200 uppercase tracking-wider font-heading">
+                      <div className="space-y-2 pt-2 w-full max-w-xl">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-neutral-200 uppercase tracking-wider font-heading text-center">
                           Destaques do Atendimento:
                         </h4>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 dark:text-neutral-400">
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 dark:text-neutral-400 text-left">
                           {service.technicalHighlights.map((highlight, hIdx) => (
-                            <li key={hIdx} className="flex items-start gap-2">
+                            <li key={hIdx} className="flex items-start gap-2 justify-center sm:justify-start">
                               <CheckCircle2 className="w-3.5 h-3.5 text-[#B43034] mt-0.5 shrink-0" />
                               <span>{highlight}</span>
                             </li>
@@ -81,7 +81,7 @@ export const ServicesPage: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="pt-4 flex flex-wrap items-center gap-4">
+                    <div className="pt-4 flex flex-wrap items-center justify-center gap-4 w-full">
                       <Link
                         to={`/servicos/${service.slug}`}
                         className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-slate-800 dark:text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded border border-slate-300 dark:border-neutral-700 transition-colors shadow-xs"
@@ -96,7 +96,7 @@ export const ServicesPage: React.FC = () => {
                         )}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded transition-colors shadow-md font-heading"
+                        className="whatsapp-cta-button button-3d inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded transition-colors shadow-md font-heading"
                       >
                         <WhatsAppIcon className="w-4 h-4" />
                         <span>Solicitar no WhatsApp</span>

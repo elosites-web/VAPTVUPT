@@ -85,6 +85,11 @@ export const COMPANY_CONFIG = {
     url: 'https://instagram.com/vaptvuptremocao',
   },
 
+  facebook: {
+    handle: 'Vapt Vupt Remoção',
+    url: 'https://facebook.com/vaptvuptremocao',
+  },
+
   // Logos from provided official assets package
   logos: {
     horizontalWhite: '/assets/aistudio/logo-horizontal-texto-branco-para-fundo-escuro_e2ba3663.png',

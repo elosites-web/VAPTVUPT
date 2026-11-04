@@ -77,9 +77,14 @@ export const CareersPage: React.FC = () => {
           {/* Secondary Alternative: Confirmed Recruitment Email Card */}
           <div className="p-5 sm:p-7 rounded-2xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6">
             <div className="space-y-1.5 text-center md:text-left min-w-0">
-              <div className="inline-flex items-center gap-2 text-slate-700 dark:text-neutral-300 text-xs font-bold uppercase tracking-wider font-heading">
+              <div className="inline-flex items-center justify-center gap-2 text-slate-700 dark:text-neutral-300 text-xs font-bold uppercase tracking-wider font-heading">
                 <Mail className="w-4 h-4 text-[#B43034] shrink-0" />
-                <span>Canal Alternativo: Envio por E-mail</span>
+                <span className="text-center">
+                  <span>Canal Alternativo:</span>
+                  <span className="hidden sm:inline landscape:inline"> </span>
+                  <br className="br-mobile-portrait hidden" />
+                  <span>Envio por E-mail</span>
+                </span>
               </div>
               <h3 className="text-xs sm:text-sm md:text-base font-bold text-slate-900 dark:text-white font-mono break-all sm:break-normal tracking-tight">
                 {COMPANY_CONFIG.careers.email}
