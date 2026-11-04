@@ -81,7 +81,7 @@ export const ServiceDetailPage: React.FC = () => {
       {/* Main Service Content */}
       <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
             
             {/* Primary Details */}
             <div className="lg:col-span-8 space-y-10">
@@ -142,41 +142,10 @@ export const ServiceDetailPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Safety Protocols */}
-              {currentService.safetyProtocols && (
-                <div className="p-6 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded bg-slate-200 dark:bg-neutral-800 text-[#B43034]">
-                      <ShieldCheck className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wide">
-                      Cuidados Operacionais e Alinhamento
-                    </h3>
-                  </div>
-
-                  <ul className="space-y-3 pt-2">
-                    {currentService.safetyProtocols.map((protocol, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-sm text-slate-700 dark:text-neutral-300">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 shrink-0" />
-                        <span>{protocol}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Integrated Native WhatsApp Form Pre-filled for Current Service */}
-              <div className="pt-2">
-                <WhatsAppContactForm
-                  defaultServiceType={formDefaults.defaultServiceType}
-                  defaultVehicleType={formDefaults.defaultVehicleType}
-                />
-              </div>
-
             </div>
 
             {/* Sidebar with Navigation & Info */}
-            <div className="lg:col-span-4 space-y-6">
+            <div className="lg:col-span-4 space-y-6 order-last lg:order-none">
               
               {/* Direct WhatsApp Quick Box */}
               <div className="p-6 rounded-xl bg-gradient-to-br from-red-50 to-white dark:from-red-950/40 dark:to-neutral-900 border border-red-200 dark:border-red-900/40 shadow-sm space-y-3">
@@ -257,6 +226,42 @@ export const ServiceDetailPage: React.FC = () => {
                 </div>
               </div>
 
+            </div>
+
+            {/* Centered Components on Desktop: Safety Protocols & Contact Form */}
+            <div className="lg:col-span-12">
+              <div className="w-full lg:max-w-4xl lg:mx-auto space-y-10">
+                {/* Safety Protocols */}
+                {currentService.safetyProtocols && (
+                  <div className="p-6 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded bg-slate-200 dark:bg-neutral-800 text-[#B43034]">
+                        <ShieldCheck className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wide">
+                        Cuidados Operacionais e Alinhamento
+                      </h3>
+                    </div>
+
+                    <ul className="space-y-3 pt-2">
+                      {currentService.safetyProtocols.map((protocol, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-sm text-slate-700 dark:text-neutral-300">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 shrink-0" />
+                          <span>{protocol}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Integrated Native WhatsApp Form Pre-filled for Current Service */}
+                <div className="pt-2">
+                  <WhatsAppContactForm
+                    defaultServiceType={formDefaults.defaultServiceType}
+                    defaultVehicleType={formDefaults.defaultVehicleType}
+                  />
+                </div>
+              </div>
             </div>
 
           </div>

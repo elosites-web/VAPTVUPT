@@ -114,9 +114,9 @@ export const AboutPage: React.FC = () => {
 
       {/* Cadastral & Operational Governance Section */}
       <section className="py-16 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-8">
-            <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-8">
+            <div className="inline-flex items-center justify-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
               <Building className="w-4 h-4 text-[#B43034]" />
               <span>Identificação Cadastral</span>
             </div>
@@ -128,7 +128,7 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 p-6 shadow-sm max-w-3xl">
+          <div className="bg-white dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 p-6 shadow-sm max-w-3xl mx-auto">
             <div className="flex items-center justify-between mb-3">
               <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-slate-800 dark:text-white border border-slate-200 dark:border-neutral-700">
                 Razão Social & Matriz
@@ -159,7 +159,7 @@ export const AboutPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-8 p-4 rounded-xl bg-white dark:bg-neutral-900/40 border border-slate-200 dark:border-neutral-800/80 text-xs text-slate-600 dark:text-neutral-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="mt-8 p-4 rounded-xl bg-white dark:bg-neutral-900/40 border border-slate-200 dark:border-neutral-800/80 text-xs text-slate-600 dark:text-neutral-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm max-w-3xl mx-auto">
             <p>
               Para agendar transferências, vistorias de frotas ou orçamentos corporativos, utilize nossos canais oficiais de comunicação.
             </p>
