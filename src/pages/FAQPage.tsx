@@ -70,17 +70,17 @@ export const FAQPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-[#111113] border-b border-neutral-800">
+      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3">
               <span className="w-6 h-0.5 bg-[#B43034]" />
               <span>Central de Dúvidas</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase leading-tight">
+            <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-tight font-heading">
               Perguntas Frequentes (FAQ)
             </h1>
-            <p className="mt-3 text-base text-neutral-300 leading-relaxed">
+            <p className="mt-3 text-base text-slate-600 dark:text-neutral-300 leading-relaxed">
               Esclarecimentos transparentes sobre nossos procedimentos operacionais, tipos de veículos atendidos, formas de pagamento e prazos.
             </p>
           </div>
@@ -88,12 +88,12 @@ export const FAQPage: React.FC = () => {
       </section>
 
       {/* Main FAQ Section */}
-      <section className="py-16 bg-[#141416] border-b border-neutral-800">
+      <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Search Bar */}
           <div className="relative mb-8">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-neutral-500">
               <Search className="w-5 h-5" />
             </div>
             <input
@@ -101,13 +101,13 @@ export const FAQPage: React.FC = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Digite sua dúvida (ex: câmbio automático, pesados, pagamento, prazos)..."
-              className="w-full pl-11 pr-4 py-3.5 bg-neutral-900 border border-neutral-800 rounded-xl text-white placeholder-neutral-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:border-transparent transition-all shadow-inner"
+              className="w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-800 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder-neutral-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:border-transparent transition-all shadow-sm"
             />
             {searchTerm && (
               <button
                 type="button"
                 onClick={() => setSearchTerm('')}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-xs text-neutral-400 hover:text-white"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-xs text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
               >
                 Limpar
               </button>
@@ -119,10 +119,10 @@ export const FAQPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setSelectedCategory('todas')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shrink-0 transition-colors ${
+              className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shrink-0 transition-colors font-heading ${
                 selectedCategory === 'todas'
                   ? 'bg-[#B43034] text-white shadow-md'
-                  : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                  : 'bg-slate-100 dark:bg-neutral-900 text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-neutral-800'
               }`}
             >
               Todas ({FAQ_ITEMS.length})
@@ -134,10 +134,10 @@ export const FAQPage: React.FC = () => {
                   key={cat.id}
                   type="button"
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shrink-0 transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shrink-0 transition-colors font-heading ${
                     selectedCategory === cat.id
                       ? 'bg-[#B43034] text-white shadow-md'
-                      : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                      : 'bg-slate-100 dark:bg-neutral-900 text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-neutral-800'
                   }`}
                 >
                   {cat.name} ({count})
@@ -156,12 +156,12 @@ export const FAQPage: React.FC = () => {
                 return (
                   <div
                     key={item.id}
-                    className="bg-neutral-900/90 rounded-xl border border-neutral-800 overflow-hidden transition-colors"
+                    className="bg-slate-50 dark:bg-neutral-900/90 rounded-xl border border-slate-200 dark:border-neutral-800 overflow-hidden transition-colors shadow-sm"
                   >
                     <button
                       type="button"
                       onClick={() => toggleItem(item.id)}
-                      className="w-full p-5 text-left flex items-start justify-between gap-4 focus:outline-none focus:bg-neutral-850"
+                      className="w-full p-5 text-left flex items-start justify-between gap-4 focus:outline-none focus:bg-slate-100 dark:focus:bg-neutral-850"
                       aria-expanded={isOpen}
                     >
                       <div className="space-y-1">
@@ -170,13 +170,15 @@ export const FAQPage: React.FC = () => {
                             {categoryObj.name}
                           </span>
                         )}
-                        <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
+                        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug font-heading">
                           {item.question}
                         </h3>
                       </div>
                       <div
-                        className={`p-1.5 rounded-full bg-neutral-800 text-neutral-300 transition-transform duration-200 shrink-0 mt-1 ${
-                          isOpen ? 'rotate-180 bg-[#B43034] text-white' : ''
+                        className={`p-1.5 rounded-full transition-transform duration-200 shrink-0 mt-1 ${
+                          isOpen 
+                            ? 'rotate-180 bg-[#B43034] text-white' 
+                            : 'bg-slate-200 dark:bg-neutral-800 text-slate-600 dark:text-neutral-300'
                         }`}
                       >
                         <ChevronDown className="w-4 h-4" />
@@ -184,7 +186,7 @@ export const FAQPage: React.FC = () => {
                     </button>
 
                     {isOpen && (
-                      <div className="px-5 pb-5 pt-1 text-sm text-neutral-300 leading-relaxed border-t border-neutral-800/80 animate-in fade-in duration-200">
+                      <div className="px-5 pb-5 pt-2 text-sm text-slate-700 dark:text-neutral-300 leading-relaxed border-t border-slate-200 dark:border-neutral-800/80 animate-in fade-in duration-200">
                         <p>{item.answer}</p>
                       </div>
                     )}
@@ -193,10 +195,10 @@ export const FAQPage: React.FC = () => {
               })}
             </div>
           ) : (
-            <div className="p-10 text-center bg-neutral-900 rounded-xl border border-neutral-800 space-y-3">
-              <HelpCircle className="w-8 h-8 text-neutral-500 mx-auto" />
-              <h4 className="text-white font-bold text-base">Nenhuma pergunta encontrada para sua busca</h4>
-              <p className="text-xs text-neutral-400">
+            <div className="p-10 text-center bg-slate-50 dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 space-y-3 shadow-sm">
+              <HelpCircle className="w-8 h-8 text-neutral-400 mx-auto" />
+              <h4 className="text-slate-900 dark:text-white font-bold text-base font-heading">Nenhuma pergunta encontrada para sua busca</h4>
+              <p className="text-xs text-slate-600 dark:text-neutral-400">
                 Tente buscar com outros termos ou fale diretamente com nossa equipe no WhatsApp para tirar dúvidas específicas.
               </p>
               <button
@@ -213,16 +215,16 @@ export const FAQPage: React.FC = () => {
           )}
 
           {/* Direct Support WhatsApp Box */}
-          <div className="mt-12 p-8 rounded-2xl bg-neutral-900 border border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="mt-12 p-8 rounded-2xl bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-wider font-heading">
                 <Phone className="w-3.5 h-3.5" />
                 <span>Dúvida específica não listada?</span>
               </div>
-              <h3 className="text-xl font-bold text-white">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white font-heading">
                 Fale Diretamente com Nosso Suporte Operacional
               </h3>
-              <p className="text-xs text-neutral-400 max-w-md">
+              <p className="text-xs text-slate-600 dark:text-neutral-400 max-w-md">
                 Nossa equipe esclarece condições de rotas, cotações para frotistas e dúvidas técnicas em tempo real via WhatsApp.
               </p>
             </div>
@@ -233,7 +235,7 @@ export const FAQPage: React.FC = () => {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded shadow-lg transition-colors shrink-0"
+              className="inline-flex items-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded shadow-lg transition-colors shrink-0 font-heading"
             >
               <MessageCircle className="w-4 h-4" />
               <span>Chamar no WhatsApp Oficial</span>

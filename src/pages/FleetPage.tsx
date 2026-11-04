@@ -15,17 +15,17 @@ export const FleetPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-[#111113] border-b border-neutral-800">
+      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3">
               <span className="w-6 h-0.5 bg-[#B43034]" />
               <span>Infraestrutura e Equipamentos</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase leading-tight">
+            <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-tight font-heading">
               Estrutura & Frota Operacional
             </h1>
-            <p className="mt-3 text-base text-neutral-300 leading-relaxed">
+            <p className="mt-3 text-base text-slate-600 dark:text-neutral-300 leading-relaxed">
               Equipamentos dimensionados para garantir estabilidade, segurança mecânica e agilidade em ocorrências de veículos leves e pesados.
             </p>
           </div>
@@ -33,13 +33,13 @@ export const FleetPage: React.FC = () => {
       </section>
 
       {/* Real Photos Fleet Section */}
-      <section className="py-16 bg-[#141416] border-b border-neutral-800">
+      <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
               Veículos em Operação (Fotografias Reais)
             </h2>
-            <p className="mt-2 text-sm text-neutral-400">
+            <p className="mt-2 text-sm text-slate-600 dark:text-neutral-400">
               Registros autênticos de nossas unidades em campo. Clique em qualquer imagem para ampliar em alta definição.
             </p>
           </div>
@@ -48,11 +48,11 @@ export const FleetPage: React.FC = () => {
             {COMPANY_CONFIG.fleet.map((item) => (
               <div
                 key={item.id}
-                className="bg-neutral-900 rounded-2xl border border-neutral-800 overflow-hidden flex flex-col group hover:border-neutral-700 transition-all duration-300 shadow-xl"
+                className="bg-slate-50 dark:bg-neutral-900 rounded-2xl border border-slate-200 dark:border-neutral-800 overflow-hidden flex flex-col group hover:border-red-400/50 dark:hover:border-neutral-700 transition-all duration-300 shadow-md hover:shadow-xl"
               >
                 {/* Photo with hover button */}
                 <div
-                  className="relative h-64 overflow-hidden bg-neutral-950 cursor-pointer"
+                  className="relative h-64 overflow-hidden bg-slate-100 dark:bg-neutral-950 cursor-pointer flex items-center justify-center"
                   onClick={() => setSelectedPhoto(item)}
                 >
                   <img
@@ -60,13 +60,13 @@ export const FleetPage: React.FC = () => {
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-neutral-950/20 group-hover:bg-neutral-950/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-200">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-neutral-900/90 text-white text-xs font-semibold border border-neutral-700 shadow-lg">
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-200">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-semibold border border-slate-700 shadow-lg">
                       <Eye className="w-3.5 h-3.5 text-[#B43034]" />
                       <span>Ampliar Fotografia</span>
                     </span>
                   </div>
-                  <div className="absolute top-3 left-3 bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-neutral-800">
+                  <div className="absolute top-3 left-3 bg-slate-900/90 dark:bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-slate-700 dark:border-neutral-800">
                     {item.badge}
                   </div>
                 </div>
@@ -74,19 +74,19 @@ export const FleetPage: React.FC = () => {
                 {/* Details */}
                 <div className="p-6 flex-grow flex flex-col justify-between space-y-4">
                   <div>
-                    <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">
+                    <div className="text-[11px] font-mono text-slate-500 dark:text-neutral-500 uppercase tracking-wider mb-1">
                       {item.category}
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
-                    <p className="text-neutral-300 text-xs sm:text-sm leading-relaxed mb-4">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 font-heading">{item.title}</h3>
+                    <p className="text-slate-600 dark:text-neutral-300 text-xs sm:text-sm leading-relaxed mb-4">
                       {item.description}
                     </p>
 
-                    <div className="space-y-2 border-t border-neutral-800 pt-3">
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+                    <div className="space-y-2 border-t border-slate-200 dark:border-neutral-800 pt-3">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-neutral-400">
                         Características Técnicas:
                       </div>
-                      <ul className="space-y-1.5 text-xs text-neutral-400">
+                      <ul className="space-y-1.5 text-xs text-slate-600 dark:text-neutral-400">
                         {item.features.map((feature, fIdx) => (
                           <li key={fIdx} className="flex items-start gap-2">
                             <CheckCircle2 className="w-3.5 h-3.5 text-[#B43034] mt-0.5 shrink-0" />
@@ -97,11 +97,11 @@ export const FleetPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-neutral-800 flex items-center justify-between">
+                  <div className="pt-4 border-t border-slate-200 dark:border-neutral-800 flex items-center justify-between">
                     <button
                       type="button"
                       onClick={() => setSelectedPhoto(item)}
-                      className="text-xs font-semibold text-neutral-400 hover:text-white flex items-center gap-1 transition-colors"
+                      className="text-xs font-semibold text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1 transition-colors"
                     >
                       <Eye className="w-3.5 h-3.5 text-[#B43034]" />
                       <span>Ver Foto Completa</span>
@@ -113,7 +113,7 @@ export const FleetPage: React.FC = () => {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#B43034] hover:text-red-400 uppercase tracking-wider"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#B43034] hover:text-red-700 dark:hover:text-red-400 uppercase tracking-wider font-heading"
                     >
                       <span>Consultar</span>
                       <ChevronRight className="w-3.5 h-3.5" />

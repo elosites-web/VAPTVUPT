@@ -4,6 +4,7 @@ import { MessageCircle, ArrowRight, ShieldCheck, Truck, Car, ShieldAlert, Award,
 import { COMPANY_CONFIG } from '../data/companyData';
 import { SEOHead } from '../components/SEOHead';
 import { WhatsAppContactForm } from '../components/WhatsAppContactForm';
+import { ZigZagItem, ZigZagHeading, ZigZagContainer } from '../components/ZigZagMotion';
 
 export const Home: React.FC = () => {
   const verifiedServices = COMPANY_CONFIG.services.filter((s) => !s.isPendingConfirmation);
@@ -16,9 +17,9 @@ export const Home: React.FC = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 bg-[#141416] overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 bg-[#141416] overflow-hidden keep-dark" data-keep-dark="true">
         {/* Background Image with Dark Vignette */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <img
             src={COMPANY_CONFIG.heroImage}
             alt="Cavalo mecânico 1635 Vapt Vupt"
@@ -43,8 +44,8 @@ export const Home: React.FC = () => {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed max-w-2xl">
-              Estrutura operacional dedicada ao transporte, guincho e resgate de <strong>veículos leves e pesados</strong>. Atendimento técnico com zelo pelo patrimônio e rigor operacional.
+            <p className="text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl">
+              Estrutura operacional dedicada ao transporte, guincho e resgate de <strong className="text-white">veículos leves e pesados</strong>. Atendimento técnico com zelo pelo patrimônio e rigor operacional.
             </p>
 
             {/* CTAs */}
@@ -63,7 +64,7 @@ export const Home: React.FC = () => {
 
               <Link
                 to="/servicos"
-                className="inline-flex items-center justify-center gap-2 bg-neutral-900/80 hover:bg-neutral-800 text-white text-sm font-semibold px-5 py-3.5 rounded-md border border-neutral-700/80 transition-colors backdrop-blur-sm"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-sm font-bold px-5 py-3.5 rounded-md border border-white/30 transition-all backdrop-blur-md shadow-lg"
               >
                 <span>Conhecer Nossos Serviços</span>
                 <ArrowRight className="w-4 h-4 text-[#B43034]" />
@@ -71,7 +72,7 @@ export const Home: React.FC = () => {
             </div>
 
             {/* Quick Fact Badges */}
-            <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-neutral-800/80 text-xs text-neutral-300">
+            <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-neutral-700/80 text-xs text-neutral-200">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#B43034] shrink-0" />
                 <span>Plataformas Hidráulicas</span>
@@ -91,7 +92,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Institutional Overview Teaser */}
-      <section className="py-20 bg-[#161618] border-b border-neutral-800">
+      <section className="py-20 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
@@ -101,35 +102,35 @@ export const Home: React.FC = () => {
                 <span>Apresentação Institucional</span>
               </div>
 
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
                 Capacidade Técnica e Compromisso Operacional
               </h2>
 
-              <p className="text-neutral-300 text-base leading-relaxed">
-                A <strong>Vapt Vupt Remoção de Veículos</strong> atua com foco na prestação de serviços de transporte e guincho para automóveis, utilitários, frotas e veículos comerciais pesados.
+              <p className="text-slate-700 dark:text-neutral-300 text-base leading-relaxed">
+                A <strong className="text-slate-900 dark:text-white">Vapt Vupt Remoção de Veículos</strong> atua com foco na prestação de serviços de transporte e guincho para automóveis, utilitários, frotas e veículos comerciais pesados.
               </p>
 
-              <p className="text-neutral-400 text-sm leading-relaxed">
+              <p className="text-slate-600 dark:text-neutral-400 text-sm leading-relaxed">
                 Nossa atuação é pautada por rigor operacional, preservação patrimonial do veículo removido e comunicação transparente com o cliente, dimensionando sempre o equipamento ideal para a complexidade da ocorrência.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-lg bg-neutral-900 border border-neutral-800">
-                  <div className="w-8 h-8 rounded bg-red-950/60 border border-red-900/60 flex items-center justify-center text-[#B43034] mb-3">
+                <div className="p-4 rounded-lg bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm">
+                  <div className="w-8 h-8 rounded bg-red-100 dark:bg-red-950/60 border border-red-200 dark:border-red-900/60 flex items-center justify-center text-[#B43034] mb-3">
                     <Car className="w-4 h-4" />
                   </div>
-                  <h4 className="text-white font-bold text-sm mb-1">Veículos Leves</h4>
-                  <p className="text-neutral-400 text-xs">
+                  <h4 className="text-slate-900 dark:text-white font-bold text-sm mb-1">Veículos Leves</h4>
+                  <p className="text-slate-600 dark:text-neutral-400 text-xs">
                     Plataformas basculantes para automóveis e utilitários sem atrito com o solo.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-neutral-900 border border-neutral-800">
-                  <div className="w-8 h-8 rounded bg-red-950/60 border border-red-900/60 flex items-center justify-center text-[#B43034] mb-3">
+                <div className="p-4 rounded-lg bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm">
+                  <div className="w-8 h-8 rounded bg-red-100 dark:bg-red-950/60 border border-red-200 dark:border-red-900/60 flex items-center justify-center text-[#B43034] mb-3">
                     <Truck className="w-4 h-4" />
                   </div>
-                  <h4 className="text-white font-bold text-sm mb-1">Veículos Pesados</h4>
-                  <p className="text-neutral-400 text-xs">
+                  <h4 className="text-slate-900 dark:text-white font-bold text-sm mb-1">Veículos Pesados</h4>
+                  <p className="text-slate-600 dark:text-neutral-400 text-xs">
                     Cavalo mecânico e recursos para operações com caminhões e cargas de grande porte.
                   </p>
                 </div>
@@ -138,7 +139,7 @@ export const Home: React.FC = () => {
               <div className="pt-2">
                 <Link
                   to="/empresa"
-                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#B43034] hover:text-red-400 transition-colors"
+                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#B43034] hover:text-red-700 dark:hover:text-red-400 transition-colors"
                 >
                   <span>Conhecer mais sobre a empresa e infraestrutura</span>
                   <ArrowRight className="w-4 h-4" />
@@ -147,14 +148,14 @@ export const Home: React.FC = () => {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="relative rounded-2xl overflow-hidden border border-neutral-700/80 shadow-2xl group">
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-2xl group bg-slate-100 dark:bg-neutral-950">
                 <img
                   src={COMPANY_CONFIG.fleet[1].image}
                   alt="Plataforma de veículos leves Vapt Vupt"
                   className="w-full h-80 sm:h-96 object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141416] via-transparent to-transparent opacity-80" />
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-neutral-900/90 backdrop-blur-md border border-neutral-800">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90" />
+                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-slate-900/90 dark:bg-neutral-900/90 backdrop-blur-md border border-slate-700/80 dark:border-neutral-800">
                   <div className="text-xs font-bold uppercase tracking-wider text-[#B43034]">
                     Operação em Campo
                   </div>
@@ -170,21 +171,21 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Featured Services Section */}
-      <section className="py-20 bg-[#141416] border-b border-neutral-800">
+      <section className="py-20 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-            <div>
-              <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2">
+            <ZigZagHeading from="left">
+              <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
                 <span className="w-6 h-0.5 bg-[#B43034]" />
                 <span>Modalidades de Atendimento</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
                 Serviços Especializados
               </h2>
-            </div>
+            </ZigZagHeading>
             <Link
               to="/servicos"
-              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-300 hover:text-white"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               <span>Ver todos os serviços</span>
               <ArrowRight className="w-4 h-4 text-[#B43034]" />
@@ -192,27 +193,28 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {verifiedServices.map((service) => (
-              <div
+            {verifiedServices.map((service, index) => (
+              <ZigZagItem
                 key={service.id}
-                className="bg-neutral-900/90 rounded-xl border border-neutral-800 p-6 flex flex-col justify-between hover:border-neutral-700 transition-all duration-300 hover:shadow-xl"
+                index={index}
+                className="bg-slate-50 dark:bg-neutral-900/90 rounded-xl border border-slate-200 dark:border-neutral-800 p-6 flex flex-col justify-between hover:border-red-400/50 dark:hover:border-neutral-700 transition-all duration-300 shadow-sm hover:shadow-xl"
               >
                 <div>
                   <div className="text-[11px] font-bold uppercase tracking-widest text-[#B43034] mb-3">
                     {service.tag}
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 font-heading">
                     {service.title}
                   </h3>
-                  <p className="text-neutral-400 text-sm leading-relaxed mb-6">
+                  <p className="text-slate-600 dark:text-neutral-400 text-sm leading-relaxed mb-6">
                     {service.shortDesc}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-neutral-800 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-200 dark:border-neutral-800 flex items-center justify-between">
                   <Link
                     to={`/servicos/${service.slug}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white hover:text-[#B43034] transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white hover:text-[#B43034] transition-colors"
                   >
                     <span>Detalhes Técnicos</span>
                     <ArrowRight className="w-3.5 h-3.5 text-[#B43034]" />
@@ -224,34 +226,34 @@ export const Home: React.FC = () => {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded transition-colors"
+                    className="p-2 text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-neutral-800 rounded transition-colors"
                     title={`Consultar ${service.title} no WhatsApp`}
                   >
                     <MessageCircle className="w-4 h-4 text-[#B43034]" />
                   </a>
                 </div>
-              </div>
+              </ZigZagItem>
             ))}
           </div>
         </div>
       </section>
 
       {/* Fleet Showcase Teaser */}
-      <section className="py-20 bg-[#161618] border-b border-neutral-800">
+      <section className="py-20 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-            <div>
-              <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2">
+            <ZigZagHeading from="left">
+              <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
                 <span className="w-6 h-0.5 bg-[#B43034]" />
                 <span>Equipamentos e Fotografias Reais</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
                 Nossa Frota Operacional
               </h2>
-            </div>
+            </ZigZagHeading>
             <Link
               to="/frota"
-              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-300 hover:text-white"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               <span>Ver galeria completa e simulação 3D</span>
               <ArrowRight className="w-4 h-4 text-[#B43034]" />
@@ -259,72 +261,74 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {COMPANY_CONFIG.fleet.map((item) => (
-              <div
+            {COMPANY_CONFIG.fleet.map((item, index) => (
+              <ZigZagItem
                 key={item.id}
-                className="bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden flex flex-col group"
+                index={index}
+                className="bg-white dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 overflow-hidden flex flex-col group shadow-md hover:shadow-xl hover:border-red-400/50 dark:hover:border-neutral-700 transition-all"
               >
-                <div className="relative h-56 overflow-hidden bg-neutral-950">
+                <div className="relative h-56 overflow-hidden bg-slate-100 dark:bg-neutral-950 flex items-center justify-center">
                   <img
                     src={item.image}
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute top-3 left-3 bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-neutral-800">
+                  <div className="absolute top-3 left-3 bg-slate-900/90 dark:bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-slate-700 dark:border-neutral-800">
                     {item.badge}
                   </div>
                 </div>
                 <div className="p-5 flex-grow flex flex-col justify-between">
                   <div>
-                    <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                    <p className="text-neutral-400 text-xs leading-relaxed mb-4">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 font-heading">{item.title}</h3>
+                    <p className="text-slate-600 dark:text-neutral-400 text-xs leading-relaxed mb-4">
                       {item.description}
                     </p>
                   </div>
-                  <div className="pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs">
-                    <span className="text-neutral-500 font-medium">{item.category}</span>
+                  <div className="pt-3 border-t border-slate-200 dark:border-neutral-800/80 flex items-center justify-between text-xs">
+                    <span className="text-slate-500 dark:text-neutral-500 font-medium">{item.category}</span>
                     <Link
                       to="/frota"
-                      className="text-[#B43034] font-semibold hover:text-red-400 flex items-center gap-1"
+                      className="text-[#B43034] font-semibold hover:text-red-700 dark:hover:text-red-400 flex items-center gap-1"
                     >
                       <span>Inspecionar</span>
                       <ArrowRight className="w-3 h-3" />
                     </Link>
                   </div>
                 </div>
-              </div>
+              </ZigZagItem>
             ))}
           </div>
         </div>
       </section>
 
       {/* How to Request Steps */}
-      <section className="py-20 bg-[#141416] border-b border-neutral-800">
+      <section className="py-20 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2">
+          <ZigZagHeading from="center" className="text-center max-w-2xl mx-auto mb-14">
+            <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-2 font-heading">
               <span>Fluxo Transparente</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight uppercase font-heading">
               Como Solicitar Atendimento
             </h2>
-            <p className="mt-2 text-sm text-neutral-400">
+            <p className="mt-2 text-sm text-slate-600 dark:text-neutral-400">
               Atendimento ágil pelo WhatsApp oficial, com dimensionamento adequado do equipamento.
             </p>
-          </div>
+          </ZigZagHeading>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {COMPANY_CONFIG.steps.map((step) => (
-              <div
+            {COMPANY_CONFIG.steps.map((step, index) => (
+              <ZigZagItem
                 key={step.number}
-                className="bg-neutral-900/70 p-6 rounded-xl border border-neutral-800 relative"
+                index={index}
+                className="bg-slate-50 dark:bg-neutral-900/70 p-6 rounded-xl border border-slate-200 dark:border-neutral-800 relative shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="text-3xl font-black text-[#B43034] font-mono mb-3">
                   {step.number}
                 </div>
-                <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
-                <p className="text-xs text-neutral-400 leading-relaxed">{step.desc}</p>
-              </div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 font-heading">{step.title}</h3>
+                <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">{step.desc}</p>
+              </ZigZagItem>
             ))}
           </div>
 
@@ -345,7 +349,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Integrated Native Contact Form */}
-      <section className="py-20 bg-[#161618] border-b border-neutral-800">
+      <section className="py-20 bg-slate-50 dark:bg-[#161618] border-b border-slate-200 dark:border-neutral-800 transition-colors">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <WhatsAppContactForm />
         </div>

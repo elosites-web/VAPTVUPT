@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR" class="scroll-smooth light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +8,38 @@
       name="description"
       content="Conheça a Vapt Vupt Remoção de Veículos. Soluções em remoção de veículos leves e pesados. Entre em contato para consultar atendimento."
     />
+
+    <!-- Inicialização Imediata do Modo de Tema -->
+    <script>
+      (function() {
+        var savedTheme = null;
+        try {
+          savedTheme = localStorage.getItem('vaptvupt-theme-mode') || localStorage.getItem('vaptvupt-theme');
+        } catch(e) {}
+        var isDark = true;
+        if (savedTheme === 'light') {
+          isDark = false;
+        } else if (savedTheme === 'dark') {
+          isDark = true;
+        } else if (savedTheme === 'auto' && window.matchMedia) {
+          isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        } else {
+          // If no stored preference, check document class
+          isDark = document.documentElement.classList.contains('dark');
+        }
+
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.classList.add('light');
+          document.documentElement.classList.remove('dark');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
     <!-- Favicons Oficiais da Marca Vapt Vupt -->
     <link id="app-favicon" rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicons/favicon-192x192.png" />
@@ -38,11 +70,10 @@
           if (isHighPriority) {
             targetHref = BRAND_FAVICONS.priority;
           } else {
-            var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            targetHref = prefersDark ? BRAND_FAVICONS.dark : BRAND_FAVICONS.light;
+            var isDark = document.documentElement.classList.contains('dark');
+            targetHref = isDark ? BRAND_FAVICONS.dark : BRAND_FAVICONS.light;
           }
 
-          // Atualiza o link principal com id app-favicon e quaisquer outros links de ícone
           var primaryFavicon = document.getElementById('app-favicon');
           if (primaryFavicon) {
             primaryFavicon.href = targetHref;
@@ -62,7 +93,9 @@
           applyFavicon();
         };
 
-        // Escuta alterações de tema do sistema operacional/navegador
+        // Escuta alterações de tema do app e sistema
+        window.addEventListener('themechange', applyFavicon);
+
         if (window.matchMedia) {
           var colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
           if (colorSchemeQuery.addEventListener) {
@@ -128,7 +161,7 @@
       }
     </script>
   </head>
-  <body class="bg-[#18181b] text-neutral-100 antialiased selection:bg-[#B43034] selection:text-white">
+  <body class="bg-white text-slate-900 dark:bg-[#18181b] dark:text-neutral-100 antialiased selection:bg-[#B43034] selection:text-white transition-colors duration-200">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

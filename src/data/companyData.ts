@@ -96,7 +96,7 @@ export const COMPANY_CONFIG = {
       fullDesc: 'Equipamentos apropriados para a movimentação e transporte de automóveis de passeio, veículos comerciais leves e utilitários, garantindo preservação integral do veículo durante o procedimento de içamento e transporte em plataforma.',
       iconName: 'Car',
       tag: 'Veículos Leves & Utilitários',
-      image: '/assets/aistudio/img_1_1793732293699_2308579c.jpg',
+      image: '/fotos/guincho-leve-delivery-carregando-veiculo.png',
       isPendingConfirmation: false,
       technicalHighlights: [
         'Plataforma hidráulica basculante com sistema de recuo horizontal e inclinação suave',
@@ -119,7 +119,7 @@ export const COMPANY_CONFIG = {
       fullDesc: 'Operação especializada com cavalos mecânicos e guinchos de alta capacidade para remoção, destombamento ou transferência de veículos comerciais pesados, caminhões e conjuntos com rigor operacional.',
       iconName: 'Truck',
       tag: 'Caminhões & Veículos Pesados',
-      image: '/assets/aistudio/AIRetouch_20261103_160523027_bc27114e.jpg',
+      image: '/fotos/caminhao-cavalo-1635.jpg',
       isPendingConfirmation: false,
       technicalHighlights: [
         'Cavalo mecânico 1635 dedicado para tração de cargas e conjuntos pesados',
@@ -142,7 +142,7 @@ export const COMPANY_CONFIG = {
       fullDesc: 'Abordagem estruturada para atender ocorrências operacionais, transferência veicular programada e demandas corporativas com suporte dedicado e equipamentos compatíveis com a complexidade da carga.',
       iconName: 'ShieldAlert',
       tag: 'Operação Especializada',
-      image: '/assets/aistudio/img_2_1793732339465_917a2240.jpg',
+      image: '/fotos/cavalo-mecanico-atron-com-bau.png',
       isPendingConfirmation: false,
       technicalHighlights: [
         'Remoção programada para transferência de veículos entre concessionárias e pátios',
@@ -179,7 +179,7 @@ export const COMPANY_CONFIG = {
       category: 'Remoção Pesada',
       badge: 'Estrutura Operacional',
       description: 'Equipamento robusto preparado para operações de tração, resgate técnico e transporte de veículos pesados.',
-      image: '/assets/aistudio/AIRetouch_20261103_160523027_bc27114e.jpg',
+      image: '/fotos/caminhao-cavalo-1635.jpg',
       features: ['Identificação visual padrão', 'Chassi reforçado', 'Capacidade para veículos de grande porte'],
     },
     {
@@ -187,8 +187,8 @@ export const COMPANY_CONFIG = {
       title: 'Plataforma para Veículos Leves',
       category: 'Remoção Leve',
       badge: 'Transporte Seguro',
-      description: 'Caminhão com plataforma hidráulica basculante e guincho de arraste para movimentação suave de automóveis.',
-      image: '/assets/aistudio/img_1_1793732293699_2308579c.jpg',
+      description: 'Caminhão VW Delivery com plataforma hidráulica basculante e guincho de arraste para movimentação suave de automóveis.',
+      image: '/fotos/guincho-leve-delivery-carregando-veiculo.png',
       features: ['Plataforma hidráulica basculante', 'Cintas de amarração específicas', 'Carregamento sem danos ao veículo'],
     },
     {
@@ -196,8 +196,8 @@ export const COMPANY_CONFIG = {
       title: 'Caminhão Pesado de Operações',
       category: 'Logística de Transporte',
       badge: 'Alta Capacidade',
-      description: 'Unidade desenvolvida para o transporte seguro e remoção de cargas pesadas com equipe treinada.',
-      image: '/assets/aistudio/img_2_1793732339465_917a2240.jpg',
+      description: 'Unidade MB Atron desenvolvida para o transporte seguro e remoção de cargas pesadas com equipe treinada.',
+      image: '/fotos/cavalo-mecanico-atron-com-bau.png',
       features: ['Suporte a trajetos rodoviários', 'Estrutura reforçada', 'Operação técnica'],
     },
   ] as FleetItem[],

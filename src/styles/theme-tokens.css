@@ -1,0 +1,57 @@
+/* ==========================================================================
+   UNIFIED CSS VARIABLE UTILITY & THEME TOKENS
+   Vapt Vupt Remoção de Veículos
+   ========================================================================== */
+
+:root {
+  /* Institutional Brand Core Colors */
+  --color-brand-red: #B43034;
+  --color-brand-red-dark: #8F2428;
+  --color-brand-red-light: #E53E3E;
+  --color-brand-graphite: #242424;
+  --color-brand-black: #141416;
+
+  /* Semantic Theme Tokens - Default Light Mode (☀️) */
+  --bg-surface-base: #f8fafc;
+  --bg-surface-card: #ffffff;
+  --bg-surface-muted: #f1f5f9;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-inset: #f8fafc;
+  
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-accent: rgba(180, 48, 52, 0.35);
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Semantic Theme Tokens - Dark Mode (🌙) */
+html.dark, :root.dark {
+  --color-brand-red: #B43034;
+  --color-brand-red-dark: #8F2428;
+  --color-brand-red-light: #E53E3E;
+  --color-brand-graphite: #242424;
+  --color-brand-black: #141416;
+
+  --bg-surface-base: #141416;
+  --bg-surface-card: #18181b;
+  --bg-surface-muted: #111113;
+  --bg-surface-elevated: #1f1f23;
+  --bg-surface-inset: #0d0d0f;
+
+  --border-subtle: #27272a;
+  --border-strong: #3f3f46;
+  --border-accent: rgba(180, 48, 52, 0.45);
+
+  --text-primary: #ffffff;
+  --text-secondary: #d4d4d8;
+  --text-muted: #a1a1aa;
+  --text-inverse: #0f172a;
+
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+}

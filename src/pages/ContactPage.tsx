@@ -14,17 +14,17 @@ export const ContactPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-[#111113] border-b border-neutral-800">
+      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3">
               <span className="w-6 h-0.5 bg-[#B43034]" />
               <span>Canais Oficiais</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase leading-tight">
+            <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-tight">
               Fale Conosco
             </h1>
-            <p className="mt-3 text-base text-neutral-300 leading-relaxed">
+            <p className="mt-3 text-base text-slate-600 dark:text-neutral-300 leading-relaxed">
               Atendimento técnico direto pelo canal oficial do WhatsApp. Envie as informações do seu veículo para consultar condições e disponibilidade operacional.
             </p>
           </div>
@@ -32,7 +32,7 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* Main Contact Section */}
-      <section className="py-16 bg-[#141416] border-b border-neutral-800">
+      <section className="py-16 bg-white dark:bg-[#141416] border-b border-slate-200 dark:border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
@@ -45,19 +45,19 @@ export const ContactPage: React.FC = () => {
             <div className="lg:col-span-5 space-y-6">
               
               {/* Direct WhatsApp Call */}
-              <div className="p-6 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-4">
+              <div className="p-6 rounded-2xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-xl bg-red-950/80 text-[#B43034] border border-red-900/60">
+                  <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/80 text-[#B43034] border border-red-200 dark:border-red-900/60">
                     <Phone className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">Canal WhatsApp Oficial</h3>
-                    <p className="text-xs text-neutral-400">Atendimento operacional</p>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">Canal WhatsApp Oficial</h3>
+                    <p className="text-xs text-slate-500 dark:text-neutral-400">Atendimento operacional</p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 text-center">
-                  <div className="text-xl font-bold font-mono text-white mb-2">
+                <div className="p-4 rounded-xl bg-white dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 text-center shadow-inner">
+                  <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mb-2">
                     {COMPANY_CONFIG.whatsapp.display}
                   </div>
                   <a
@@ -75,14 +75,14 @@ export const ContactPage: React.FC = () => {
               </div>
 
               {/* Instagram */}
-              <div className="p-6 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-4">
+              <div className="p-6 rounded-2xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-xl bg-neutral-800 text-[#B43034]">
+                  <div className="p-3 rounded-xl bg-slate-100 dark:bg-neutral-800 text-[#B43034]">
                     <Instagram className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">Instagram Institucional</h3>
-                    <p className="text-xs text-neutral-400">Acompanhe nossas operações</p>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">Instagram Institucional</h3>
+                    <p className="text-xs text-slate-500 dark:text-neutral-400">Acompanhe nossas operações</p>
                   </div>
                 </div>
 
@@ -90,20 +90,20 @@ export const ContactPage: React.FC = () => {
                   href={COMPANY_CONFIG.instagram.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block p-3.5 rounded-xl bg-neutral-950 border border-neutral-800 text-center text-sm font-semibold text-neutral-200 hover:text-white hover:border-neutral-700 transition-colors"
+                  className="block p-3.5 rounded-xl bg-white dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 text-center text-sm font-semibold text-slate-800 dark:text-neutral-200 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700 transition-colors shadow-sm"
                 >
                   {COMPANY_CONFIG.instagram.handle}
                 </a>
               </div>
 
               {/* Registration & Governance Notice */}
-              <div className="p-6 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-3 text-xs text-neutral-400">
-                <div className="flex items-center gap-2 text-white font-bold text-xs uppercase tracking-wider">
+              <div className="p-6 rounded-2xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm space-y-3 text-xs text-slate-600 dark:text-neutral-400">
+                <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
                   <Building className="w-4 h-4 text-[#B43034]" />
                   <span>Governança e Transparência</span>
                 </div>
                 <p>
-                  <strong className="text-neutral-200">{COMPANY_CONFIG.legalName}</strong>
+                  <strong className="text-slate-800 dark:text-neutral-200">{COMPANY_CONFIG.legalName}</strong>
                 </p>
                 <p>
                   Nossos registros em São Paulo (Matriz), Campinas e Jundiaí destinam-se a controle administrativo e base operacional. Os atendimentos são realizados mediante acionamento das equipes móveis via WhatsApp.

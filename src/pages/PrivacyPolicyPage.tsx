@@ -13,29 +13,29 @@ export const PrivacyPolicyPage: React.FC = () => {
       />
 
       {/* Header Banner */}
-      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-[#111113] border-b border-neutral-800">
+      <section className="pt-8 sm:pt-10 pb-12 sm:pb-14 bg-slate-100 dark:bg-[#111113] border-b border-slate-200 dark:border-neutral-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="inline-flex items-center gap-2 text-[#B43034] text-xs font-bold uppercase tracking-widest mb-3 font-heading">
             <Shield className="w-4 h-4 text-[#B43034]" />
             <span>Transparência e Conformidade LGPD</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase leading-tight font-heading">
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-tight font-heading">
             Política de Privacidade
           </h1>
 
-          <p className="mt-3 text-sm sm:text-base text-neutral-300 leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-neutral-300 leading-relaxed">
             Este documento esclarece como a <strong>{COMPANY_CONFIG.legalName}</strong> trata as informações fornecidas por você ao navegar no site ou utilizar nossos canais de atendimento.
           </p>
 
-          <div className="mt-4 text-xs text-neutral-500 font-mono">
+          <div className="mt-4 text-xs text-slate-500 dark:text-neutral-500 font-mono">
             Última atualização: {COMPANY_CONFIG.privacy.lastUpdated}
           </div>
         </div>
       </section>
 
       {/* Main Legal Content */}
-      <section className="py-16 bg-[#141416] text-neutral-300">
+      <section className="py-16 bg-white dark:bg-[#141416] text-slate-700 dark:text-neutral-300">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 leading-relaxed text-sm sm:text-base">
           
           {/* 1. Identificação do Controlador */}
