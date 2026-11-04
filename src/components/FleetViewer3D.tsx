@@ -14,6 +14,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { BrandSpinner, useDelayedLoadingState } from './BrandSpinner';
 
 export type TruckModelType = 'guincho-leve' | 'cavalo-1635';
 export type CameraPresetType = 'geral' | 'plataforma' | 'cabine';
@@ -32,6 +33,16 @@ export const FleetViewer3D: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState<TruckModelType>('guincho-leve');
   const [activePreset, setActivePreset] = useState<CameraPresetType>('geral');
   const [webGlSupported, setWebGlSupported] = useState<boolean>(true);
+  const [isSceneReady, setIsSceneReady] = useState<boolean>(false);
+
+  const { visible: showSceneSpinner } = useDelayedLoadingState(
+    webGlSupported && !isSceneReady,
+    {
+      delayMs: 180,
+      maxWaitMs: 6000,
+      onTimeout: () => setIsSceneReady(true),
+    }
+  );
 
   // Platform operation cycle progress (0 to 100%) for Guincho Leve
   const [cycleProgress, setCycleProgress] = useState<number>(65);
@@ -1123,29 +1134,34 @@ export const FleetViewer3D: React.FC = () => {
     };
     controls.addEventListener('change', handleControlChange);
 
-    // Apply initial platform pose and start loop
+    // Apply initial platform pose, render first frame, and start loop
     applyPlatformKinematics(2.5, ((0.65 - 0.35) / 0.65) * 16.0);
     currentSlide = 2.5;
     currentTilt = ((0.65 - 0.35) / 0.65) * 16.0;
+    renderer.render(scene, camera);
+    setIsSceneReady(true);
     wakeLoop();
 
     // Pause rendering when viewer scrolls out of viewport
-    const intersectionObserver = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          isInViewport = entry.isIntersecting;
-          if (entry.isIntersecting) {
-            wakeLoop();
-          } else if (isLoopRunning) {
-            cancelAnimationFrame(frameId);
-            clearTimeout(frameId);
-            isLoopRunning = false;
+    let intersectionObserver: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver === 'function') {
+      intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            isInViewport = entry.isIntersecting;
+            if (entry.isIntersecting) {
+              wakeLoop();
+            } else if (isLoopRunning) {
+              cancelAnimationFrame(frameId);
+              clearTimeout(frameId);
+              isLoopRunning = false;
+            }
           }
-        }
-      },
-      { threshold: 0.05 }
-    );
-    intersectionObserver.observe(container);
+        },
+        { threshold: 0.05 }
+      );
+      intersectionObserver.observe(container);
+    }
 
     // Pause rendering when browser tab is inactive
     const handleVisibilityChange = () => {
@@ -1163,26 +1179,29 @@ export const FleetViewer3D: React.FC = () => {
     // Dynamic ResizeObserver (debounced slightly for smooth mobile address-bar resize)
     let lastWidth = width;
     let lastHeight = height;
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width: w, height: h } = entry.contentRect;
-        if (w > 0 && h > 0 && (Math.abs(w - lastWidth) > 1 || Math.abs(h - lastHeight) > 1)) {
-          lastWidth = w;
-          lastHeight = h;
-          renderer.setSize(w, h);
-          syncCameraTargets(activePresetRef.current, !isCameraTransitioningRef.current);
-          renderer.render(scene, camera);
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver === 'function') {
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const { width: w, height: h } = entry.contentRect;
+          if (w > 0 && h > 0 && (Math.abs(w - lastWidth) > 1 || Math.abs(h - lastHeight) > 1)) {
+            lastWidth = w;
+            lastHeight = h;
+            renderer.setSize(w, h);
+            syncCameraTargets(activePresetRef.current, !isCameraTransitioningRef.current);
+            renderer.render(scene, camera);
+          }
         }
-      }
-    });
-    resizeObserver.observe(container);
+      });
+      resizeObserver.observe(container);
+    }
 
     // Full Deterministic Cleanup on Unmount
     return () => {
       wakeRenderLoopRef.current = null;
       updateCameraTargetsRef.current = null;
-      intersectionObserver.disconnect();
-      resizeObserver.disconnect();
+      intersectionObserver?.disconnect();
+      resizeObserver?.disconnect();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       controls.removeEventListener('start', handleControlStart);
       controls.removeEventListener('change', handleControlChange);
@@ -1395,10 +1414,26 @@ export const FleetViewer3D: React.FC = () => {
           {/* WebGL Canvas Viewport Area — Dynamic responsive height & 100% free of overlaid buttons */}
           <div className="relative w-full h-[clamp(300px,48svh,430px)] sm:h-[clamp(400px,56vh,520px)] lg:h-[540px] overflow-hidden select-none">
             {webGlSupported ? (
-              <div
-                ref={mountRef}
-                className="w-full h-full cursor-grab active:cursor-grabbing touch-none"
-              />
+              <>
+                <div
+                  ref={mountRef}
+                  className="w-full h-full cursor-grab active:cursor-grabbing touch-none"
+                />
+                {showSceneSpinner && (
+                  <div
+                    className={`absolute inset-0 z-10 flex items-center justify-center backdrop-blur-xs pointer-events-none ${
+                      isDarkMode ? 'bg-neutral-950/85' : 'bg-slate-100/85'
+                    }`}
+                  >
+                    <BrandSpinner
+                      label="Carregando demonstração interativa 3D da frota..."
+                      caption="Carregando visualização 3D..."
+                      size="lg"
+                      tone="auto"
+                    />
+                  </div>
+                )}
+              </>
             ) : (
               <div
                 className={`w-full h-full flex flex-col items-center justify-center p-8 text-center space-y-4 ${

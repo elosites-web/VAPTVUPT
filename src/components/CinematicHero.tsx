@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Car, Truck, CheckCircle2, ChevronDown, RotateCcw } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
+import { BrandSpinner, useDelayedLoadingState } from './BrandSpinner';
+import { computeDesktopParallaxOffset } from '../utils/uxPolish';
 
 interface CinematicHeroProps {
   onScrollToForm?: () => void;
@@ -24,6 +26,7 @@ const getInitialReducedMotion = (): boolean => {
 export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const parallaxBackdropRef = useRef<HTMLDivElement>(null);
   const contentOverlayRef = useRef<HTMLDivElement>(null);
   const darkVignetteRef = useRef<HTMLDivElement>(null);
   const logoStageRef = useRef<HTMLDivElement>(null);
@@ -36,8 +39,21 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const [isReducedMotion, setIsReducedMotion] = useState<boolean>(getInitialReducedMotion);
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [posterLoaded, setPosterLoaded] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
   const [videoDuration, setVideoDuration] = useState<number>(6.334);
+
+  // Delayed bounded loading indicator while Hero media initializes on slow connections
+  const isHeroMediaLoading = !isReducedMotion && !videoFailed && !videoReady;
+  const { visible: showHeroSpinner } = useDelayedLoadingState(isHeroMediaLoading, {
+    delayMs: 240,
+    maxWaitMs: 10000,
+    onTimeout: () => {
+      if (!videoRef.current || videoRef.current.readyState < 1) {
+        setVideoFailed(true);
+      }
+    },
+  });
 
   // Synchronization refs (avoiding React re-renders during high-frequency scroll)
   const videoDurationRef = useRef<number>(6.334);
@@ -114,6 +130,30 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
       }
     }
 
+    // 3b. Subtle Desktop-Only Decorative Background Parallax (independent of <video>)
+    if (parallaxBackdropRef.current) {
+      const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+      const isFinePointer =
+        typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(pointer: fine)').matches &&
+        !window.matchMedia('(pointer: coarse)').matches &&
+        (typeof navigator === 'undefined' || navigator.maxTouchPoints === 0);
+
+      const parallax = computeDesktopParallaxOffset({
+        progress: prog,
+        viewportWidth,
+        isFinePointer,
+        isReducedMotion,
+        isMediaFallback: videoFailed,
+        maxShiftPx: 14,
+      });
+
+      parallaxBackdropRef.current.style.transform = parallax.enabled
+        ? `translate3d(0, ${parallax.translateY}px, 0)`
+        : 'none';
+    }
+
     // 4. Logo Reveal Stage (Active exclusively on the genuine white ending from prog >= 0.89)
     if (logoStageRef.current) {
       if (prog < 0.89) {
@@ -173,7 +213,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         finalCardRef.current.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
       }
     }
-  }, []);
+  }, [isReducedMotion, videoFailed]);
 
   /**
    * Hardware-accurate seek execution:
@@ -579,6 +619,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             <img
               src="/hero-poster.jpg"
               alt="Caminhões Vapt Vupt"
+              onLoad={() => setPosterLoaded(true)}
               onError={() => setPosterFailed(true)}
               className="absolute inset-0 w-full h-full object-cover object-center select-none"
             />
@@ -588,11 +629,48 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
           )}
         </div>
 
+        {/* Centered Area Loading Feedback when Hero media takes noticeable time */}
+        {showHeroSpinner && !posterLoaded && !posterFailed && (
+          <div className="absolute inset-0 z-15 flex items-center justify-center pointer-events-none px-4">
+            <div className="bg-black/75 backdrop-blur-md border border-white/15 rounded-2xl px-6 py-4 shadow-2xl">
+              <BrandSpinner
+                label="Carregando apresentação visual da Vapt Vupt..."
+                caption="Carregando apresentação..."
+                size="lg"
+                tone="dark"
+              />
+            </div>
+          </div>
+        )}
+
+        {showHeroSpinner && (posterLoaded || posterFailed) && (
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+            <div className="bg-black/70 backdrop-blur-md border border-white/15 rounded-full px-3.5 py-1.5 shadow-lg flex items-center justify-center">
+              <BrandSpinner
+                label="Preparando vídeo interativo..."
+                size="sm"
+                tone="dark"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Dynamic Dark Vignette Overlay: Fades smoothly as footage reaches the white scene */}
         <div
           ref={darkVignetteRef}
           className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-150"
         >
+          {/* Subtle Desktop-Only Decorative Ambient Depth Layer (independent of <video>) */}
+          <div
+            ref={parallaxBackdropRef}
+            aria-hidden="true"
+            className="hidden lg:block absolute -inset-6 pointer-events-none will-change-transform"
+            style={{
+              backgroundImage:
+                'radial-gradient(circle at 76% 30%, rgba(180, 48, 52, 0.16) 0%, rgba(180, 48, 52, 0.04) 38%, transparent 66%), radial-gradient(circle at 22% 78%, rgba(226, 232, 240, 0.07) 0%, transparent 52%), linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px)',
+              backgroundSize: '100% 100%, 100% 100%, 48px 48px, 48px 48px',
+            }}
+          />
           {/* Top subtle vignette ensuring Header contrast */}
           <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-black/85 via-black/45 to-transparent" />
           {/* Main directional vignette keeping left-side text sharp and cinematic */}

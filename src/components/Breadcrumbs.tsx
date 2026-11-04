@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ChevronRight, Truck, ShieldAlert, Car, ArrowLeft } from 'lucide-react';
+import { Home, ChevronRight, ArrowLeft } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
+import { resolveRouteBreadcrumbLabel } from '../utils/uxPolish';
 
 interface CrumbItem {
   label: string;
@@ -76,8 +77,8 @@ export const Breadcrumbs: React.FC = () => {
         });
       }
     } else {
-      // Other standard routes
-      const label = routeNameMap[rootSegment] || rootSegment;
+      // Other standard routes (unknown routes resolve cleanly to 'Página Não Encontrada')
+      const label = resolveRouteBreadcrumbLabel(rootSegment, routeNameMap, 'Página Não Encontrada');
       crumbs.push({
         label,
         path: `/${rootSegment}`,

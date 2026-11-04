@@ -139,6 +139,7 @@ export const Home: React.FC = () => {
               <ZigZagItem
                 key={service.id}
                 index={index}
+                direction="up"
                 className="bg-slate-50 dark:bg-neutral-900/90 rounded-xl border border-slate-200 dark:border-neutral-800 p-6 flex flex-col justify-between hover:border-red-400/50 dark:hover:border-neutral-700 transition-all duration-300 shadow-sm hover:shadow-xl"
               >
                 <div>
