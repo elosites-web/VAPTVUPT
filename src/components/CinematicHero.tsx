@@ -40,6 +40,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const [videoDuration, setVideoDuration] = useState<number>(6.334);
 
   // Synchronization refs (avoiding React re-renders during high-frequency scroll)
+  const videoDurationRef = useRef<number>(6.334);
   const targetProgressRef = useRef<number>(0);
   const currentProgressRef = useRef<number>(0);
   const rafIdRef = useRef<number | null>(null);
@@ -178,20 +179,35 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
    * Hardware-accurate seek execution:
    * Since hero-scrub.mp4 is 100% intra-frame encoded (all 152 frames are keyframes),
    * standard currentTime assignment seeks instantly without inter-frame decoding overhead.
-   * If a seek is currently in-flight, the latest requested timestamp is buffered and
-   * executed as soon as the seeked event fires.
+   * If the video is not yet ready (readyState < 2) or a seek is currently in-flight,
+   * the latest requested timestamp is buffered and executed as soon as the media is ready or seeked.
    */
   const performSeek = useCallback((targetTime: number) => {
     const video = videoRef.current;
-    if (!video || video.readyState < 2) return;
+    if (!video) return;
 
+    // Retain latest requested position if video is not ready for seeking yet (readyState < 2)
+    if (video.readyState < 2) {
+      pendingSeekRef.current = targetTime;
+      return;
+    }
+
+    // Buffer the latest requested timestamp if another seek is already in progress
     if (video.seeking) {
       pendingSeekRef.current = targetTime;
       return;
     }
 
+    // Enforce paused state so video never starts autonomous playback
+    if (!video.paused) {
+      video.pause();
+    }
+
     try {
-      video.currentTime = targetTime;
+      pendingSeekRef.current = null;
+      if (Math.abs(video.currentTime - targetTime) > 0.001) {
+        video.currentTime = targetTime;
+      }
     } catch {
       // Graceful fallback if browser throws on seeking
     }
@@ -199,10 +215,31 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
   // Event handler when video completes seeking to requested frame
   const handleSeeked = useCallback(() => {
-    if (pendingSeekRef.current !== null) {
-      const nextTime = pendingSeekRef.current;
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Enforce paused state
+    if (!video.paused) {
+      video.pause();
+    }
+
+    // Determine latest target time from current scroll progress
+    const dur = videoDurationRef.current;
+    const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
+    const prog = targetProgressRef.current;
+    const latestTargetTime =
+      prog <= 0
+        ? 0
+        : prog >= 1
+          ? maxSafeTime
+          : Math.min(maxSafeTime, Math.max(0, prog * dur));
+
+    // If there was a pending seek while seeking was in-flight, OR if user scrolled to a newer position
+    if (pendingSeekRef.current !== null || Math.abs(video.currentTime - latestTargetTime) > 0.005) {
       pendingSeekRef.current = null;
-      performSeek(nextTime);
+      performSeek(latestTargetTime);
+    } else {
+      pendingSeekRef.current = null;
     }
   }, [performSeek]);
 
@@ -222,14 +259,15 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
     // 2. Hardware-accurate video seek
     const video = videoRef.current;
-    if (video && videoDuration) {
-      const maxSafeTime = videoDuration > 0.05 ? videoDuration - 0.04 : videoDuration;
+    const dur = videoDurationRef.current;
+    if (video && dur > 0) {
+      const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
       const targetTime =
-        prog === 0
+        prog <= 0
           ? 0
-          : prog === 1
+          : prog >= 1
             ? maxSafeTime
-            : Math.min(maxSafeTime, Math.max(0, prog * videoDuration));
+            : Math.min(maxSafeTime, Math.max(0, prog * dur));
 
       performSeek(targetTime);
     }
@@ -238,7 +276,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     if (targetProgressRef.current !== currentProgressRef.current) {
       rafIdRef.current = requestAnimationFrame(syncToScrollProgress);
     }
-  }, [videoDuration, applyProgressStyles, performSeek]);
+  }, [applyProgressStyles, performSeek]);
 
   // Handle scroll events with zero React re-renders
   const handleScroll = useCallback(() => {
@@ -282,24 +320,33 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
+      if (videoRef.current && !videoRef.current.paused) {
+        videoRef.current.pause();
+      }
+      pendingSeekRef.current = null;
     };
   }, [isReducedMotion, videoFailed, handleScroll]);
 
-  // Video loaded metadata handler: reads exact duration and synchronizes immediately to current scroll position
-  const handleLoadedMetadata = () => {
+  // Video loaded metadata handler: reads exact duration and prepares initial layout
+  const handleLoadedMetadata = useCallback(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || videoFailed) return;
 
-    const dur = video.duration && !isNaN(video.duration) ? video.duration : 6.334;
+    const dur =
+      video.duration && !isNaN(video.duration) && isFinite(video.duration) && video.duration > 0
+        ? video.duration
+        : 6.334;
+    videoDurationRef.current = dur;
     setVideoDuration(dur);
-    setVideoReady(true);
 
     // Enforce pause so video never autoplays independently
-    video.pause();
+    if (!video.paused) {
+      video.pause();
+    }
 
     // Check if user is already scrolled into the Hero when metadata finishes loading
     const track = trackRef.current;
-    let initialProg = 0;
+    let initialProg = targetProgressRef.current;
     if (track) {
       const rect = track.getBoundingClientRect();
       const trackHeight = track.offsetHeight;
@@ -316,27 +363,75 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
     const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
     const initialTime =
-      initialProg === 0
+      initialProg <= 0
         ? 0
-        : initialProg === 1
+        : initialProg >= 1
           ? maxSafeTime
           : Math.min(maxSafeTime, Math.max(0, initialProg * dur));
 
-    try {
-      video.currentTime = initialTime;
-    } catch {
-      // Graceful fallback
+    // If frames are already decoded (readyState >= 2), seek and reveal video.
+    // Otherwise buffer timestamp in pendingSeekRef so handleMediaReady executes it on loadeddata/canplay.
+    if (video.readyState >= 2) {
+      setVideoReady(true);
+      performSeek(initialTime);
+    } else {
+      pendingSeekRef.current = initialTime;
     }
-  };
+  }, [videoFailed, applyProgressStyles, performSeek]);
 
-  const handleVideoError = () => {
+  // Video media readiness handler: runs on loadeddata / canplay when first frame is guaranteed available
+  const handleMediaReady = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || videoFailed) return;
+
+    // Enforce pause so video never autoplays independently
+    if (!video.paused) {
+      video.pause();
+    }
+
+    const dur =
+      video.duration && !isNaN(video.duration) && isFinite(video.duration) && video.duration > 0
+        ? video.duration
+        : videoDurationRef.current;
+    videoDurationRef.current = dur;
+    setVideoDuration(dur);
+    setVideoReady(true);
+
+    // Compute target time for current scroll progress
+    const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
+    const prog = targetProgressRef.current;
+    const targetTime =
+      prog <= 0
+        ? 0
+        : prog >= 1
+          ? maxSafeTime
+          : Math.min(maxSafeTime, Math.max(0, prog * dur));
+
+    pendingSeekRef.current = null;
+    performSeek(targetTime);
+  }, [videoFailed, performSeek]);
+
+  // Immediate check for cached video on mount
+  useEffect(() => {
+    if (isReducedMotion || videoFailed) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.readyState >= 2) {
+      handleMediaReady();
+    } else if (video.readyState >= 1) {
+      handleLoadedMetadata();
+    }
+  }, [isReducedMotion, videoFailed, handleMediaReady, handleLoadedMetadata]);
+
+  const handleVideoError = useCallback(() => {
     setVideoFailed(true);
     if (rafIdRef.current) {
       cancelAnimationFrame(rafIdRef.current);
       rafIdRef.current = null;
     }
     pendingSeekRef.current = null;
-  };
+  }, []);
 
   // Replay helper: smoothly scrolls back to the beginning of the track
   const handleReplay = () => {
@@ -467,6 +562,8 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             muted
             preload="auto"
             onLoadedMetadata={handleLoadedMetadata}
+            onLoadedData={handleMediaReady}
+            onCanPlay={handleMediaReady}
             onError={handleVideoError}
             onSeeked={handleSeeked}
             onPlay={(e) => {
