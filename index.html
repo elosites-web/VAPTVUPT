@@ -10,24 +10,15 @@
       content="Protótipo visual demonstrativo e proposta comercial para a Vapt Vupt Remoção de Veículos. Soluções em remoção de veículos leves e pesados."
     />
 
-    <!-- Inicialização Imediata do Modo de Tema (Automático por horário local: 06:00-17:59 Dia / 18:00-05:59 Noite) -->
+    <!-- Inicialização Imediata do Modo de Tema (Sempre carrega em modo Automático por padrão: 06:00-17:59 Dia / 18:00-05:59 Noite) -->
     <script>
       (function() {
-        var savedTheme = null;
         try {
-          savedTheme = localStorage.getItem('vaptvupt-theme-mode') || localStorage.getItem('vaptvupt-theme');
+          localStorage.removeItem('vaptvupt-theme-mode');
+          localStorage.removeItem('vaptvupt-theme');
         } catch(e) {}
         var hour = new Date().getHours();
-        var isNightByClock = (hour >= 18 || hour < 6);
-        var isDark = isNightByClock;
-        if (savedTheme === 'light') {
-          isDark = false;
-        } else if (savedTheme === 'dark') {
-          isDark = true;
-        } else {
-          // 'auto' ou sem preferência manual salva -> segue horário local (06h-17h59 Dia / 18h-05h59 Noite)
-          isDark = isNightByClock;
-        }
+        var isDark = (hour >= 18 || hour < 6);
 
         if (isDark) {
           document.documentElement.classList.add('dark');

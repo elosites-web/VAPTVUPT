@@ -24,21 +24,20 @@ export function isLocalNightTime(date: Date = new Date()): boolean {
 }
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<ThemeMode>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-        if (stored === 'light' || stored === 'dark' || stored === 'auto') {
-          return stored;
-        }
-      } catch {
-        // Ignore storage access errors
-      }
-    }
-    return 'auto'; // Automático por padrão quando não houver escolha manual salva
-  });
+  // Carrega sempre com o modo 'auto' (Automático) por padrão ao abrir o site
+  const [theme, setThemeState] = useState<ThemeMode>('auto');
 
   const [clockIsDark, setClockIsDark] = useState<boolean>(() => isLocalNightTime());
+
+  // Limpa chaves antigas do localStorage para garantir que o carregamento inicial seja sempre Automático
+  useEffect(() => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('vaptvupt-theme');
+    } catch {
+      // Ignore storage access errors
+    }
+  }, []);
 
   // Reavalia periodicamente o horário local para atualizar automaticamente ao cruzar 06:00 ou 18:00
   useEffect(() => {
@@ -96,11 +95,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const setTheme = (newTheme: ThemeMode) => {
     setThemeState(newTheme);
-    try {
-      localStorage.setItem(STORAGE_KEY, newTheme);
-    } catch {
-      // Ignore storage errors (private mode, etc.)
-    }
   };
 
   const toggleTheme = () => {
