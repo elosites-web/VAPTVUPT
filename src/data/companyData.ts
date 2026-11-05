@@ -168,7 +168,7 @@ export const COMPANY_CONFIG = {
     verticalWhite: '/logo-vertical-original.png',
     verticalOriginal: '/logo-vertical-original.png',
     symbolOriginal: '/logo-simbolo-original.png',
-    symbolWhite: '/logo-simbolo-original.png',
+    symbolWhite: '/vaptvupt-dark.png',
     favicon: '/favicon-32x32.png',
   },
 

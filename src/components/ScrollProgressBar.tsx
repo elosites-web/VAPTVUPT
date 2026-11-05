@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { computeScrollProgressPercentage } from '../utils/uxPolish';
 
 /**
  * ScrollProgressBar - Barra de progresso de leitura/rolagem
- * Posicionada no topo absoluto da página (z-[60]).
+ * Posicionada acima da barra principal do cabeçalho (z-[75], acima do Header z-[70] e abaixo do aviso de protótipo).
  * 
  * Gradientes dinâmicos conforme especificação:
  * - Modo escuro: Vermelho, cinza, branco com brilho prata
@@ -19,38 +20,38 @@ export const ScrollProgressBar: React.FC = () => {
 
   // Cálculo da porcentagem de rolagem sincronizado com requestAnimationFrame
   useEffect(() => {
-    let ticking = false;
+    let rafId: number | null = null;
 
     const calculateScroll = () => {
+      rafId = null;
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-
-      if (docHeight <= 0) {
-        setProgress(0);
-        return;
-      }
-
-      const percent = (scrollTop / docHeight) * 100;
-      setProgress(Math.min(100, Math.max(0, percent)));
-      ticking = false;
+      const percent = computeScrollProgressPercentage(
+        scrollTop,
+        document.documentElement.scrollHeight,
+        window.innerHeight
+      );
+      setProgress(percent);
     };
 
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(calculateScroll);
-        ticking = true;
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(calculateScroll);
       }
     };
 
+    calculateScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll, { passive: true });
 
-    const timer = setTimeout(calculateScroll, 100);
+    const timer = window.setTimeout(calculateScroll, 100);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
-      clearTimeout(timer);
+      window.clearTimeout(timer);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
     };
   }, [location.pathname]);
 
@@ -79,7 +80,7 @@ export const ScrollProgressBar: React.FC = () => {
 
   return (
     <div
-      className="fixed top-[24px] sm:top-[25px] left-0 right-0 z-[60] h-[3.5px] pointer-events-none overflow-hidden"
+      className="fixed top-[25px] left-0 right-0 z-[75] h-[3.5px] pointer-events-none overflow-hidden"
       role="progressbar"
       aria-label="Progresso de leitura da página"
       aria-valuenow={Math.round(progress)}

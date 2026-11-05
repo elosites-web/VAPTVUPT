@@ -1,17 +1,46 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Car, Truck, CheckCircle2, ChevronDown, RotateCcw } from 'lucide-react';
+import { ArrowRight, Car, Truck, ChevronDown, RotateCcw } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { BrandSpinner, useDelayedLoadingState } from './BrandSpinner';
-import { computeDesktopParallaxOffset, isHeroVideoFrameReady, MOBILE_PORTRAIT_MEDIA_QUERY, resolveHeroVideoSource } from '../utils/uxPolish';
+import { BrandLogoHorizontal } from './BrandLogoHorizontal';
+import {
+  computeDesktopParallaxOffset,
+  computeHeroVideoTargetTime,
+  HERO_VIDEO_DEFAULT_DURATION_SECONDS,
+  isHeroVideoFrameReady,
+  MOBILE_PORTRAIT_MEDIA_QUERY,
+  resolveHeroPosterSource,
+  resolveHeroVideoErrorAction,
+  resolveHeroVideoSource,
+  shouldExecuteHeroVideoSeek,
+  shouldRevealHeroVideoImmediately,
+} from '../utils/uxPolish';
 
 interface CinematicHeroProps {
   onScrollToForm?: () => void;
 }
 
-const DESKTOP_VIDEO_SRC = '/assets/video/hero-scrub.mp4';
-const MOBILE_VIDEO_SRC = '/assets/video/hero-scrub-mobile.mp4';
+const DESKTOP_VIDEO_SRC = resolveHeroVideoSource(false);
+const MOBILE_VIDEO_SRC = resolveHeroVideoSource(true);
+
+const INITIAL_LOGO_STAGE_STYLE: React.CSSProperties = {
+  opacity: 0,
+  visibility: 'hidden',
+};
+const INITIAL_SYMBOL_STAGE_STYLE: React.CSSProperties = {
+  opacity: 0,
+  transform: 'scale(0.85)',
+};
+const INITIAL_WORDMARK_STAGE_STYLE: React.CSSProperties = {
+  opacity: 0,
+  transform: 'translateX(20px)',
+};
+const INITIAL_FINAL_CARD_STYLE: React.CSSProperties = {
+  opacity: 0,
+  transform: 'translateY(12px)',
+};
 
 /**
  * Synchronously determine prefers-reduced-motion to avoid any layout flash
@@ -55,7 +84,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const [videoSrc, setVideoSrc] = useState<string>(() =>
     resolveHeroVideoSource(getInitialMobilePortrait())
   );
-  const posterSrc = isMobilePortrait ? '/hero-poster-mobile.jpg' : '/hero-poster.jpg';
+  const posterSrc = resolveHeroPosterSource(isMobilePortrait);
 
   // Motion and fallback states
   const [isReducedMotion, setIsReducedMotion] = useState<boolean>(getInitialReducedMotion);
@@ -63,18 +92,37 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const [videoFailed, setVideoFailed] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
-  const [videoDuration, setVideoDuration] = useState<number>(7.792);
+
+  // Synchronization refs (avoiding React re-renders during high-frequency scroll)
+  const metadataLoadedRef = useRef<boolean>(false);
+  const videoDurationRef = useRef<number>(HERO_VIDEO_DEFAULT_DURATION_SECONDS);
+  const targetProgressRef = useRef<number>(0);
+  const currentProgressRef = useRef<number>(0);
+  const rafIdRef = useRef<number | null>(null);
+  const pendingSeekRef = useRef<number | null>(null);
+  const lastRequestedSeekTimeRef = useRef<number | null>(null);
+  const seekStartedAtRef = useRef<number>(0);
+  const revealTimerRef = useRef<number | null>(null);
+  const prevVideoSrcRef = useRef<string>(videoSrc);
+  const prevPosterSrcRef = useRef<string>(posterSrc);
+  const failedVideoSourcesRef = useRef<Set<string>>(new Set());
 
   // Delayed bounded loading indicator while Hero media initializes on slow connections
   const isHeroMediaLoading = !isReducedMotion && !videoFailed && !videoReady;
   const { visible: showHeroSpinner } = useDelayedLoadingState(isHeroMediaLoading, {
     delayMs: 240,
     maxWaitMs: 10000,
+    resetKey: videoSrc,
     onTimeout: () => {
+      if (revealTimerRef.current !== null) {
+        window.clearTimeout(revealTimerRef.current);
+        revealTimerRef.current = null;
+      }
       if (isHeroVideoFrameReady(videoRef.current?.readyState)) {
         setVideoReady(true);
         return;
       }
+      failedVideoSourcesRef.current.add(videoSrc);
       setVideoFailed(true);
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
@@ -83,13 +131,6 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
       pendingSeekRef.current = null;
     },
   });
-
-  // Synchronization refs (avoiding React re-renders during high-frequency scroll)
-  const videoDurationRef = useRef<number>(7.792);
-  const targetProgressRef = useRef<number>(0);
-  const currentProgressRef = useRef<number>(0);
-  const rafIdRef = useRef<number | null>(null);
-  const pendingSeekRef = useRef<number | null>(null);
 
   // Media query listener for prefers-reduced-motion
   useEffect(() => {
@@ -116,15 +157,14 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
     const handler = (e: MediaQueryListEvent | MediaQueryList) => {
       const isPortrait = e.matches;
+      const nextPoster = resolveHeroPosterSource(isPortrait);
+      if (prevPosterSrcRef.current !== nextPoster) {
+        prevPosterSrcRef.current = nextPoster;
+        setPosterLoaded(false);
+      }
       setIsMobilePortrait(isPortrait);
-      const nextSrc = resolveHeroVideoSource(isPortrait);
-      setVideoSrc((prev) => {
-        if (prev !== nextSrc) {
-          setVideoReady(false);
-          return nextSrc;
-        }
-        return prev;
-      });
+      setPosterFailed(false);
+      setVideoSrc(resolveHeroVideoSource(isPortrait));
     };
 
     // Initial check
@@ -138,17 +178,6 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
       return () => mediaQuery.removeListener(handler);
     }
   }, []);
-
-  // Keep <video> element in sync when videoSrc changes (e.g. orientation or window resize)
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.getAttribute('src') !== videoSrc) {
-      setVideoReady(false);
-      video.src = videoSrc;
-      video.load();
-    }
-  }, [videoSrc]);
 
   /**
    * Apply code-driven opacities and transforms aligned with the genuine footage:
@@ -286,38 +315,67 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   }, [isReducedMotion, videoFailed]);
 
   /**
-   * Hardware-accurate seek execution:
-   * Since hero-scrub.mp4 is 100% intra-frame encoded (all 152 frames are keyframes),
-   * standard currentTime assignment seeks instantly without inter-frame decoding overhead.
-   * If the video is not yet ready (readyState < 2) or a seek is currently in-flight,
-   * the latest requested timestamp is buffered and executed as soon as the media is ready or seeked.
+   * Computes normalized scroll progress (0..1) from track geometry.
+   */
+  const readCurrentTrackProgress = useCallback((): number => {
+    const track = trackRef.current;
+    if (!track || typeof window === 'undefined') {
+      return targetProgressRef.current;
+    }
+
+    const rect = track.getBoundingClientRect();
+    const scrollDistance = track.offsetHeight - window.innerHeight;
+    if (scrollDistance <= 0) {
+      return targetProgressRef.current;
+    }
+
+    return Math.max(0, Math.min(1, -rect.top / scrollDistance));
+  }, []);
+
+  /**
+   * Scroll-synchronized seek execution with B/P-frame PTS quantization protection:
+   * Buffers latest requested timestamp while decoding or seeking, and avoids redundant
+   * currentTime rewrites caused by frame PTS snapping on 24fps H.264 streams.
    */
   const performSeek = useCallback((targetTime: number) => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Retain latest requested position if video is not ready for seeking yet (readyState < 2)
-    if (video.readyState < 2) {
+    if (!metadataLoadedRef.current || video.readyState < 2) {
       pendingSeekRef.current = targetTime;
       return;
     }
 
-    // Buffer the latest requested timestamp if another seek is already in progress
-    if (video.seeking) {
+    const seekElapsedMs =
+      seekStartedAtRef.current > 0 ? performance.now() - seekStartedAtRef.current : 0;
+    const decision = shouldExecuteHeroVideoSeek({
+      currentTime: video.currentTime,
+      targetTime,
+      durationSeconds: videoDurationRef.current,
+      lastRequestedSeekTime: lastRequestedSeekTimeRef.current,
+      isSeeking: video.seeking,
+      seekElapsedMs,
+    });
+
+    if (decision === 'buffer') {
       pendingSeekRef.current = targetTime;
       return;
     }
 
-    // Enforce paused state so video never starts autonomous playback
     if (!video.paused) {
       video.pause();
     }
 
+    if (decision === 'skip') {
+      pendingSeekRef.current = null;
+      return;
+    }
+
     try {
       pendingSeekRef.current = null;
-      if (Math.abs(video.currentTime - targetTime) > 0.001) {
-        video.currentTime = targetTime;
-      }
+      lastRequestedSeekTimeRef.current = targetTime;
+      seekStartedAtRef.current = performance.now();
+      video.currentTime = targetTime;
     } catch {
       // Graceful fallback if browser throws on seeking
     }
@@ -328,30 +386,31 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Enforce paused state
     if (!video.paused) {
       video.pause();
     }
 
-    // Determine latest target time from current scroll progress
-    const dur = videoDurationRef.current;
-    const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
-    const prog = targetProgressRef.current;
-    const latestTargetTime =
-      prog <= 0
-        ? 0
-        : prog >= 1
-          ? maxSafeTime
-          : Math.min(maxSafeTime, Math.max(0, prog * dur));
+    seekStartedAtRef.current = 0;
 
-    // If there was a pending seek while seeking was in-flight, OR if user scrolled to a newer position
-    if (pendingSeekRef.current !== null || Math.abs(video.currentTime - latestTargetTime) > 0.005) {
-      pendingSeekRef.current = null;
-      performSeek(latestTargetTime);
-    } else {
-      pendingSeekRef.current = null;
+    if (revealTimerRef.current !== null) {
+      window.clearTimeout(revealTimerRef.current);
+      revealTimerRef.current = null;
     }
-  }, [performSeek]);
+
+    if (!videoFailed && isHeroVideoFrameReady(video.readyState)) {
+      setVideoReady(true);
+    }
+
+    // Catch up immediately if user scrolled while the previous seek was still decoding
+    if (pendingSeekRef.current !== null) {
+      pendingSeekRef.current = null;
+      const latestTargetTime = computeHeroVideoTargetTime(
+        targetProgressRef.current,
+        videoDurationRef.current
+      );
+      performSeek(latestTargetTime);
+    }
+  }, [videoFailed, performSeek]);
 
   /**
    * Direct progress synchronization batched via requestAnimationFrame:
@@ -367,18 +426,11 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     // 1. Immediately apply DOM transforms & opacities
     applyProgressStyles(prog);
 
-    // 2. Hardware-accurate video seek
+    // 2. Scroll-synchronized video seek
     const video = videoRef.current;
     const dur = videoDurationRef.current;
     if (video && dur > 0) {
-      const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
-      const targetTime =
-        prog <= 0
-          ? 0
-          : prog >= 1
-            ? maxSafeTime
-            : Math.min(maxSafeTime, Math.max(0, prog * dur));
-
+      const targetTime = computeHeroVideoTargetTime(prog, dur);
       performSeek(targetTime);
     }
 
@@ -395,30 +447,24 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     const track = trackRef.current;
     if (!track) return;
 
-    const rect = track.getBoundingClientRect();
-    const trackHeight = track.offsetHeight;
-    const viewportHeight = window.innerHeight;
-    const scrollDistance = trackHeight - viewportHeight;
-
+    const scrollDistance = track.offsetHeight - window.innerHeight;
     if (scrollDistance <= 0) return;
 
-    // Normalized progress calculation: 0 at top, 1 at bottom
-    const rawProgress = -rect.top / scrollDistance;
-    const clampedProgress = Math.max(0, Math.min(1, rawProgress));
-
+    const clampedProgress = readCurrentTrackProgress();
     targetProgressRef.current = clampedProgress;
 
     if (!rafIdRef.current) {
       rafIdRef.current = requestAnimationFrame(syncToScrollProgress);
     }
-  }, [isReducedMotion, videoFailed, syncToScrollProgress]);
+  }, [isReducedMotion, videoFailed, readCurrentTrackProgress, syncToScrollProgress]);
 
-  // Setup scroll and resize listeners with passive flags
+  // Setup scroll, resize and orientationchange listeners with passive flags
   useEffect(() => {
     if (isReducedMotion || videoFailed) return;
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll, { passive: true });
+    window.addEventListener('orientationchange', handleScroll, { passive: true });
 
     // Initial positioning check
     handleScroll();
@@ -426,9 +472,14 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
+      window.removeEventListener('orientationchange', handleScroll);
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
+      }
+      if (revealTimerRef.current !== null) {
+        window.clearTimeout(revealTimerRef.current);
+        revealTimerRef.current = null;
       }
       if (videoRef.current && !videoRef.current.paused) {
         videoRef.current.pause();
@@ -437,64 +488,96 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     };
   }, [isReducedMotion, videoFailed, handleScroll]);
 
+  // Keep imperative progress styles synced if layout state updates while scrolled
+  useEffect(() => {
+    if (isReducedMotion || videoFailed) return;
+    const prog = readCurrentTrackProgress();
+    targetProgressRef.current = prog;
+    currentProgressRef.current = prog;
+    applyProgressStyles(prog);
+  }, [isMobilePortrait, videoReady, isReducedMotion, videoFailed, readCurrentTrackProgress, applyProgressStyles]);
+
   // Video loaded metadata handler: reads exact duration and prepares initial layout
   const handleLoadedMetadata = useCallback(() => {
     const video = videoRef.current;
     if (!video || videoFailed) return;
 
+    failedVideoSourcesRef.current.delete(videoSrc);
+    metadataLoadedRef.current = true;
+
     const dur =
       video.duration && !isNaN(video.duration) && isFinite(video.duration) && video.duration > 0
         ? video.duration
-        : 6.334;
+        : HERO_VIDEO_DEFAULT_DURATION_SECONDS;
     videoDurationRef.current = dur;
-    setVideoDuration(dur);
 
-    // Enforce pause so video never autoplays independently
     if (!video.paused) {
       video.pause();
     }
 
-    // Check if user is already scrolled into the Hero when metadata finishes loading
-    const track = trackRef.current;
-    let initialProg = targetProgressRef.current;
-    if (track) {
-      const rect = track.getBoundingClientRect();
-      const trackHeight = track.offsetHeight;
-      const viewportHeight = window.innerHeight;
-      const scrollDistance = trackHeight - viewportHeight;
-      if (scrollDistance > 0) {
-        initialProg = Math.max(0, Math.min(1, -rect.top / scrollDistance));
-      }
-    }
-
+    const initialProg = readCurrentTrackProgress();
     targetProgressRef.current = initialProg;
     currentProgressRef.current = initialProg;
     applyProgressStyles(initialProg);
 
-    const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
-    const initialTime =
-      initialProg <= 0
-        ? 0
-        : initialProg >= 1
-          ? maxSafeTime
-          : Math.min(maxSafeTime, Math.max(0, initialProg * dur));
+    const initialTime = computeHeroVideoTargetTime(initialProg, dur);
 
-    // If frames are already decoded (readyState >= 2), seek and reveal video.
-    // Otherwise buffer timestamp in pendingSeekRef so handleMediaReady executes it on loadeddata/canplay.
     if (isHeroVideoFrameReady(video.readyState)) {
-      setVideoReady(true);
+      if (
+        shouldRevealHeroVideoImmediately({
+          readyState: video.readyState,
+          isSeeking: video.seeking,
+          currentTime: video.currentTime,
+          targetTime: initialTime,
+        })
+      ) {
+        setVideoReady(true);
+      } else if (revealTimerRef.current === null) {
+        revealTimerRef.current = window.setTimeout(() => {
+          revealTimerRef.current = null;
+          if (isHeroVideoFrameReady(videoRef.current?.readyState)) {
+            setVideoReady(true);
+          }
+        }, 400);
+      }
       performSeek(initialTime);
     } else {
       pendingSeekRef.current = initialTime;
     }
-  }, [videoFailed, applyProgressStyles, performSeek]);
+  }, [videoSrc, videoFailed, readCurrentTrackProgress, applyProgressStyles, performSeek]);
+
+  // Synchronize video duration if the browser resolves duration asynchronously after loadedmetadata
+  const handleDurationChange = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || videoFailed) return;
+
+    const nextDuration = video.duration;
+    if (!nextDuration || isNaN(nextDuration) || !isFinite(nextDuration) || nextDuration <= 0) {
+      return;
+    }
+
+    if (Math.abs(videoDurationRef.current - nextDuration) > 0.001) {
+      videoDurationRef.current = nextDuration;
+      const prog = readCurrentTrackProgress();
+      const correctedTime = computeHeroVideoTargetTime(prog, nextDuration);
+      if (metadataLoadedRef.current && isHeroVideoFrameReady(video.readyState)) {
+        performSeek(correctedTime);
+      } else {
+        pendingSeekRef.current = correctedTime;
+      }
+    }
+  }, [videoFailed, readCurrentTrackProgress, performSeek]);
 
   // Video media readiness handler: runs on loadeddata / canplay when first frame is guaranteed available
   const handleMediaReady = useCallback(() => {
     const video = videoRef.current;
     if (!video || videoFailed || !isHeroVideoFrameReady(video.readyState)) return;
 
-    // Enforce pause so video never autoplays independently
+    failedVideoSourcesRef.current.delete(videoSrc);
+    if (!metadataLoadedRef.current) {
+      metadataLoadedRef.current = true;
+    }
+
     if (!video.paused) {
       video.pause();
     }
@@ -504,43 +587,55 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         ? video.duration
         : videoDurationRef.current;
     videoDurationRef.current = dur;
-    setVideoDuration(dur);
-    setVideoReady(true);
 
-    // Compute target time for current scroll progress
-    const maxSafeTime = dur > 0.05 ? dur - 0.04 : dur;
-    const prog = targetProgressRef.current;
-    const targetTime =
-      prog <= 0
-        ? 0
-        : prog >= 1
-          ? maxSafeTime
-          : Math.min(maxSafeTime, Math.max(0, prog * dur));
+    const prog = readCurrentTrackProgress();
+    targetProgressRef.current = prog;
+    currentProgressRef.current = prog;
+    applyProgressStyles(prog);
 
+    const targetTime = computeHeroVideoTargetTime(prog, dur);
     pendingSeekRef.current = null;
-    performSeek(targetTime);
-  }, [videoFailed, performSeek]);
 
-  // Immediate check for cached video on mount
-  useEffect(() => {
-    if (isReducedMotion || videoFailed) return;
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (isHeroVideoFrameReady(video.readyState)) {
-      handleMediaReady();
-    } else if (video.readyState >= 1) {
-      handleLoadedMetadata();
+    if (
+      shouldRevealHeroVideoImmediately({
+        readyState: video.readyState,
+        isSeeking: video.seeking,
+        currentTime: video.currentTime,
+        targetTime,
+      })
+    ) {
+      if (revealTimerRef.current !== null) {
+        window.clearTimeout(revealTimerRef.current);
+        revealTimerRef.current = null;
+      }
+      setVideoReady(true);
+      performSeek(targetTime);
+    } else {
+      performSeek(targetTime);
+      if (revealTimerRef.current === null) {
+        revealTimerRef.current = window.setTimeout(() => {
+          revealTimerRef.current = null;
+          if (isHeroVideoFrameReady(videoRef.current?.readyState)) {
+            setVideoReady(true);
+          }
+        }, 400);
+      }
     }
-  }, [isReducedMotion, videoFailed, handleMediaReady, handleLoadedMetadata]);
+  }, [videoSrc, videoFailed, readCurrentTrackProgress, applyProgressStyles, performSeek]);
 
   const handleVideoError = useCallback(() => {
-    // If mobile video fails, fallback to desktop video source before switching to static fallback
-    if (videoSrc === MOBILE_VIDEO_SRC) {
+    failedVideoSourcesRef.current.add(videoSrc);
+    const decision = resolveHeroVideoErrorAction({
+      currentSrc: videoSrc,
+      failedSources: failedVideoSourcesRef.current,
+    });
+
+    if (decision.nextSrc) {
       console.warn('[CinematicHero] hero-scrub-mobile.mp4 unavailable, falling back to desktop video');
-      setVideoSrc(DESKTOP_VIDEO_SRC);
+      setVideoSrc(decision.nextSrc);
       return;
     }
+
     setVideoFailed(true);
     if (rafIdRef.current) {
       cancelAnimationFrame(rafIdRef.current);
@@ -548,6 +643,54 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     }
     pendingSeekRef.current = null;
   }, [videoSrc]);
+
+  // Reset seek state and recover cached or freshly mounted video whenever videoSrc changes
+  useEffect(() => {
+    if (prevVideoSrcRef.current !== videoSrc) {
+      prevVideoSrcRef.current = videoSrc;
+      if (!failedVideoSourcesRef.current.has(videoSrc)) {
+        setVideoFailed(false);
+      }
+    }
+
+    metadataLoadedRef.current = false;
+    pendingSeekRef.current = null;
+    lastRequestedSeekTimeRef.current = null;
+    seekStartedAtRef.current = 0;
+    if (revealTimerRef.current !== null) {
+      window.clearTimeout(revealTimerRef.current);
+      revealTimerRef.current = null;
+    }
+
+    if (isReducedMotion) return;
+
+    const video = videoRef.current;
+    if (!video) {
+      setVideoReady(false);
+      return;
+    }
+
+    if (video.error) {
+      handleVideoError();
+      return;
+    }
+
+    if (video.readyState >= 1) {
+      handleLoadedMetadata();
+      if (isHeroVideoFrameReady(video.readyState)) {
+        handleMediaReady();
+      }
+    } else {
+      setVideoReady(false);
+    }
+
+    return () => {
+      if (revealTimerRef.current !== null) {
+        window.clearTimeout(revealTimerRef.current);
+        revealTimerRef.current = null;
+      }
+    };
+  }, [videoSrc, isReducedMotion, handleMediaReady, handleLoadedMetadata, handleVideoError]);
 
   // Replay helper: smoothly scrolls back to the beginning of the track
   const handleReplay = () => {
@@ -574,9 +717,17 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         <div className="absolute inset-0 z-0 pointer-events-none">
           {!posterFailed ? (
             <img
+              key={posterSrc}
               src={posterSrc}
               alt="Caminhões de remoção Vapt Vupt"
-              onError={() => setPosterFailed(true)}
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.src.includes('caminhao-cavalo-1635.jpg')) {
+                  target.src = '/assets/vaptvupt/caminhao-cavalo-1635.jpg';
+                } else {
+                  setPosterFailed(true);
+                }
+              }}
               className={`w-full h-full object-cover ${isMobilePortrait ? 'object-center' : 'object-[30%_center] sm:object-center'} brightness-[0.32] contrast-110 select-none`}
             />
           ) : (
@@ -678,6 +829,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               the visitor immediately sees the authentic hero frame and never an empty or blank space. */}
           {!posterFailed ? (
             <img
+              key={posterSrc}
               src={posterSrc}
               alt="Caminhões de remoção Vapt Vupt"
               onLoad={() => setPosterLoaded(true)}
@@ -708,8 +860,10 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               poster={posterSrc}
               playsInline
               muted
+              disablePictureInPicture
               preload="auto"
               onLoadedMetadata={handleLoadedMetadata}
+              onDurationChange={handleDurationChange}
               onLoadedData={handleMediaReady}
               onCanPlay={handleMediaReady}
               onError={handleVideoError}
@@ -955,57 +1109,32 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         <div
           ref={logoStageRef}
           className="absolute inset-0 z-30 flex flex-col items-center justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 pointer-events-none hero-landscape-logo-stage"
-          style={{ opacity: 0, visibility: 'hidden' }}
+          style={INITIAL_LOGO_STAGE_STYLE}
         >
-          {/* Subtle white-to-light-slate background wash ensuring 100% pure contrast */}
-          <div className="absolute inset-0 bg-white/95 backdrop-blur-[2px] pointer-events-none" />
+          {/* Clean white backdrop wash ensuring 100% pure contrast on the final reveal stage */}
+          <div className="absolute inset-0 bg-white pointer-events-none" />
 
           {/* Logo Assembly Container */}
           <div className="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full text-center">
-            {/* 1. O selo 'atendimento e remoção de veículos' posicionado no início dessa seção, acima do logotipo */}
-            <div className="mb-3 sm:mb-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-300 text-slate-800 text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-xs">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#B43034]" />
-              <span>Atendimento e Remoção de Veículos</span>
-            </div>
-
-            {/* 2. O LOGOTIPO CENTRALIZADO e posicionado ao centro da animação da hero no último frame */}
-            <div className={`flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-5 mb-4 sm:mb-6 ${
-              isMobilePortrait ? 'w-[270px] max-w-[320px] min-w-[240px] mx-auto' : ''
-            }`}>
-              {/* Stage A: Official Vapt Vupt Speed Symbol */}
-              <div
-                ref={symbolRef}
-                className="transition-transform duration-100 ease-out will-change-transform hero-landscape-logo-symbol"
-                style={{ opacity: 0, transform: 'scale(0.85)' }}
-              >
-                <img
-                  src="/logo-simbolo-original.png"
-                  alt="Símbolo Vapt Vupt"
-                  className="h-14 sm:h-20 md:h-24 lg:h-28 w-auto object-contain drop-shadow-sm select-none"
-                  draggable={false}
-                />
-              </div>
-
-              {/* Stage B: Official Vapt Vupt Wordmark (Original Typography & Proportions) */}
-              <div
-                ref={wordmarkRef}
-                className="transition-transform duration-100 ease-out will-change-transform hero-landscape-logo-wordmark"
-                style={{ opacity: 0, transform: 'translateX(20px)' }}
-              >
-                <img
-                  src="/logo-wordmark-original.png"
-                  alt="Vapt Vupt"
-                  className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto object-contain drop-shadow-sm select-none"
-                  draggable={false}
-                />
-              </div>
-            </div>
+            {/* 1. O LOGOTIPO CENTRALIZADO e posicionado ao centro da animação da hero no último frame */}
+            <BrandLogoHorizontal
+              isDark={false}
+              className="!flex-col sm:!flex-row landscape:!flex-row !gap-3 sm:!gap-4 md:!gap-5 mb-4 sm:mb-6 mx-auto"
+              symbolContainerRef={symbolRef}
+              symbolContainerClassName="transition-transform duration-100 ease-out will-change-transform hero-landscape-logo-symbol"
+              symbolContainerStyle={INITIAL_SYMBOL_STAGE_STYLE}
+              symbolClassName="h-14 sm:h-20 md:h-24 lg:h-28 w-auto object-contain drop-shadow-sm select-none"
+              wordmarkContainerRef={wordmarkRef}
+              wordmarkContainerClassName="transition-transform duration-100 ease-out will-change-transform hero-landscape-logo-wordmark"
+              wordmarkContainerStyle={INITIAL_WORDMARK_STAGE_STYLE}
+              wordmarkClassName="h-10 sm:h-14 md:h-16 lg:h-20 w-auto object-contain drop-shadow-sm select-none"
+            />
 
             {/* 3. Abaixo do logotipo: os botões 'CHAMAR NO WHATSAPP', 'VER SERVIÇOS' e 'REVER INÍCIO' */}
             <div
               ref={finalCardRef}
               className="space-y-3.5 max-w-xl transition-transform duration-150 ease-out hero-landscape-logo-actions"
-              style={{ opacity: 0, transform: 'translateY(12px)' }}
+              style={INITIAL_FINAL_CARD_STYLE}
             >
               <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5">
                 <a

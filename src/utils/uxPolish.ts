@@ -326,9 +326,217 @@ export function isMobileLandscapeViewport(params: {
 
 /**
  * Resolves the appropriate hero video source based on viewport orientation and width.
- * Mobile portrait (9:16) uses /assets/video/hero-scrub-mobile.mp4, desktop (16:9) uses /assets/video/hero-scrub.mp4.
+ * Mobile portrait (9:16) uses /video/hero-scrub-mobile.mp4, desktop (16:9) uses /video/hero-scrub.mp4.
  */
 export function resolveHeroVideoSource(isMobilePortrait: boolean): string {
-  return isMobilePortrait ? '/assets/video/hero-scrub-mobile.mp4' : '/assets/video/hero-scrub.mp4';
+  return isMobilePortrait ? '/video/hero-scrub-mobile.mp4' : '/video/hero-scrub.mp4';
 }
+
+export const HERO_VIDEO_DEFAULT_DURATION_SECONDS = 7.792;
+
+/**
+ * Computes the clamped target timestamp (in seconds) within safe keyframe bounds
+ * for scroll-controlled hero video scrubbing.
+ */
+export function computeHeroVideoTargetTime(
+  progress: number,
+  durationSeconds: number,
+  fallbackDurationSeconds = HERO_VIDEO_DEFAULT_DURATION_SECONDS
+): number {
+  const safeDuration =
+    typeof durationSeconds === 'number' && Number.isFinite(durationSeconds) && durationSeconds > 0
+      ? durationSeconds
+      : fallbackDurationSeconds;
+
+  const safeProgress =
+    typeof progress === 'number' && Number.isFinite(progress)
+      ? Math.max(0, Math.min(1, progress))
+      : 0;
+
+  const maxSafeTime = safeDuration > 0.05 ? safeDuration - 0.04 : safeDuration;
+
+  if (safeProgress <= 0) {
+    return 0;
+  }
+  if (safeProgress >= 1) {
+    return maxSafeTime;
+  }
+
+  return Math.min(maxSafeTime, Math.max(0, safeProgress * safeDuration));
+}
+
+export interface HeroSeekDecisionInput {
+  currentTime: number;
+  targetTime: number;
+  durationSeconds: number;
+  lastRequestedSeekTime: number | null;
+  isSeeking?: boolean;
+  seekElapsedMs?: number;
+}
+
+/**
+ * Prevents infinite re-seek loops caused by H.264 B/P-frame PTS quantization while
+ * ensuring scroll changes and exact boundary seeks (start/end) always execute cleanly.
+ */
+export function shouldExecuteHeroVideoSeek({
+  currentTime,
+  targetTime,
+  durationSeconds,
+  lastRequestedSeekTime,
+  isSeeking = false,
+  seekElapsedMs = 0,
+}: HeroSeekDecisionInput): 'seek' | 'buffer' | 'skip' {
+  if (isSeeking && seekElapsedMs < 750) {
+    return 'buffer';
+  }
+
+  if (lastRequestedSeekTime === null && Math.abs(currentTime - targetTime) <= 0.005) {
+    return 'skip';
+  }
+
+  const safeDuration =
+    typeof durationSeconds === 'number' && Number.isFinite(durationSeconds) && durationSeconds > 0
+      ? durationSeconds
+      : HERO_VIDEO_DEFAULT_DURATION_SECONDS;
+  const maxSafeTime = safeDuration > 0.05 ? safeDuration - 0.04 : safeDuration;
+  const isBoundaryTarget = targetTime <= 0.0005 || targetTime >= maxSafeTime - 0.0005;
+
+  if (isBoundaryTarget) {
+    if (
+      lastRequestedSeekTime !== null &&
+      Math.abs(lastRequestedSeekTime - targetTime) <= 0.0005 &&
+      Math.abs(currentTime - targetTime) < 0.05
+    ) {
+      return 'skip';
+    }
+    return 'seek';
+  }
+
+  if (
+    lastRequestedSeekTime !== null &&
+    Math.abs(lastRequestedSeekTime - targetTime) < 0.008 &&
+    Math.abs(currentTime - targetTime) < 0.06
+  ) {
+    return 'skip';
+  }
+
+  return 'seek';
+}
+
+/**
+ * Resolves the poster image path corresponding to the active viewport orientation.
+ */
+export function resolveHeroPosterSource(isMobilePortrait: boolean): string {
+  return isMobilePortrait ? '/hero-poster-mobile.jpg' : '/hero-poster.jpg';
+}
+
+/**
+ * Determines whether the Hero <video> layer can safely fade in immediately on
+ * metadata/data readiness without flashing an unseeked frame during an active seek.
+ */
+export function shouldRevealHeroVideoImmediately(params: {
+  readyState: number | null | undefined;
+  isSeeking: boolean;
+  currentTime: number;
+  targetTime: number;
+  toleranceSeconds?: number;
+}): boolean {
+  if (!isHeroVideoFrameReady(params.readyState) || params.isSeeking) {
+    return false;
+  }
+
+  const tolerance =
+    typeof params.toleranceSeconds === 'number' &&
+    Number.isFinite(params.toleranceSeconds) &&
+    params.toleranceSeconds >= 0
+      ? params.toleranceSeconds
+      : 0.05;
+
+  return Math.abs(params.currentTime - params.targetTime) <= tolerance;
+}
+
+/**
+ * Determines the next fallback action when a Hero video source emits an error,
+ * falling back from mobile to desktop video once without retrying already-failed sources.
+ */
+export function resolveHeroVideoErrorAction(params: {
+  currentSrc: string;
+  failedSources: ReadonlySet<string>;
+}): { nextSrc: string | null; markAllFailed: boolean } {
+  const desktopSrc = resolveHeroVideoSource(false);
+  const mobileSrc = resolveHeroVideoSource(true);
+
+  if (
+    params.currentSrc === mobileSrc &&
+    !params.failedSources.has(desktopSrc)
+  ) {
+    return { nextSrc: desktopSrc, markAllFailed: false };
+  }
+
+  return { nextSrc: null, markAllFailed: true };
+}
+
+/**
+ * Computes normalized page scroll progress percentage clamped strictly to [0, 100].
+ */
+export function computeScrollProgressPercentage(
+  scrollTop: number,
+  scrollHeight: number,
+  innerHeight: number
+): number {
+  if (
+    !Number.isFinite(scrollTop) ||
+    !Number.isFinite(scrollHeight) ||
+    !Number.isFinite(innerHeight)
+  ) {
+    return 0;
+  }
+
+  const scrollableDistance = scrollHeight - innerHeight;
+  if (scrollableDistance <= 0) {
+    return 0;
+  }
+
+  const rawPercent = (scrollTop / scrollableDistance) * 100;
+  return Math.min(100, Math.max(0, rawPercent));
+}
+
+/**
+ * Verifies that a rendered logo image preserves its natural aspect ratio within a small rounding tolerance.
+ */
+export function isLogoAspectRatioPreserved(params: {
+  naturalWidth: number;
+  naturalHeight: number;
+  renderedWidth: number;
+  renderedHeight: number;
+  maxRelativeError?: number;
+}): boolean {
+  const {
+    naturalWidth,
+    naturalHeight,
+    renderedWidth,
+    renderedHeight,
+    maxRelativeError = 0.04,
+  } = params;
+
+  if (
+    !Number.isFinite(naturalWidth) ||
+    !Number.isFinite(naturalHeight) ||
+    !Number.isFinite(renderedWidth) ||
+    !Number.isFinite(renderedHeight) ||
+    naturalWidth <= 0 ||
+    naturalHeight <= 0 ||
+    renderedWidth <= 0 ||
+    renderedHeight <= 0
+  ) {
+    return false;
+  }
+
+  const naturalRatio = naturalWidth / naturalHeight;
+  const renderedRatio = renderedWidth / renderedHeight;
+  const relativeDiff = Math.abs(renderedRatio - naturalRatio) / naturalRatio;
+
+  return relativeDiff <= maxRelativeError;
+}
+
 

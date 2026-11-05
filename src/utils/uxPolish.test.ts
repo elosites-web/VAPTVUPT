@@ -15,11 +15,25 @@ import {
   shouldRevealSectionOnScroll,
   shouldRevealInitiallyAboveFold,
   resolveHeroVideoSource,
+  resolveHeroPosterSource,
   MOBILE_PORTRAIT_MEDIA_QUERY,
   MOBILE_LANDSCAPE_MEDIA_QUERY,
   isMobileLandscapeViewport,
   DESKTOP_MIN_WIDTH_PX,
+  HERO_VIDEO_DEFAULT_DURATION_SECONDS,
+  computeHeroVideoTargetTime,
+  shouldExecuteHeroVideoSeek,
+  shouldRevealHeroVideoImmediately,
+  resolveHeroVideoErrorAction,
+  computeScrollProgressPercentage,
+  isLogoAspectRatioPreserved,
 } from './uxPolish';
+import {
+  OFFICIAL_LOGO_SYMBOL_SRC,
+  OFFICIAL_LOGO_SYMBOL_DARK_SRC,
+  OFFICIAL_LOGO_WORDMARK_SRC,
+} from '../components/BrandLogoHorizontal';
+import { COMPANY_CONFIG } from '../data/companyData';
 
 test('computeDesktopParallaxOffset enables subtle upward parallax on desktop with fine pointer', () => {
   const atStart = computeDesktopParallaxOffset({
@@ -380,8 +394,8 @@ test('shouldRevealInitiallyAboveFold reveals sections prominently above the fold
 
 test('resolveHeroVideoSource selects 9:16 mobile video or 16:9 desktop video', () => {
   assert.equal(MOBILE_PORTRAIT_MEDIA_QUERY, '(orientation: portrait) and (max-width: 768px)');
-  assert.equal(resolveHeroVideoSource(true), '/assets/video/hero-scrub-mobile.mp4');
-  assert.equal(resolveHeroVideoSource(false), '/assets/video/hero-scrub.mp4');
+  assert.equal(resolveHeroVideoSource(true), '/video/hero-scrub-mobile.mp4');
+  assert.equal(resolveHeroVideoSource(false), '/video/hero-scrub.mp4');
 });
 
 test('isMobileLandscapeViewport accurately detects mobile devices in horizontal landscape orientation', () => {
@@ -408,4 +422,330 @@ test('isMobileLandscapeViewport accurately detects mobile devices in horizontal 
   // Tablet landscape (1024 x 768) -> height > 520, not mobile landscape
   assert.equal(isMobileLandscapeViewport({ width: 1024, height: 768 }), false);
 });
+
+test('computeHeroVideoTargetTime clamps progress within safe start and keyframe end bounds', () => {
+  assert.equal(HERO_VIDEO_DEFAULT_DURATION_SECONDS, 7.792);
+  assert.equal(computeHeroVideoTargetTime(0, 7.792), 0);
+  assert.equal(computeHeroVideoTargetTime(-0.2, 7.792), 0);
+  assert.equal(computeHeroVideoTargetTime(1, 7.792), 7.752);
+  assert.equal(computeHeroVideoTargetTime(1.25, 7.792), 7.752);
+
+  const midpoint = computeHeroVideoTargetTime(0.5, 7.792);
+  assert.ok(Math.abs(midpoint - 3.896) < 0.0001);
+
+  // Fallback when duration is NaN or 0
+  assert.equal(computeHeroVideoTargetTime(1, Number.NaN), 7.752);
+  assert.equal(computeHeroVideoTargetTime(1, 0), 7.752);
+});
+
+test('shouldExecuteHeroVideoSeek prevents B-frame PTS quantization seek loops while allowing real scroll and boundary seeks', () => {
+  // Initial seek at prog = 0 when video starts at currentTime = 0 -> skip redundant seek
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 0,
+      targetTime: 0,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: null,
+    }),
+    'skip'
+  );
+
+  // Scroll advances to 1.948s -> seek
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 0,
+      targetTime: 1.948,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: null,
+    }),
+    'seek'
+  );
+
+  // In-flight seek -> buffer
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 0.4,
+      targetTime: 2.5,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: 1.948,
+      isSeeking: true,
+      seekElapsedMs: 50,
+    }),
+    'buffer'
+  );
+
+  // Wedged seeking flag after >= 750ms -> break out with seek
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 0.4,
+      targetTime: 2.5,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: 1.948,
+      isSeeking: true,
+      seekElapsedMs: 800,
+    }),
+    'seek'
+  );
+
+  // After seeked fires, 24fps H.264 PTS snapped to 1.9583s (~0.0103s from 1.948s) -> skip re-seek loop!
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 1.9583,
+      targetTime: 1.948,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: 1.948,
+      isSeeking: false,
+    }),
+    'skip'
+  );
+
+  // User scrolls further to 2.15s -> seek
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 1.9583,
+      targetTime: 2.15,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: 1.948,
+      isSeeking: false,
+    }),
+    'seek'
+  );
+
+  // Exact boundary seek to start (0) from tiny positive offset -> seek
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 0.02,
+      targetTime: 0,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: 0.015,
+      isSeeking: false,
+    }),
+    'seek'
+  );
+
+  // Exact boundary seek to end (7.752) -> seek once, then skip if already settled
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 7.74,
+      targetTime: 7.752,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: 7.74,
+      isSeeking: false,
+    }),
+    'seek'
+  );
+  assert.equal(
+    shouldExecuteHeroVideoSeek({
+      currentTime: 7.75,
+      targetTime: 7.752,
+      durationSeconds: 7.792,
+      lastRequestedSeekTime: 7.752,
+      isSeeking: false,
+    }),
+    'skip'
+  );
+});
+
+test('Hero video and poster asset references resolve to existing non-empty files in public/', () => {
+  const publicDir = path.resolve(process.cwd(), 'public');
+  const assetPaths = [
+    resolveHeroVideoSource(false),
+    resolveHeroVideoSource(true),
+    resolveHeroPosterSource(false),
+    resolveHeroPosterSource(true),
+    '/assets/vaptvupt/caminhao-cavalo-1635.jpg',
+  ];
+
+  for (const relativeAssetUrl of assetPaths) {
+    const cleanRel = relativeAssetUrl.replace(/^\/+/, '');
+    const fullPath = path.join(publicDir, cleanRel);
+    assert.equal(
+      fs.existsSync(fullPath),
+      true,
+      `Expected Hero asset ${relativeAssetUrl} to exist at ${fullPath}`
+    );
+    const stat = fs.statSync(fullPath);
+    assert.ok(stat.size > 0, `Expected Hero asset ${relativeAssetUrl} to be non-empty`);
+  }
+});
+
+test('shouldRevealHeroVideoImmediately reveals only when frame is decoded, not actively seeking, and within tolerance', () => {
+  // Decoded first frame at start, not seeking -> reveal immediately
+  assert.equal(
+    shouldRevealHeroVideoImmediately({
+      readyState: 2,
+      isSeeking: false,
+      currentTime: 0,
+      targetTime: 0,
+    }),
+    true
+  );
+
+  // Actively seeking while browser already updated currentTime JS property -> wait for seeked event
+  assert.equal(
+    shouldRevealHeroVideoImmediately({
+      readyState: 3,
+      isSeeking: true,
+      currentTime: 3.1,
+      targetTime: 3.1,
+    }),
+    false
+  );
+
+  // Metadata-only readyState === 1 -> do not reveal yet
+  assert.equal(
+    shouldRevealHeroVideoImmediately({
+      readyState: 1,
+      isSeeking: false,
+      currentTime: 0,
+      targetTime: 0,
+    }),
+    false
+  );
+
+  // Restored scroll target time differs from unseeked frame 0 -> do not flash frame 0 before seek
+  assert.equal(
+    shouldRevealHeroVideoImmediately({
+      readyState: 4,
+      isSeeking: false,
+      currentTime: 0,
+      targetTime: 2.5,
+    }),
+    false
+  );
+});
+
+test('resolveHeroVideoErrorAction falls back from mobile to desktop once without retrying already-failed sources', () => {
+  const desktopSrc = resolveHeroVideoSource(false);
+  const mobileSrc = resolveHeroVideoSource(true);
+
+  // Mobile fails first -> fallback to desktop video
+  assert.deepEqual(
+    resolveHeroVideoErrorAction({
+      currentSrc: mobileSrc,
+      failedSources: new Set([mobileSrc]),
+    }),
+    { nextSrc: desktopSrc, markAllFailed: false }
+  );
+
+  // Desktop also fails after mobile -> enter static poster fallback
+  assert.deepEqual(
+    resolveHeroVideoErrorAction({
+      currentSrc: desktopSrc,
+      failedSources: new Set([mobileSrc, desktopSrc]),
+    }),
+    { nextSrc: null, markAllFailed: true }
+  );
+
+  // Mobile fails when desktop previously failed -> do not loop back to desktop
+  assert.deepEqual(
+    resolveHeroVideoErrorAction({
+      currentSrc: mobileSrc,
+      failedSources: new Set([desktopSrc, mobileSrc]),
+    }),
+    { nextSrc: null, markAllFailed: true }
+  );
+});
+
+test('computeScrollProgressPercentage clamps scroll progress to [0, 100] and handles non-scrollable documents', () => {
+  assert.equal(computeScrollProgressPercentage(0, 3000, 900), 0);
+  assert.equal(computeScrollProgressPercentage(-50, 3000, 900), 0);
+  assert.equal(computeScrollProgressPercentage(1050, 3000, 900), 50);
+  assert.equal(computeScrollProgressPercentage(2100, 3000, 900), 100);
+  assert.equal(computeScrollProgressPercentage(2500, 3000, 900), 100);
+  assert.equal(computeScrollProgressPercentage(100, 900, 900), 0);
+  assert.equal(computeScrollProgressPercentage(Number.NaN, 3000, 900), 0);
+});
+
+test('all Vapt Vupt logo assets exist in public/ as non-empty transparent RGBA PNGs with expected dimensions', () => {
+  const publicDir = path.resolve(process.cwd(), 'public');
+  const logoPaths = new Set<string>([
+    OFFICIAL_LOGO_SYMBOL_SRC,
+    OFFICIAL_LOGO_SYMBOL_DARK_SRC,
+    OFFICIAL_LOGO_WORDMARK_SRC,
+    ...Object.values(COMPANY_CONFIG.logos),
+    '/logo-vaptvupt-share.png',
+    '/assets/brand/favicons/favicon-32x32.png',
+    '/assets/brand/favicons/favicon-192x192.png',
+    '/assets/brand/favicons/favicon-512x512.png',
+    '/assets/brand/favicons/apple-touch-icon.png',
+    '/assets/brand/favicons/vaptvupt-dark.png',
+    '/assets/brand/favicons/vaptvupt-light.png',
+    '/assets/brand/favicons/vaptvupt-priority.png',
+  ]);
+
+  for (const urlPath of logoPaths) {
+    const cleanRel = urlPath.replace(/^\/+/, '');
+    const fullPath = path.join(publicDir, cleanRel);
+    assert.equal(fs.existsSync(fullPath), true, `Missing logo asset: ${urlPath}`);
+    const buf = fs.readFileSync(fullPath);
+    assert.ok(buf.length > 0, `Empty logo asset: ${urlPath}`);
+
+    if (cleanRel.toLowerCase().endsWith('.png')) {
+      const width = buf.readUInt32BE(16);
+      const height = buf.readUInt32BE(20);
+      const colorType = buf[25];
+      assert.ok(width > 0 && height > 0, `Invalid PNG dimensions for ${urlPath}`);
+      assert.equal(
+        colorType === 6 || colorType === 4,
+        true,
+        `Expected RGBA/alpha channel on PNG logo ${urlPath}, got colorType=${colorType}`
+      );
+    }
+  }
+});
+
+test('isLogoAspectRatioPreserved validates proportional scaling and rejects squished boxes', () => {
+  // Desktop symbol (1000x433 rendered at 259x112) and tablet portrait symbol (222x96)
+  assert.equal(
+    isLogoAspectRatioPreserved({
+      naturalWidth: 1000,
+      naturalHeight: 433,
+      renderedWidth: 259,
+      renderedHeight: 112,
+    }),
+    true
+  );
+  assert.equal(
+    isLogoAspectRatioPreserved({
+      naturalWidth: 1000,
+      naturalHeight: 433,
+      renderedWidth: 222,
+      renderedHeight: 96,
+    }),
+    true
+  );
+
+  // Squished tablet portrait symbol (148x96 -> 33% distortion) must fail
+  assert.equal(
+    isLogoAspectRatioPreserved({
+      naturalWidth: 1000,
+      naturalHeight: 433,
+      renderedWidth: 148,
+      renderedHeight: 96,
+    }),
+    false
+  );
+
+  // Desktop wordmark (520x216 rendered at 193x80) and tablet portrait wordmark (154x64)
+  assert.equal(
+    isLogoAspectRatioPreserved({
+      naturalWidth: 520,
+      naturalHeight: 216,
+      renderedWidth: 193,
+      renderedHeight: 80,
+    }),
+    true
+  );
+  assert.equal(
+    isLogoAspectRatioPreserved({
+      naturalWidth: 520,
+      naturalHeight: 216,
+      renderedWidth: 154,
+      renderedHeight: 64,
+    }),
+    true
+  );
+});
+
 
