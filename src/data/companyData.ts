@@ -33,6 +33,27 @@ export interface FleetItem {
   features: string[];
 }
 
+export interface BranchRegistration {
+  label: string;
+  tag: string;
+  address: string;
+  street: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  cep: string;
+  cnpj: string;
+  mapsUrl: string;
+  operationalNotes: string;
+}
+
+export interface PhoneNumberItem {
+  display: string;
+  raw: string;
+  telUri: string;
+  ariaLabel: string;
+}
+
 export interface UnitRegistration {
   type: 'MATRIZ' | 'FILIAL';
   city: string;
@@ -49,10 +70,57 @@ export interface UnitRegistration {
 
 export const COMPANY_CONFIG = {
   brandName: 'Vapt Vupt Remoção de Veículos',
-  legalName: 'Vapt Vupt Remoção de Veículos LTDA.',
+  legalName: 'Vapt Vupt Remoção de Veículos Ltda',
+  institutionalDescription:
+    'Vapt Vupt Remoção de Veículos Ltda é uma empresa especializada em serviços de guincho e reboque 24 horas para veículos leves e pesados, atuando em parceria com grandes seguradoras.',
   slogan: 'Estrutura e soluções em remoção de veículos',
   badge: 'Referência em remoção de veículos',
-  segment: 'Transporte, guincho e remoção de veículos leves e pesados',
+  segment: 'Serviços de guincho e reboque 24 horas para veículos leves e pesados',
+
+  // Unidade em Jundiaí (Filial) - Dados Oficiais
+  branchJundiai: {
+    label: 'Unidade em Jundiaí (Filial)',
+    tag: 'Filial',
+    address: 'Travessa Egydio Matheo, 105 - Bairro da Colônia, Jundiaí - SP, CEP 13219-810',
+    street: 'Travessa Egydio Matheo, 105',
+    neighborhood: 'Bairro da Colônia',
+    city: 'Jundiaí',
+    state: 'SP',
+    cep: '13219-810',
+    cnpj: '03.235.721/0004-11',
+    mapsUrl:
+      'https://www.google.com/maps/search/?api=1&query=Travessa+Egydio+Matheo%2C+105+-+Bairro+da+Col%C3%B4nia%2C+Jundia%C3%AD+-+SP%2C+13219-810',
+    operationalNotes:
+      'Registro oficial de filial em Jundiaí. Informações disponibilizadas para fins de transparência cadastral e fiscal.',
+  } as BranchRegistration,
+
+  // Central de Atendimento / Telefones
+  centralPhones: [
+    {
+      display: '(11) 4934-1997',
+      raw: '1149341997',
+      telUri: 'tel:+551149341997',
+      ariaLabel: 'Ligar para a Central de Atendimento no telefone (11) 4934-1997',
+    },
+    {
+      display: '(11) 94149-4402',
+      raw: '11941494402',
+      telUri: 'tel:+5511941494402',
+      ariaLabel: 'Ligar para a Central de Atendimento no telefone (11) 94149-4402',
+    },
+    {
+      display: '(11) 4402-3115',
+      raw: '1144023115',
+      telUri: 'tel:+551144023115',
+      ariaLabel: 'Ligar para a Central de Atendimento no telefone (11) 4402-3115',
+    },
+    {
+      display: '(19) 2042-2350',
+      raw: '1920422350',
+      telUri: 'tel:+551920422350',
+      ariaLabel: 'Ligar para a Central de Atendimento no telefone (19) 2042-2350',
+    },
+  ] as PhoneNumberItem[],
 
   // Identificação clara de protótipo visual e proposta comercial
   prototype: {
@@ -63,9 +131,12 @@ export const COMPANY_CONFIG = {
 
   // Official identified contacts
   whatsapp: {
+    channelLabel: 'WhatsApp (Vagas/Contato)',
+    shortLabel: 'Vagas/Contato',
     raw: '5511913721849',
     display: '(11) 91372-1849',
     link: 'https://wa.me/5511913721849',
+    telUri: 'tel:+5511913721849',
     defaultMessage: 'Olá! Gostaria de obter informações sobre os serviços de remoção de veículos da Vapt Vupt.',
     lightVehicleMessage: 'Olá! Gostaria de consultar atendimento para remoção de veículo leve com a Vapt Vupt.',
     heavyVehicleMessage: 'Olá! Gostaria de consultar atendimento para remoção de veículo pesado/caminhão com a Vapt Vupt.',
@@ -278,7 +349,7 @@ export const COMPANY_CONFIG = {
       city: 'Jundiaí',
       state: 'SP',
       cnpj: '03.235.721/0004-11',
-      address: 'Travessa Egydio Matheo, 105 - Jardim Colônia',
+      address: 'Travessa Egydio Matheo, 105 - Bairro da Colônia',
       cep: '13219-810',
       operationalNotes: 'Registro cadastral de filial. Finalidade de atendimento presencial não confirmada.',
       isPublicVisitingAllowed: false,

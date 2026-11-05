@@ -38,7 +38,7 @@ export const Home: React.FC = () => {
               </h2>
 
               <p className="text-slate-700 dark:text-neutral-300 text-base leading-relaxed">
-                A <strong className="text-slate-900 dark:text-white">Vapt Vupt Remoção de Veículos</strong> atua no transporte, guincho e remoção de automóveis, utilitários e veículos comerciais pesados.
+                {COMPANY_CONFIG.institutionalDescription}
               </p>
 
               <p className="text-slate-600 dark:text-neutral-400 text-sm leading-relaxed">

@@ -11,7 +11,7 @@ export const AboutPage: React.FC = () => {
     <>
       <SEOHead
         title="A Empresa"
-        description="Conheça a Vapt Vupt Remoção de Veículos. Estrutura, capacidade técnica e compromisso operacional com transporte de veículos leves e pesados."
+        description={COMPANY_CONFIG.institutionalDescription}
       />
 
       {/* Header Banner */}
@@ -43,7 +43,7 @@ export const AboutPage: React.FC = () => {
               </h2>
 
               <p className="text-slate-700 dark:text-neutral-300 text-sm sm:text-base leading-relaxed">
-                A <strong className="text-slate-900 dark:text-white">Vapt Vupt Remoção de Veículos</strong> ({COMPANY_CONFIG.legalName}) é uma empresa dedicada a fornecer soluções técnicas e seguras de remoção, reboque e logística de veículos.
+                {COMPANY_CONFIG.institutionalDescription}
               </p>
 
               <p className="text-slate-700 dark:text-neutral-300 text-sm sm:text-base leading-relaxed">
@@ -134,31 +134,34 @@ export const AboutPage: React.FC = () => {
           <div className="bg-white dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 p-6 shadow-sm max-w-3xl mx-auto">
             <div className="flex items-center justify-between mb-3">
               <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-slate-800 dark:text-white border border-slate-200 dark:border-neutral-700">
-                Razão Social & Matriz
+                {COMPANY_CONFIG.branchJundiai.tag}
               </span>
               <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900/60">
                 Registro Ativo
               </span>
             </div>
 
-            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 font-heading">
-              {COMPANY_CONFIG.legalName}
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 font-heading">
+              {COMPANY_CONFIG.branchJundiai.label}
             </h3>
 
-            <div className="text-xs text-slate-600 dark:text-neutral-400 space-y-1.5 mb-4">
+            <div className="text-xs sm:text-sm text-slate-600 dark:text-neutral-400 space-y-2 mb-4">
               <p>
-                <span className="text-slate-800 dark:text-neutral-300 font-semibold">CNPJ Matriz:</span>{' '}
-                {COMPANY_CONFIG.privacy.cnpjMatriz}
+                <span className="text-slate-800 dark:text-neutral-300 font-semibold">Razão Social:</span>{' '}
+                {COMPANY_CONFIG.legalName}
               </p>
               <p>
-                <span className="text-slate-800 dark:text-neutral-300 font-semibold">Registro Administrativo:</span>{' '}
-                {COMPANY_CONFIG.registrosCadastrais[0].address}, {COMPANY_CONFIG.registrosCadastrais[0].city} -{' '}
-                {COMPANY_CONFIG.registrosCadastrais[0].state}, CEP {COMPANY_CONFIG.registrosCadastrais[0].cep}
+                <span className="text-slate-800 dark:text-neutral-300 font-semibold">CNPJ:</span>{' '}
+                <span className="font-mono text-slate-900 dark:text-white font-semibold">{COMPANY_CONFIG.branchJundiai.cnpj}</span>
+              </p>
+              <p>
+                <span className="text-slate-800 dark:text-neutral-300 font-semibold">Endereço:</span>{' '}
+                {COMPANY_CONFIG.branchJundiai.address}
               </p>
             </div>
 
-            <div className="pt-3 border-t border-slate-200 dark:border-neutral-800 text-[11px] text-slate-500 dark:text-neutral-400">
-              <strong>Nota Importante:</strong> Este endereço destina-se exclusivamente a registro administrativo e fiscal. O atendimento aos clientes e solicitações de remoção ocorrem exclusivamente pelos canais digitais oficiais (WhatsApp).
+            <div className="pt-3 border-t border-slate-200 dark:border-neutral-800 text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
+              <strong>Nota Importante:</strong> Registro cadastral oficial da filial. O atendimento aos clientes, cotações e solicitações de remoção ocorrem através dos canais oficiais da Central de Atendimento e WhatsApp.
             </div>
           </div>
 

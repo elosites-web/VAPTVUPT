@@ -56,13 +56,13 @@ export const FAQ_ITEMS: FAQItem[] = [
     id: 'como-solicitar',
     category: 'geral',
     question: 'Como solicitar atendimento de remoção de veículos com a Vapt Vupt?',
-    answer: 'O atendimento pode ser solicitado diretamente pelo nosso WhatsApp oficial: (11) 91372-1849, ou preenchendo o formulário desta página para preparar a mensagem com os dados do seu veículo e necessidade.',
+    answer: 'O atendimento pode ser solicitado pelos números da Central de Atendimento ((11) 4934-1997, (11) 94149-4402, (11) 4402-3115 e (19) 2042-2350) ou diretamente pelo nosso WhatsApp (Vagas/Contato): (11) 91372-1849, bem como preenchendo o formulário desta página para preparar a mensagem com os dados do seu veículo e necessidade.',
   },
   {
     id: 'horario-atendimento',
     category: 'geral',
-    question: 'Qual é o horário de funcionamento e atendimento?',
-    answer: 'Os horários e a disponibilidade operacional devem ser consultados diretamente com a nossa equipe pelo WhatsApp oficial (11) 91372-1849 no momento da sua necessidade.',
+    question: 'Qual é a estrutura de serviços e atendimento da Vapt Vupt?',
+    answer: 'A Vapt Vupt Remoção de Veículos Ltda é especializada em serviços de guincho e reboque 24 horas para veículos leves e pesados, atuando em parceria com grandes seguradoras. Os canais da Central de Atendimento e do WhatsApp (Vagas/Contato) (11) 91372-1849 estão à disposição para consultas e chamados.',
   },
   {
     id: 'informacoes-necessarias',
@@ -90,13 +90,19 @@ export const FAQ_ITEMS: FAQItem[] = [
     id: 'regioes-atendidas',
     category: 'regiao',
     question: 'Quais cidades ou regiões são atendidas pela empresa?',
-    answer: 'A disponibilidade de atendimento varia conforme o ponto de origem, o destino e a operação em andamento. Entre em contato pelo WhatsApp oficial informando a localização para consultar a cobertura para o seu trajeto.',
+    answer: 'A disponibilidade de atendimento varia conforme o ponto de origem, o destino e a operação em andamento. Entre em contato pelos nossos telefones ou pelo WhatsApp oficial informando a localização para consultar a cobertura para o seu trajeto.',
+  },
+  {
+    id: 'unidade-jundiai',
+    category: 'regiao',
+    question: 'Qual é o registro da Unidade em Jundiaí (Filial)?',
+    answer: 'A Unidade em Jundiaí (Filial) possui registro sob o CNPJ 03.235.721/0004-11, localizada na Travessa Egydio Matheo, 105 - Bairro da Colônia, Jundiaí - SP, CEP 13219-810.',
   },
   {
     id: 'atendimento-presencial',
     category: 'regiao',
     question: 'Os endereços cadastrais da empresa realizam atendimento presencial ao público?',
-    answer: 'Não. Os endereços vinculados ao CNPJ possuem finalidade cadastral e administrativa. Todas as solicitações de remoção, cotações e informações devem ser feitas pelos nossos canais digitais oficiais (WhatsApp).',
+    answer: 'Não. Os endereços cadastrais possuem finalidade estritamente cadastral e fiscal. Todas as solicitações de remoção, cotações e informações devem ser feitas pelos nossos canais oficiais (Central de Atendimento e WhatsApp).',
   },
 
   // Disponibilidade & Agendamento

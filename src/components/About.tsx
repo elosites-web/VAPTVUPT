@@ -58,7 +58,7 @@ export const About: React.FC = () => {
           <p className={`mt-4 text-lg leading-relaxed ${
             isDarkMode ? 'text-neutral-300' : 'text-slate-700'
           }`}>
-            A <strong className={isDarkMode ? 'text-white' : 'text-slate-900'}>Vapt Vupt Remoção de Veículos</strong> atua no segmento de remoção e transporte de veículos leves e pesados, oferecendo soluções estruturadas para diferentes necessidades de transporte rodoviário e urbano.
+            {COMPANY_CONFIG.institutionalDescription}
           </p>
         </div>
 

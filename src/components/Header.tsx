@@ -379,28 +379,28 @@ export const Header: React.FC = () => {
               </a>
 
               <div
-                className={`flex items-center justify-center gap-3 pt-2 landscape:pt-1 text-xs landscape:text-[11px] ${
+                className={`flex items-center justify-center gap-2.5 pt-2 landscape:pt-1 text-xs landscape:text-[11px] ${
                   isDarkMode ? 'text-neutral-400' : 'text-slate-500'
                 }`}
               >
                 <a
-                  href={`tel:${COMPANY_CONFIG.whatsapp.raw}`}
-                  className={`flex items-center gap-1.5 transition-colors ${
+                  href={COMPANY_CONFIG.centralPhones[0].telUri}
+                  aria-label={COMPANY_CONFIG.centralPhones[0].ariaLabel}
+                  className={`flex items-center gap-1.5 transition-colors font-mono font-medium ${
                     isDarkMode ? 'hover:text-white' : 'hover:text-slate-900'
                   }`}
                 >
                   <Phone className="w-3.5 h-3.5 text-[#B43034]" />
-                  <span>{COMPANY_CONFIG.whatsapp.display}</span>
+                  <span>Central: {COMPANY_CONFIG.centralPhones[0].display}</span>
                 </a>
                 <span className={isDarkMode ? 'text-neutral-700' : 'text-slate-300'}>•</span>
-                <span
-                  className={`flex items-center gap-1 ${
-                    isDarkMode ? 'text-neutral-400' : 'text-slate-500'
-                  }`}
+                <Link
+                  to="/contato"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-[#B43034] hover:underline font-semibold"
                 >
-                  <ShieldCheck className={`w-3.5 h-3.5 ${isDarkMode ? 'text-neutral-500' : 'text-slate-400'}`} />
-                  <span>Leves e Pesados</span>
-                </span>
+                  Ver telefones
+                </Link>
               </div>
             </div>
           </div>

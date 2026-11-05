@@ -75,16 +75,40 @@ export const Contact: React.FC = () => {
                 
                 <div className="space-y-3">
                   <div className="p-3 bg-neutral-900/80 rounded-lg border border-neutral-800/80">
-                    <div className="text-[11px] uppercase font-bold text-neutral-400">WhatsApp Oficial</div>
-                    <div className="text-base font-bold text-white tracking-wide mt-0.5">
+                    <div className="text-[11px] uppercase font-bold text-neutral-400">
+                      Central de Atendimento / Telefones
+                    </div>
+                    <div className="text-xs text-white tracking-wide mt-1 space-y-1 font-mono">
+                      {COMPANY_CONFIG.centralPhones.map((phone) => (
+                        <a
+                          key={phone.raw}
+                          href={phone.telUri}
+                          className="block hover:text-[#B43034] transition-colors"
+                          aria-label={phone.ariaLabel}
+                        >
+                          {phone.display}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-neutral-900/80 rounded-lg border border-neutral-800/80">
+                    <div className="text-[11px] uppercase font-bold text-[#25D366]">
+                      {COMPANY_CONFIG.whatsapp.channelLabel}
+                    </div>
+                    <div className="text-base font-bold text-white tracking-wide mt-0.5 font-mono">
                       {COMPANY_CONFIG.whatsapp.display}
                     </div>
                   </div>
 
                   <div className="p-3 bg-neutral-900/80 rounded-lg border border-neutral-800/80">
-                    <div className="text-[11px] uppercase font-bold text-neutral-400">Instagram Oficial</div>
-                    <div className="text-base font-bold text-white tracking-wide mt-0.5">
-                      {COMPANY_CONFIG.instagram.handle}
+                    <div className="text-[11px] uppercase font-bold text-neutral-400">
+                      {COMPANY_CONFIG.branchJundiai.label}
+                    </div>
+                    <div className="text-xs text-neutral-300 mt-1 leading-snug">
+                      CNPJ: <span className="font-mono text-white">{COMPANY_CONFIG.branchJundiai.cnpj}</span>
+                      <br />
+                      {COMPANY_CONFIG.branchJundiai.address}
                     </div>
                   </div>
                 </div>

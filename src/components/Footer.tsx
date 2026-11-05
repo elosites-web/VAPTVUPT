@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Briefcase, ChevronRight, HelpCircle, ArrowUp } from 'lucide-react';
+import { Instagram, Facebook, Briefcase, ChevronRight, HelpCircle, ArrowUp, Phone } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { useTheme } from '../context/ThemeContext';
 import { WhatsAppIcon } from './WhatsAppIcon';
@@ -58,7 +58,7 @@ export const Footer: React.FC = () => {
               />
             </Link>
             <p className={`text-sm max-w-sm leading-relaxed ${isDarkMode ? 'text-neutral-300' : 'text-slate-700'}`}>
-              Atuação em remoção e transporte de veículos leves e pesados, com foco em atendimento direto e orientação pelo WhatsApp oficial.
+              Especializada em serviços de guincho e reboque 24 horas para veículos leves e pesados, atuando em parceria com grandes seguradoras.
             </p>
             <div className={`text-xs space-y-1 ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>
               <div>
@@ -66,8 +66,8 @@ export const Footer: React.FC = () => {
                 {COMPANY_CONFIG.legalName}
               </div>
               <div>
-                <span className={`font-semibold ${isDarkMode ? 'text-neutral-300' : 'text-slate-800'}`}>Segmento:</span>{' '}
-                {COMPANY_CONFIG.segment}
+                <span className={`font-semibold ${isDarkMode ? 'text-neutral-300' : 'text-slate-800'}`}>{COMPANY_CONFIG.branchJundiai.label}:</span>{' '}
+                <span className="font-mono">CNPJ {COMPANY_CONFIG.branchJundiai.cnpj}</span>
               </div>
             </div>
 
@@ -138,6 +138,27 @@ export const Footer: React.FC = () => {
             </h4>
 
             <div className="space-y-2.5 text-xs">
+              {/* Central de Atendimento */}
+              <Link
+                to="/contato"
+                className={`flex items-center gap-2.5 p-2 rounded-lg border transition-all group ${
+                  isDarkMode
+                    ? 'bg-neutral-900/60 border-neutral-800/80 text-neutral-200 hover:text-white hover:bg-neutral-800/70 hover:border-[#B43034]/40'
+                    : 'bg-white border-slate-200 text-slate-800 hover:text-slate-950 hover:bg-slate-50 hover:border-[#B43034]/40 shadow-xs'
+                }`}
+                title="Central de Atendimento: (11) 4934-1997 e demais números"
+              >
+                <div className="p-1 rounded-md bg-[#B43034]/15 text-[#B43034] shrink-0">
+                  <Phone className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-semibold text-xs text-slate-900 dark:text-white">Central de Atendimento</div>
+                  <div className={`text-[11px] font-mono truncate ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>
+                    {COMPANY_CONFIG.centralPhones[0].display}
+                  </div>
+                </div>
+              </Link>
+
               {/* WhatsApp com cor oficial #25D366 */}
               <a
                 href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
@@ -155,8 +176,8 @@ export const Footer: React.FC = () => {
                   <WhatsAppIcon className="w-4 h-4 text-[#25D366] fill-[#25D366]" />
                 </div>
                 <div className="min-w-0">
-                  <div className="font-semibold text-xs text-[#25D366]">WhatsApp Oficial</div>
-                  <div className={`text-[11px] truncate ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>{COMPANY_CONFIG.whatsapp.display}</div>
+                  <div className="font-semibold text-xs text-[#25D366]">{COMPANY_CONFIG.whatsapp.channelLabel}</div>
+                  <div className={`text-[11px] font-mono truncate ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>{COMPANY_CONFIG.whatsapp.display}</div>
                 </div>
               </a>
 
