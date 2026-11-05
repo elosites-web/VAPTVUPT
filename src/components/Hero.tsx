@@ -32,7 +32,7 @@ export const Hero: React.FC = () => {
           <div className="lg:col-span-7 flex flex-col justify-center text-left">
             
             {/* Identity Badge */}
-            <div className="inline-flex items-center gap-2.5 bg-neutral-900/90 border border-neutral-700/80 px-3.5 py-1.5 rounded-full w-fit mb-6 shadow-sm">
+            <div className="inline-flex items-center gap-2.5 bg-neutral-900/90 border border-neutral-700/80 px-3.5 py-1.5 rounded-full w-fit mb-3 sm:mb-3.5 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-[#B43034]" />
               <span className="text-xs uppercase font-semibold tracking-wider text-neutral-300">
                 {COMPANY_CONFIG.badge}

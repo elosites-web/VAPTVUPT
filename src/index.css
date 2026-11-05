@@ -125,6 +125,15 @@
   background: linear-gradient(135deg, #B43034 0%, #D4383D 60%, #E84D52 100%);
 }
 
+/* Degradê linear de texto oficial Vapt Vupt (vermelho para cinza grafite) */
+.text-gradient-vaptvupt {
+  background: linear-gradient(115deg, #B43034 0%, #D4383D 30%, #6B7280 70%, #242424 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
 .graphite-pattern {
   background-color: #18181b;
   background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);

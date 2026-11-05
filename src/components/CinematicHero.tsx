@@ -739,7 +739,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className={`max-w-3xl space-y-5 sm:space-y-6 hero-landscape-flow ${isMobilePortrait ? 'text-center mx-auto pt-2 sm:pt-0' : ''}`}>
-            <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm shadow-md hero-landscape-badge ${isMobilePortrait ? 'mx-auto mb-1' : ''}`}>
+            <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm shadow-md hero-landscape-badge !mb-3 sm:!mb-3.5 ${isMobilePortrait ? 'mx-auto' : ''}`}>
               <span className="w-2 h-2 rounded-full bg-[#B43034]" />
               <span>{COMPANY_CONFIG.badge}</span>
             </div>
@@ -1009,7 +1009,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
               <div className="max-w-3xl space-y-4 sm:space-y-6 hero-landscape-flow">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg hero-landscape-badge">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg hero-landscape-badge !mb-3 sm:!mb-3.5">
                   <span className="w-2 h-2 rounded-full bg-[#B43034] animate-pulse" />
                   <span>{COMPANY_CONFIG.badge}</span>
                 </div>
