@@ -508,7 +508,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               src="/hero-poster.jpg"
               alt="Caminhões de remoção Vapt Vupt"
               onError={() => setPosterFailed(true)}
-              className="w-full h-full object-cover object-center brightness-[0.32] contrast-110 select-none"
+              className="w-full h-full object-cover object-[30%_center] sm:object-center brightness-[0.32] contrast-110 select-none"
             />
           ) : (
             <div className="w-full h-full bg-[#141416] industrial-grid" />
@@ -628,7 +628,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               alt="Caminhões Vapt Vupt"
               onLoad={() => setPosterLoaded(true)}
               onError={() => setPosterFailed(true)}
-              className="absolute inset-0 w-full h-full object-cover object-center select-none"
+              className="absolute inset-0 w-full h-full object-cover object-[30%_center] sm:object-center select-none"
             />
           )}
           {!videoReady && posterFailed && (

@@ -46,20 +46,26 @@ export const FleetGallery: React.FC = () => {
               className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl overflow-hidden hover:border-[#B43034]/70 transition-all duration-300 group flex flex-col justify-between shadow-sm"
             >
               {/* Photo with Overlay */}
-              <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-neutral-950">
+              <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-neutral-950 flex items-center justify-center">
                 <img
                   src={item.image}
                   srcSet={`${item.image} 480w, ${item.image} 800w, ${item.image} 1200w`}
                   sizes="(max-width: 768px) 100vw, 33vw"
                   alt={item.title}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                  className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
+                    item.id === 'cavalo-1635'
+                      ? 'object-cover object-[center_28%]'
+                      : 'object-contain p-3 sm:p-4 bg-white'
+                  }`}
                   loading="lazy"
                   decoding="async"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+                {item.id === 'cavalo-1635' && (
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent pointer-events-none" />
+                )}
 
                 {/* Badge */}
-                <div className="absolute top-3 left-3 bg-neutral-950/85 backdrop-blur-sm border border-neutral-700/80 text-[11px] font-bold text-neutral-100 uppercase tracking-wider px-3 py-1 rounded">
+                <div className="absolute top-3 left-3 bg-neutral-950/85 backdrop-blur-sm border border-neutral-700/80 text-[11px] font-bold text-neutral-100 uppercase tracking-wider px-3 py-1 rounded shadow-sm">
                   {item.badge}
                 </div>
 
@@ -129,7 +135,7 @@ export const FleetGallery: React.FC = () => {
             </button>
 
             {/* Modal Image */}
-            <div className="relative aspect-[16/10] bg-neutral-950">
+            <div className="relative p-2 sm:p-4 bg-neutral-950 flex items-center justify-center min-h-[240px] sm:min-h-[360px] max-h-[70vh]">
               <img
                 src={activeModalItem.image}
                 srcSet={`${activeModalItem.image} 480w, ${activeModalItem.image} 800w, ${activeModalItem.image} 1200w`}
@@ -137,7 +143,9 @@ export const FleetGallery: React.FC = () => {
                 loading="lazy"
                 decoding="async"
                 alt={activeModalItem.title}
-                className="w-full h-full object-contain"
+                className={`max-h-[65vh] w-auto max-w-full object-contain rounded-lg ${
+                  activeModalItem.id !== 'cavalo-1635' ? 'bg-white p-2.5 sm:p-4 shadow-inner' : ''
+                }`}
               />
             </div>
 

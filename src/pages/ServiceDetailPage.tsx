@@ -90,19 +90,21 @@ export const ServiceDetailPage: React.FC = () => {
               {/* Photo Showcase */}
               {currentService.image && (
                 <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-xl bg-white dark:bg-neutral-950">
-                  <img
-                    src={currentService.image}
-                    srcSet={`${currentService.image} 480w, ${currentService.image} 800w, ${currentService.image} 1200w`}
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                    loading="lazy"
-                    decoding="async"
-                    alt={currentService.title}
-                    className={`w-full h-72 sm:h-96 ${
-                      currentService.id === 'pesados'
-                        ? 'object-cover object-center'
-                        : 'object-contain p-3 sm:p-5 bg-white'
-                    }`}
-                  />
+                  <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden flex items-center justify-center">
+                    <img
+                      src={currentService.image}
+                      srcSet={`${currentService.image} 480w, ${currentService.image} 800w, ${currentService.image} 1200w`}
+                      sizes="(max-width: 1024px) 100vw, 66vw"
+                      loading="lazy"
+                      decoding="async"
+                      alt={currentService.title}
+                      className={`w-full h-full ${
+                        currentService.id === 'pesados'
+                          ? 'object-cover object-[center_28%]'
+                          : 'object-contain p-3 sm:p-6 bg-white'
+                      }`}
+                    />
+                  </div>
                   <div className="p-4 bg-slate-50 dark:bg-neutral-900 border-t border-slate-200 dark:border-neutral-800 flex items-center justify-between text-xs">
                     <span className="font-semibold text-slate-900 dark:text-white">Veículo Identificado Vapt Vupt</span>
                     <span className="text-slate-500 dark:text-neutral-400 font-mono">Fotografia Real do Acervo</span>

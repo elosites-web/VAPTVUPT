@@ -83,12 +83,14 @@ export const Home: React.FC = () => {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-2xl group bg-white dark:bg-neutral-950">
-                <img
-                  src={COMPANY_CONFIG.fleet[1].image}
-                  alt="Guincho Leve Plataforma Vapt Vupt"
-                  className="w-full h-72 sm:h-80 object-contain p-3 sm:p-4 bg-white transition-transform duration-500 group-hover:scale-105"
-                />
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-neutral-700/80 shadow-2xl group bg-white dark:bg-neutral-950 flex flex-col justify-between">
+                <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] w-full overflow-hidden flex items-center justify-center p-3 sm:p-5 bg-white">
+                  <img
+                    src={COMPANY_CONFIG.fleet[1].image}
+                    alt="Guincho Leve Plataforma Vapt Vupt"
+                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
                 <div className="p-4 bg-slate-900 dark:bg-neutral-900 border-t border-slate-800 flex items-center justify-between">
                   <div>
                     <div className="text-xs font-bold uppercase tracking-wider text-[#B43034]">
@@ -212,7 +214,7 @@ export const Home: React.FC = () => {
                 index={index}
                 className="bg-white dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 overflow-hidden flex flex-col group shadow-md hover:shadow-xl hover:border-red-400/50 dark:hover:border-neutral-700 transition-all"
               >
-                <div className="relative h-56 overflow-hidden bg-white dark:bg-neutral-950 flex items-center justify-center">
+                <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden bg-white dark:bg-neutral-950 flex items-center justify-center">
                   <img
                     src={item.image}
                     srcSet={`${item.image} 480w, ${item.image} 800w, ${item.image} 1200w`}
@@ -222,11 +224,11 @@ export const Home: React.FC = () => {
                     alt={item.title}
                     className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
                       item.id === 'cavalo-1635'
-                        ? 'object-cover object-center'
-                        : 'object-contain p-2.5 bg-white'
+                        ? 'object-cover object-[center_28%]'
+                        : 'object-contain p-2.5 sm:p-3.5 bg-white'
                     }`}
                   />
-                  <div className="absolute top-3 left-3 bg-slate-900/90 dark:bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-slate-700 dark:border-neutral-800">
+                  <div className="absolute top-3 left-3 bg-slate-900/90 dark:bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-slate-700 dark:border-neutral-800 shadow-sm">
                     {item.badge}
                   </div>
                 </div>

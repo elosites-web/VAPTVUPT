@@ -113,7 +113,7 @@ export const About: React.FC = () => {
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.symbolWhite : COMPANY_CONFIG.logos.symbolOriginal}
                 alt="Símbolo Vapt Vupt"
-                className="w-8 h-8 object-contain transition-all duration-300"
+                className="w-8 h-8 object-contain shrink-0 transition-all duration-300"
               />
               <div>
                 <h4 className={`text-base font-bold uppercase tracking-wider ${

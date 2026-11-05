@@ -117,7 +117,7 @@ export const FleetPage: React.FC = () => {
               >
                 {/* Photo with hover button */}
                 <div
-                  className="relative h-64 overflow-hidden bg-white dark:bg-neutral-950 cursor-pointer flex items-center justify-center"
+                  className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden bg-white dark:bg-neutral-950 cursor-pointer flex items-center justify-center"
                   onClick={() => openPhotoModal(item)}
                 >
                   <img
@@ -129,8 +129,8 @@ export const FleetPage: React.FC = () => {
                     alt={item.title}
                     className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
                       item.id === 'cavalo-1635'
-                        ? 'object-cover object-center'
-                        : 'object-contain p-3 bg-white'
+                        ? 'object-cover object-[center_28%]'
+                        : 'object-contain p-3 sm:p-4 bg-white'
                     }`}
                   />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-200">
@@ -139,7 +139,7 @@ export const FleetPage: React.FC = () => {
                       <span>Ampliar Fotografia</span>
                     </span>
                   </div>
-                  <div className="absolute top-3 left-3 bg-slate-900/90 dark:bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-slate-700 dark:border-neutral-800">
+                  <div className="absolute top-3 left-3 bg-slate-900/90 dark:bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-slate-700 dark:border-neutral-800 shadow-sm">
                     {item.badge}
                   </div>
                 </div>
@@ -258,7 +258,9 @@ export const FleetPage: React.FC = () => {
                     setModalImgError(true);
                   }}
                   alt={selectedPhoto.title}
-                  className="max-h-[70vh] w-auto object-contain rounded"
+                  className={`max-h-[65vh] w-auto max-w-full object-contain rounded-lg ${
+                    selectedPhoto.id !== 'cavalo-1635' ? 'bg-white p-2.5 sm:p-4 shadow-inner' : ''
+                  }`}
                 />
               ) : (
                 <div className="py-12 px-6 text-center space-y-3 text-neutral-300">

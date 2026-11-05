@@ -130,7 +130,7 @@ export const Hero: React.FC = () => {
                   <img
                     src={COMPANY_CONFIG.heroImage}
                     alt="Cavalo mecânico 1635 da Vapt Vupt Remoção de Veículos"
-                    className="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                    className="w-full h-full object-cover object-[center_28%] transition-transform duration-700 hover:scale-105"
                     loading="eager"
                   />
                   

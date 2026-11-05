@@ -176,7 +176,7 @@ export const Header: React.FC = () => {
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
                 alt="Vapt Vupt Remoção de Veículos"
-                className="block mx-auto h-8 sm:h-9 lg:h-9 xl:h-10 w-auto max-w-[135px] sm:max-w-[160px] lg:max-w-[160px] xl:max-w-[185px] 2xl:max-w-[205px] object-contain object-center transition-opacity duration-300"
+                className="block mx-auto h-8 sm:h-9 lg:h-9 xl:h-10 w-auto max-w-[135px] sm:max-w-[160px] lg:max-w-[160px] xl:max-w-[185px] 2xl:max-w-[205px] object-contain object-center shrink-0 transition-opacity duration-300"
               />
             </Link>
 
@@ -222,7 +222,7 @@ export const Header: React.FC = () => {
                 </div>
               )}
 
-              {/* Direct WhatsApp Call CTA - Oculto quando menu mobile estiver aberto */}
+              {/* Direct WhatsApp Call CTA - Apenas o ícone para liberar espaço e não cortar os nomes das seções */}
               {!mobileMenuOpen && (
                 <a
                   href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
@@ -230,12 +230,11 @@ export const Header: React.FC = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group button-3d relative inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white text-[11px] xl:text-xs font-bold uppercase tracking-wider h-8 sm:h-9 px-2.5 sm:px-3 xl:px-3.5 rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
+                  className="group button-3d relative inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
                   aria-label="Atendimento via WhatsApp"
-                  title="Atendimento no WhatsApp"
+                  title="Atendimento via WhatsApp"
                 >
-                  <WhatsAppIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-white fill-white shrink-0" />
-                  <span className="hidden sm:inline whitespace-nowrap">Atendimento</span>
+                  <WhatsAppIcon className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-white fill-white shrink-0" />
                 </a>
               )}
 

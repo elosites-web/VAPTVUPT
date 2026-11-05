@@ -118,8 +118,8 @@ export const ServicesPage: React.FC = () => {
                           alt={service.title}
                           className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
                             service.id === 'pesados'
-                              ? 'object-cover object-center'
-                              : 'object-contain p-2 sm:p-3 bg-white'
+                              ? 'object-cover object-[center_28%]'
+                              : 'object-contain p-2.5 sm:p-4 bg-white'
                           }`}
                         />
                       ) : (

@@ -57,7 +57,7 @@ export const Services: React.FC = () => {
                 className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-[#B43034] transition-all duration-300 hover:shadow-xl hover:shadow-red-950/20 flex flex-col group"
               >
                 {/* Visual Image Header */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-neutral-950">
+                <div className="relative aspect-[16/10] overflow-hidden bg-neutral-950 flex items-center justify-center">
                   {service.image && (
                     <img
                       src={service.image}
@@ -66,13 +66,19 @@ export const Services: React.FC = () => {
                       loading="lazy"
                       decoding="async"
                       alt={service.title}
-                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                      className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
+                        isHeavy
+                          ? 'object-cover object-[center_28%]'
+                          : 'object-contain p-2.5 sm:p-3.5 bg-white'
+                      }`}
                     />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/40 to-transparent" />
+                  {isHeavy && (
+                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/30 to-transparent pointer-events-none" />
+                  )}
                   
                   {/* Category Pill */}
-                  <div className="absolute top-3 left-3 bg-neutral-950/80 backdrop-blur-sm border border-neutral-700/80 text-[11px] font-bold text-neutral-200 uppercase tracking-wider px-3 py-1 rounded">
+                  <div className="absolute top-3 left-3 bg-neutral-950/85 backdrop-blur-sm border border-neutral-700/80 text-[11px] font-bold text-neutral-100 uppercase tracking-wider px-3 py-1 rounded shadow-sm">
                     {service.tag}
                   </div>
                 </div>

@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
                 alt="Vapt Vupt Remoção de Veículos"
-                className="h-10 w-auto object-contain transition-opacity duration-300"
+                className="h-10 w-auto object-contain shrink-0 transition-opacity duration-300"
               />
             </Link>
             <p className={`text-sm max-w-sm leading-relaxed ${isDarkMode ? 'text-neutral-300' : 'text-slate-700'}`}>
