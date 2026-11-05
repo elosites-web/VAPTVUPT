@@ -307,6 +307,23 @@ export function evaluateNetlifyRedirectStatus(
 
 export const MOBILE_PORTRAIT_MEDIA_QUERY = '(orientation: portrait) and (max-width: 768px)';
 
+export const MOBILE_LANDSCAPE_MEDIA_QUERY = '(orientation: landscape) and (max-height: 520px)';
+
+/**
+ * Determines whether the viewport corresponds to a mobile device in horizontal (landscape) orientation
+ * based on width > height and viewport height <= 520px (typical mobile landscape heights: 320px–450px).
+ */
+export function isMobileLandscapeViewport(params: {
+  width: number;
+  height: number;
+}): boolean {
+  const { width, height } = params;
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    return false;
+  }
+  return width > height && height <= 520;
+}
+
 /**
  * Resolves the appropriate hero video source based on viewport orientation and width.
  * Mobile portrait (9:16) uses /video/hero-scrub-mobile.mp4, desktop (16:9) uses /video/hero-scrub.mp4.
@@ -314,3 +331,4 @@ export const MOBILE_PORTRAIT_MEDIA_QUERY = '(orientation: portrait) and (max-wid
 export function resolveHeroVideoSource(isMobilePortrait: boolean): string {
   return isMobilePortrait ? '/video/hero-scrub-mobile.mp4' : '/video/hero-scrub.mp4';
 }
+

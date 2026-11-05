@@ -16,6 +16,8 @@ import {
   shouldRevealInitiallyAboveFold,
   resolveHeroVideoSource,
   MOBILE_PORTRAIT_MEDIA_QUERY,
+  MOBILE_LANDSCAPE_MEDIA_QUERY,
+  isMobileLandscapeViewport,
   DESKTOP_MIN_WIDTH_PX,
 } from './uxPolish';
 
@@ -381,3 +383,29 @@ test('resolveHeroVideoSource selects 9:16 mobile video or 16:9 desktop video', (
   assert.equal(resolveHeroVideoSource(true), '/video/hero-scrub-mobile.mp4');
   assert.equal(resolveHeroVideoSource(false), '/video/hero-scrub.mp4');
 });
+
+test('isMobileLandscapeViewport accurately detects mobile devices in horizontal landscape orientation', () => {
+  assert.equal(MOBILE_LANDSCAPE_MEDIA_QUERY, '(orientation: landscape) and (max-height: 520px)');
+
+  // iPhone 12/13/14 landscape (844 x 390)
+  assert.equal(isMobileLandscapeViewport({ width: 844, height: 390 }), true);
+
+  // iPhone SE landscape (667 x 375)
+  assert.equal(isMobileLandscapeViewport({ width: 667, height: 375 }), true);
+
+  // Pixel 7 landscape (915 x 412)
+  assert.equal(isMobileLandscapeViewport({ width: 915, height: 412 }), true);
+
+  // iPhone 14 Pro Max landscape (932 x 430)
+  assert.equal(isMobileLandscapeViewport({ width: 932, height: 430 }), true);
+
+  // Mobile portrait (390 x 844) -> not landscape
+  assert.equal(isMobileLandscapeViewport({ width: 390, height: 844 }), false);
+
+  // Desktop landscape (1920 x 1080) -> height > 520, not mobile landscape
+  assert.equal(isMobileLandscapeViewport({ width: 1920, height: 1080 }), false);
+
+  // Tablet landscape (1024 x 768) -> height > 520, not mobile landscape
+  assert.equal(isMobileLandscapeViewport({ width: 1024, height: 768 }), false);
+});
+

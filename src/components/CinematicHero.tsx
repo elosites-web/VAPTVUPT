@@ -568,7 +568,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     return (
       <section
         id="inicio"
-        className="relative min-h-[85vh] sm:min-h-[92vh] flex items-center pt-28 sm:pt-36 pb-12 sm:pb-16 bg-[#141416] overflow-hidden keep-dark"
+        className="relative min-h-[85vh] sm:min-h-[92vh] flex items-center pt-28 sm:pt-36 pb-12 sm:pb-16 bg-[#141416] overflow-hidden keep-dark hero-landscape-stage"
         data-keep-dark="true"
       >
         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -587,31 +587,31 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className={`max-w-3xl space-y-5 sm:space-y-6 ${isMobilePortrait ? 'text-center mx-auto pt-2 sm:pt-0' : ''}`}>
-            <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm shadow-md ${isMobilePortrait ? 'mx-auto mb-1' : ''}`}>
+          <div className={`max-w-3xl space-y-5 sm:space-y-6 hero-landscape-flow ${isMobilePortrait ? 'text-center mx-auto pt-2 sm:pt-0' : ''}`}>
+            <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm shadow-md hero-landscape-badge ${isMobilePortrait ? 'mx-auto mb-1' : ''}`}>
               <span className="w-2 h-2 rounded-full bg-[#B43034]" />
               <span>{COMPANY_CONFIG.badge}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight uppercase leading-[1.08] font-heading">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight uppercase leading-[1.08] font-heading hero-landscape-heading">
               <span className={isMobilePortrait ? "bg-gradient-to-b from-white via-slate-100 to-slate-300 bg-clip-text text-transparent" : "text-white"}>
                 Estrutura e Soluções em{' '}
               </span>
               <span className="text-[#B43034]">Remoção de Veículos</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl">
+            <p className="text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl hero-landscape-subtitle">
               Atuação dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Fale diretamente com nossa equipe pelo WhatsApp oficial para consultar disponibilidade.
             </p>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 hero-landscape-actions">
               <a
                 href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
                   COMPANY_CONFIG.whatsapp.defaultMessage
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg shadow-xl font-heading"
+                className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg shadow-xl font-heading hero-landscape-btn-whatsapp"
               >
                 <WhatsAppIcon className="w-5 h-5 shrink-0" />
                 <span>CHAMAR NO WHATSAPP</span>
@@ -619,14 +619,14 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
               <a
                 href="#solicitar-atendimento"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg border border-white/25 transition-all backdrop-blur-md shadow-lg"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg border border-white/25 transition-all backdrop-blur-md shadow-lg hero-landscape-btn-secondary"
               >
                 <span>Preencher Solicitação</span>
                 <ArrowRight className="w-4 h-4 text-[#B43034] shrink-0" />
               </a>
             </div>
 
-            <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-3.5 border-t border-neutral-800/90">
+            <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-3.5 border-t border-neutral-800/90 hero-landscape-cards">
               <Link
                 to="/servicos/remocao-veiculos-leves"
                 className="p-3.5 rounded-xl bg-neutral-900/80 hover:bg-neutral-900 border border-neutral-800 hover:border-[#B43034]/60 transition-all flex items-start gap-3"
@@ -797,7 +797,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
           className={`absolute inset-0 z-20 flex ${
             isMobilePortrait
               ? 'flex-col justify-between h-full pt-[88px] sm:pt-[94px] pb-14 px-4 sm:px-6'
-              : 'items-center pt-24 sm:pt-28 pb-12 landscape:pt-16 landscape:pb-4'
+              : 'items-center pt-24 sm:pt-28 pb-12 hero-landscape-stage'
           } transition-transform duration-100 ease-out`}
         >
           {isMobilePortrait ? (
@@ -852,33 +852,33 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             </div>
           ) : (
             /* Layout Desktop & Landscape */
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full landscape:pt-1">
-              <div className="max-w-3xl space-y-4 sm:space-y-6 landscape:space-y-2">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+              <div className="max-w-3xl space-y-4 sm:space-y-6 hero-landscape-flow">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg hero-landscape-badge">
                   <span className="w-2 h-2 rounded-full bg-[#B43034] animate-pulse" />
                   <span>{COMPANY_CONFIG.badge}</span>
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-black text-white tracking-tight uppercase leading-[1.06] font-heading drop-shadow-md">
+                <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-black text-white tracking-tight uppercase leading-[1.06] font-heading drop-shadow-md hero-landscape-heading">
                   Estrutura e Soluções em <span className="text-[#B43034]">Remoção de Veículos</span>
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-sm sm:text-base md:text-lg text-neutral-200 leading-relaxed max-w-2xl drop-shadow">
+                <p className="text-sm sm:text-base md:text-lg text-neutral-200 leading-relaxed max-w-2xl drop-shadow hero-landscape-subtitle">
                   Atuação dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Fale diretamente com nossa equipe pelo WhatsApp oficial para consultar disponibilidade.
                 </p>
 
                 {/* Primary Call to Action Buttons */}
-                <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 hero-landscape-actions">
                   <a
                     href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
                       COMPANY_CONFIG.whatsapp.defaultMessage
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg shadow-2xl font-heading"
+                    className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg shadow-2xl font-heading hero-landscape-btn-whatsapp"
                   >
                     <WhatsAppIcon className="w-5 h-5 shrink-0" />
                     <span>CHAMAR NO WHATSAPP</span>
@@ -886,7 +886,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
                   <a
                     href="#solicitar-atendimento"
-                    className="inline-flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg border border-white/30 transition-all backdrop-blur-md shadow-lg text-center"
+                    className="inline-flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg border border-white/30 transition-all backdrop-blur-md shadow-lg text-center hero-landscape-btn-secondary"
                   >
                     <span>Preencher Solicitação</span>
                     <ArrowRight className="w-4 h-4 text-[#B43034] shrink-0" />
@@ -894,7 +894,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
                 </div>
 
                 {/* Quick Differentiation Cards: Leves e Pesados (Desktop) */}
-                <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl border-t border-white/15">
+                <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl border-t border-white/15 hero-landscape-cards">
                   <Link
                     to="/servicos/remocao-veiculos-leves"
                     className="group p-3 rounded-xl bg-black/60 hover:bg-black/80 border border-white/10 hover:border-[#B43034]/70 transition-all flex items-start gap-3 backdrop-blur-md shadow-md"
@@ -941,7 +941,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
           ref={scrollIndicatorRef}
           className={`absolute ${
             isMobilePortrait ? 'bottom-2' : 'bottom-6'
-          } left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-1.5 transition-opacity duration-200`}
+          } left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-1.5 transition-opacity duration-200 hero-landscape-scroll-indicator`}
         >
           <span className="text-[10px] font-bold uppercase tracking-widest text-white/80 bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm border border-white/15">
             Role para explorar
@@ -954,7 +954,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             ========================================================================= */}
         <div
           ref={logoStageRef}
-          className="absolute inset-0 z-30 flex flex-col items-center justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 pointer-events-none"
+          className="absolute inset-0 z-30 flex flex-col items-center justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 pointer-events-none hero-landscape-logo-stage"
           style={{ opacity: 0, visibility: 'hidden' }}
         >
           {/* Subtle white-to-light-slate background wash ensuring 100% pure contrast */}
@@ -975,7 +975,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               {/* Stage A: Official Vapt Vupt Speed Symbol */}
               <div
                 ref={symbolRef}
-                className="transition-transform duration-100 ease-out will-change-transform"
+                className="transition-transform duration-100 ease-out will-change-transform hero-landscape-logo-symbol"
                 style={{ opacity: 0, transform: 'scale(0.85)' }}
               >
                 <img
@@ -989,7 +989,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               {/* Stage B: Official Vapt Vupt Wordmark (Original Typography & Proportions) */}
               <div
                 ref={wordmarkRef}
-                className="transition-transform duration-100 ease-out will-change-transform"
+                className="transition-transform duration-100 ease-out will-change-transform hero-landscape-logo-wordmark"
                 style={{ opacity: 0, transform: 'translateX(20px)' }}
               >
                 <img
@@ -1004,7 +1004,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             {/* 3. Abaixo do logotipo: os botões 'CHAMAR NO WHATSAPP', 'VER SERVIÇOS' e 'REVER INÍCIO' */}
             <div
               ref={finalCardRef}
-              className="space-y-3.5 max-w-xl transition-transform duration-150 ease-out"
+              className="space-y-3.5 max-w-xl transition-transform duration-150 ease-out hero-landscape-logo-actions"
               style={{ opacity: 0, transform: 'translateY(12px)' }}
             >
               <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5">
