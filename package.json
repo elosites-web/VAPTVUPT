@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
+    "test": "node --import tsx --test src/utils/uxPolish.test.ts && tsx scripts/test-forms.ts",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
