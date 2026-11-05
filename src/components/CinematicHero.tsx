@@ -1108,18 +1108,18 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             ========================================================================= */}
         <div
           ref={logoStageRef}
-          className="absolute inset-0 z-30 flex flex-col items-center justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 pointer-events-none hero-landscape-logo-stage"
+          className="absolute inset-0 z-30 flex flex-col items-center justify-center pt-[88px] sm:pt-[94px] pb-6 sm:pb-8 px-4 sm:px-6 pointer-events-none hero-landscape-logo-stage"
           style={INITIAL_LOGO_STAGE_STYLE}
         >
           {/* Clean white backdrop wash ensuring 100% pure contrast on the final reveal stage */}
           <div className="absolute inset-0 bg-white pointer-events-none" />
 
           {/* Logo Assembly Container */}
-          <div className="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full text-center">
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] items-center justify-items-center max-w-4xl w-full h-full text-center">
             {/* 1. O LOGOTIPO CENTRALIZADO e posicionado ao centro da animação da hero no último frame */}
             <BrandLogoHorizontal
               isDark={false}
-              className="!flex-col sm:!flex-row landscape:!flex-row !gap-3 sm:!gap-4 md:!gap-5 mb-4 sm:mb-6 mx-auto"
+              className="row-start-2 !flex-col sm:!flex-row landscape:!flex-row !gap-3 sm:!gap-4 md:!gap-5 mx-auto"
               symbolContainerRef={symbolRef}
               symbolContainerClassName="transition-transform duration-100 ease-out will-change-transform hero-landscape-logo-symbol"
               symbolContainerStyle={INITIAL_SYMBOL_STAGE_STYLE}
@@ -1133,10 +1133,10 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             {/* 3. Abaixo do logotipo: os botões 'CHAMAR NO WHATSAPP', 'VER SERVIÇOS' e 'REVER INÍCIO' */}
             <div
               ref={finalCardRef}
-              className="space-y-3.5 max-w-xl transition-transform duration-150 ease-out hero-landscape-logo-actions"
+              className="row-start-3 self-end w-full max-w-xl flex flex-col items-center transition-transform duration-150 ease-out hero-landscape-logo-actions"
               style={INITIAL_FINAL_CARD_STYLE}
             >
-              <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5">
+              <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 pb-4 sm:pb-8 md:pb-10 landscape:pb-1">
                 <a
                   href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
                     COMPANY_CONFIG.whatsapp.defaultMessage
