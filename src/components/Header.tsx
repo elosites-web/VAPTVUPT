@@ -144,21 +144,13 @@ export const Header: React.FC = () => {
 
         {/* Identificação Minimalista de Protótipo Visual e Proposta Comercial (Sempre acima da Progress Bar) */}
         <div
-          className={`w-full border-b px-2 sm:px-4 py-0.5 text-[9.5px] sm:text-[10.5px] leading-tight transition-colors select-none ${
-            isDarkMode
-              ? 'bg-neutral-950/90 border-neutral-800/80 text-yellow-400'
-              : 'bg-amber-50/90 border-amber-200/80 text-amber-900'
-          }`}
+          className="w-full border-b px-2 sm:px-4 py-0.5 text-[9.5px] sm:text-[10.5px] leading-tight transition-colors select-none bg-neutral-950/90 border-neutral-800/80 text-yellow-400"
           role="region"
           aria-label="Aviso de Protótipo Comercial"
         >
           <div className="max-w-[1440px] mx-auto flex items-center justify-center">
             <span
-              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded border text-[9.5px] sm:text-[10px] font-extrabold uppercase tracking-wider transition-all ${
-                isDarkMode
-                  ? 'border-yellow-400/40 bg-yellow-400/10 text-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.15)]'
-                  : 'border-yellow-500/50 bg-yellow-300/30 text-amber-950 shadow-xs'
-              }`}
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border text-[9.5px] sm:text-[10px] font-extrabold uppercase tracking-wider transition-all border-yellow-400/40 bg-yellow-400/10 text-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.15)]"
             >
               {/* Bolinha pulsante antes da palavra 'PROTÓTIPO' */}
               <span className="relative flex h-2 w-2 shrink-0">
