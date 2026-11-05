@@ -55,6 +55,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const [videoSrc, setVideoSrc] = useState<string>(() =>
     resolveHeroVideoSource(getInitialMobilePortrait())
   );
+  const posterSrc = isMobilePortrait ? '/hero-poster-mobile.jpg' : '/hero-poster.jpg';
 
   // Motion and fallback states
   const [isReducedMotion, setIsReducedMotion] = useState<boolean>(getInitialReducedMotion);
@@ -573,10 +574,10 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         <div className="absolute inset-0 z-0 pointer-events-none">
           {!posterFailed ? (
             <img
-              src="/hero-poster.jpg"
+              src={posterSrc}
               alt="Caminhões de remoção Vapt Vupt"
               onError={() => setPosterFailed(true)}
-              className="w-full h-full object-cover object-[30%_center] sm:object-center brightness-[0.32] contrast-110 select-none"
+              className={`w-full h-full object-cover ${isMobilePortrait ? 'object-center' : 'object-[30%_center] sm:object-center'} brightness-[0.32] contrast-110 select-none`}
             />
           ) : (
             <div className="w-full h-full bg-[#141416] industrial-grid" />
@@ -591,8 +592,11 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             {isMobilePortrait && (
               <div className="flex justify-center items-center w-full mb-3">
                 <img
-                  src="/logo-horizontal-original.png"
+                  src="/logo-horizontal-branco.png"
                   alt="Vapt Vupt Remoção de Veículos"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/logo-horizontal-original.png';
+                  }}
                   className="w-[270px] max-w-[320px] min-w-[240px] h-auto object-contain select-none drop-shadow-md"
                   draggable={false}
                 />
@@ -682,9 +686,10 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         {/* Cinematic Scrubbed Video Element */}
         <div className="absolute inset-0 w-full h-full">
           <video
+            key={videoSrc}
             ref={videoRef}
             src={videoSrc}
-            poster="/hero-poster.jpg"
+            poster={posterSrc}
             playsInline
             muted
             preload="auto"
@@ -705,7 +710,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
           {/* Fallback poster while video initializes metadata */}
           {!videoReady && !posterFailed && (
             <img
-              src="/hero-poster.jpg"
+              src={posterSrc}
               alt="Caminhões Vapt Vupt"
               onLoad={() => setPosterLoaded(true)}
               onError={() => setPosterFailed(true)}
@@ -795,8 +800,11 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               {isMobilePortrait && (
                 <div className="flex justify-center items-center w-full mb-1">
                   <img
-                    src="/logo-horizontal-original.png"
+                    src="/logo-horizontal-branco.png"
                     alt="Vapt Vupt Remoção de Veículos"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = '/logo-horizontal-original.png';
+                    }}
                     className="w-[270px] max-w-[320px] min-w-[240px] h-auto object-contain drop-shadow-lg select-none"
                     draggable={false}
                   />
