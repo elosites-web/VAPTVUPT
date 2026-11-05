@@ -4,6 +4,7 @@ import { Instagram, Facebook, Briefcase, ChevronRight, HelpCircle, ArrowUp, Phon
 import { COMPANY_CONFIG } from '../data/companyData';
 import { useTheme } from '../context/ThemeContext';
 import { WhatsAppIcon } from './WhatsAppIcon';
+import { BrandLogoHorizontal } from './BrandLogoHorizontal';
 
 export const Footer: React.FC = () => {
   const { isDarkMode } = useTheme();
@@ -43,18 +44,10 @@ export const Footer: React.FC = () => {
               className="inline-block transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#B43034] rounded"
               aria-label="Vapt Vupt Remoção de Veículos - Início"
             >
-              <img
-                src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (target.src.includes('branco')) {
-                    target.src = '/assets/logo-horizontal-original.png';
-                  } else {
-                    target.src = '/assets/logo-horizontal-branco.png';
-                  }
-                }}
-                alt="Vapt Vupt Remoção de Veículos"
-                className="h-10 w-auto object-contain shrink-0 transition-opacity duration-300"
+              <BrandLogoHorizontal
+                isDark={isDarkMode}
+                symbolClassName="h-8 sm:h-9 w-auto object-contain shrink-0"
+                wordmarkClassName="h-6 sm:h-7 w-auto object-contain shrink-0"
               />
             </Link>
             <p className={`text-sm max-w-sm leading-relaxed ${isDarkMode ? 'text-neutral-300' : 'text-slate-700'}`}>

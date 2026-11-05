@@ -6,6 +6,7 @@ import { WhatsAppIcon } from './WhatsAppIcon';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
 import { useNav } from '../context/NavContext';
+import { BrandLogoHorizontal } from './BrandLogoHorizontal';
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -189,19 +190,7 @@ export const Header: React.FC = () => {
               }`}
               aria-label="Vapt Vupt Remoção de Veículos - Início"
             >
-              <img
-                src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (target.src.includes('branco')) {
-                    target.src = '/assets/logo-horizontal-original.png';
-                  } else {
-                    target.src = '/assets/logo-horizontal-branco.png';
-                  }
-                }}
-                alt="Vapt Vupt Remoção de Veículos"
-                className="block mx-auto h-8 sm:h-9 landscape:h-7.5 lg:h-9 xl:h-10 w-auto max-w-[135px] sm:max-w-[160px] lg:max-w-[160px] xl:max-w-[185px] 2xl:max-w-[205px] object-contain object-center shrink-0 transition-opacity duration-300"
-              />
+              <BrandLogoHorizontal isDark={isDarkMode} />
             </Link>
 
             {/* Desktop Navigation Capsule */}

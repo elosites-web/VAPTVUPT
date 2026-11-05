@@ -32,10 +32,28 @@
     letter-spacing: 0.02em;
     line-height: 1.5;
     font-kerning: normal;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-variant-ligatures: common-ligatures;
+    font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Otimização de renderização e nitidez para telas Retina / High-DPI */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body, h1, h2, h3, h4, p, a, button, span {
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      text-rendering: optimizeLegibility !important;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-optical-sizing: auto !important;
+      font-feature-settings: "kern" 1, "liga" 1 !important;
+    }
   }
 
   html.light body {

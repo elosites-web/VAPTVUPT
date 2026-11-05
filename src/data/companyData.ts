@@ -163,17 +163,17 @@ export const COMPANY_CONFIG = {
 
   // Logos from provided official assets package in public
   logos: {
-    horizontalWhite: '/assets/logo-horizontal-branco.png',
-    horizontalOriginal: '/assets/logo-horizontal-original.png',
-    verticalWhite: '/assets/logo-horizontal-branco.png',
+    horizontalWhite: '/logo-wordmark-original.png',
+    horizontalOriginal: '/logo-wordmark-original.png',
+    verticalWhite: '/logo-vertical-original.png',
     verticalOriginal: '/logo-vertical-original.png',
-    symbolOriginal: '/assets/brand/favicons/vaptvupt-light.png',
-    symbolWhite: '/assets/brand/favicons/vaptvupt-dark.png',
-    favicon: '/assets/brand/favicons/favicon-32x32.png',
+    symbolOriginal: '/logo-simbolo-original.png',
+    symbolWhite: '/logo-simbolo-original.png',
+    favicon: '/favicon-32x32.png',
   },
 
   // Key primary real photos provided in the official package
-  heroImage: '/fotos/caminhao-cavalo-1635.jpg',
+  heroImage: '/assets/vaptvupt/caminhao-cavalo-1635.jpg',
 
   // Services documented in materials with specific subpage slugs
   services: [

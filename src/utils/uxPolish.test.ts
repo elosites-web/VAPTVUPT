@@ -380,8 +380,8 @@ test('shouldRevealInitiallyAboveFold reveals sections prominently above the fold
 
 test('resolveHeroVideoSource selects 9:16 mobile video or 16:9 desktop video', () => {
   assert.equal(MOBILE_PORTRAIT_MEDIA_QUERY, '(orientation: portrait) and (max-width: 768px)');
-  assert.equal(resolveHeroVideoSource(true), '/video/hero-scrub-mobile.mp4');
-  assert.equal(resolveHeroVideoSource(false), '/video/hero-scrub.mp4');
+  assert.equal(resolveHeroVideoSource(true), '/assets/video/hero-scrub-mobile.mp4');
+  assert.equal(resolveHeroVideoSource(false), '/assets/video/hero-scrub.mp4');
 });
 
 test('isMobileLandscapeViewport accurately detects mobile devices in horizontal landscape orientation', () => {

@@ -10,8 +10,8 @@ interface CinematicHeroProps {
   onScrollToForm?: () => void;
 }
 
-const DESKTOP_VIDEO_SRC = '/video/hero-scrub.mp4';
-const MOBILE_VIDEO_SRC = '/video/hero-scrub-mobile.mp4';
+const DESKTOP_VIDEO_SRC = '/assets/video/hero-scrub.mp4';
+const MOBILE_VIDEO_SRC = '/assets/video/hero-scrub-mobile.mp4';
 
 /**
  * Synchronously determine prefers-reduced-motion to avoid any layout flash
@@ -63,7 +63,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const [videoFailed, setVideoFailed] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
-  const [videoDuration, setVideoDuration] = useState<number>(6.334);
+  const [videoDuration, setVideoDuration] = useState<number>(7.792);
 
   // Delayed bounded loading indicator while Hero media initializes on slow connections
   const isHeroMediaLoading = !isReducedMotion && !videoFailed && !videoReady;
@@ -85,7 +85,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   });
 
   // Synchronization refs (avoiding React re-renders during high-frequency scroll)
-  const videoDurationRef = useRef<number>(6.334);
+  const videoDurationRef = useRef<number>(7.792);
   const targetProgressRef = useRef<number>(0);
   const currentProgressRef = useRef<number>(0);
   const rafIdRef = useRef<number | null>(null);
@@ -224,28 +224,28 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         : 'none';
     }
 
-    // 4. Logo Reveal Stage (Active exclusively on the genuine white ending from prog >= 0.89)
+    // 4. Logo Reveal Stage (Active exclusively on the clean white finale from prog >= 0.86)
     if (logoStageRef.current) {
-      if (prog < 0.89) {
+      if (prog < 0.86) {
         logoStageRef.current.style.opacity = '0';
         logoStageRef.current.style.pointerEvents = 'none';
         logoStageRef.current.style.visibility = 'hidden';
       } else {
         logoStageRef.current.style.visibility = 'visible';
-        // Backdrop wash transitions from 0 to 1 between 0.89 and 0.92
-        const stageOpacity = Math.min(1, Math.max(0, (prog - 0.89) / 0.03));
+        // Backdrop wash transitions from 0 to 1 between 0.86 and 0.90
+        const stageOpacity = Math.min(1, Math.max(0, (prog - 0.86) / 0.04));
         logoStageRef.current.style.opacity = stageOpacity.toFixed(3);
-        logoStageRef.current.style.pointerEvents = prog >= 0.96 ? 'auto' : 'none';
+        logoStageRef.current.style.pointerEvents = prog >= 0.94 ? 'auto' : 'none';
       }
     }
 
-    // Stage A: Official Symbol Reveal (Progress 0.90 to 0.95)
+    // Stage A: Official Symbol Reveal (Progress 0.88 to 0.93)
     if (symbolRef.current) {
-      if (prog < 0.90) {
+      if (prog < 0.88) {
         symbolRef.current.style.opacity = '0';
         symbolRef.current.style.transform = 'scale(0.85)';
-      } else if (prog < 0.95) {
-        const sProg = (prog - 0.90) / 0.05;
+      } else if (prog < 0.93) {
+        const sProg = (prog - 0.88) / 0.05;
         symbolRef.current.style.opacity = Math.min(1, Math.max(0, sProg)).toFixed(3);
         symbolRef.current.style.transform = `scale(${(0.85 + 0.15 * sProg).toFixed(3)})`;
       } else {
@@ -254,13 +254,13 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
       }
     }
 
-    // Stage B: Official Wordmark Reveal (Progress 0.94 to 0.98, appears after symbol)
+    // Stage B: Official Wordmark Reveal (Progress 0.92 to 0.96, appears after symbol)
     if (wordmarkRef.current) {
-      if (prog < 0.94) {
+      if (prog < 0.92) {
         wordmarkRef.current.style.opacity = '0';
         wordmarkRef.current.style.transform = 'translateX(20px)';
-      } else if (prog < 0.98) {
-        const wProg = (prog - 0.94) / 0.04;
+      } else if (prog < 0.96) {
+        const wProg = (prog - 0.92) / 0.04;
         wordmarkRef.current.style.opacity = Math.min(1, Math.max(0, wProg)).toFixed(3);
         wordmarkRef.current.style.transform = `translateX(${((1 - wProg) * 20).toFixed(1)}px)`;
       } else {
@@ -269,14 +269,14 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
       }
     }
 
-    // Stage C: Final Conversion Card on White Finale (Progress 0.97 to 1.00)
+    // Stage C: Final Conversion Card on White Finale (Progress 0.95 to 1.00)
     if (finalCardRef.current) {
-      if (prog < 0.97) {
+      if (prog < 0.95) {
         finalCardRef.current.style.opacity = '0';
         finalCardRef.current.style.transform = 'translateY(12px)';
         finalCardRef.current.style.pointerEvents = 'none';
       } else {
-        const fProg = (prog - 0.97) / 0.03;
+        const fProg = (prog - 0.95) / 0.05;
         const opacity = Math.min(1, Math.max(0, fProg));
         finalCardRef.current.style.opacity = opacity.toFixed(3);
         finalCardRef.current.style.transform = `translateY(${((1 - fProg) * 12).toFixed(1)}px)`;
