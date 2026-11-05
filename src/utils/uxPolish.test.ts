@@ -14,6 +14,8 @@ import {
   evaluateNetlifyRedirectStatus,
   shouldRevealSectionOnScroll,
   shouldRevealInitiallyAboveFold,
+  resolveHeroVideoSource,
+  MOBILE_PORTRAIT_MEDIA_QUERY,
   DESKTOP_MIN_WIDTH_PX,
 } from './uxPolish';
 
@@ -372,4 +374,10 @@ test('shouldRevealInitiallyAboveFold reveals sections prominently above the fold
     }),
     true
   );
+});
+
+test('resolveHeroVideoSource selects 9:16 mobile video or 16:9 desktop video', () => {
+  assert.equal(MOBILE_PORTRAIT_MEDIA_QUERY, '(orientation: portrait) and (max-width: 768px)');
+  assert.equal(resolveHeroVideoSource(true), '/video/hero-scrub-mobile.mp4');
+  assert.equal(resolveHeroVideoSource(false), '/video/hero-scrub.mp4');
 });

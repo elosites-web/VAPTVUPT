@@ -304,3 +304,13 @@ export function evaluateNetlifyRedirectStatus(
 
   return null;
 }
+
+export const MOBILE_PORTRAIT_MEDIA_QUERY = '(orientation: portrait) and (max-width: 768px)';
+
+/**
+ * Resolves the appropriate hero video source based on viewport orientation and width.
+ * Mobile portrait (9:16) uses /video/hero-scrub-mobile.mp4, desktop (16:9) uses /video/hero-scrub.mp4.
+ */
+export function resolveHeroVideoSource(isMobilePortrait: boolean): string {
+  return isMobilePortrait ? '/video/hero-scrub-mobile.mp4' : '/video/hero-scrub.mp4';
+}

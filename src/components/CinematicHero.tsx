@@ -4,11 +4,14 @@ import { ArrowRight, Car, Truck, CheckCircle2, ChevronDown, RotateCcw } from 'lu
 import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { BrandSpinner, useDelayedLoadingState } from './BrandSpinner';
-import { computeDesktopParallaxOffset, isHeroVideoFrameReady } from '../utils/uxPolish';
+import { computeDesktopParallaxOffset, isHeroVideoFrameReady, MOBILE_PORTRAIT_MEDIA_QUERY, resolveHeroVideoSource } from '../utils/uxPolish';
 
 interface CinematicHeroProps {
   onScrollToForm?: () => void;
 }
+
+const DESKTOP_VIDEO_SRC = '/video/hero-scrub.mp4';
+const MOBILE_VIDEO_SRC = '/video/hero-scrub-mobile.mp4';
 
 /**
  * Synchronously determine prefers-reduced-motion to avoid any layout flash
@@ -18,6 +21,18 @@ const getInitialReducedMotion = (): boolean => {
   if (typeof window === 'undefined') return false;
   try {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Synchronously determine mobile portrait mode using (orientation: portrait) and (max-width: 768px)
+ */
+const getInitialMobilePortrait = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.matchMedia(MOBILE_PORTRAIT_MEDIA_QUERY).matches;
   } catch {
     return false;
   }
@@ -34,6 +49,12 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   const wordmarkRef = useRef<HTMLDivElement>(null);
   const finalCardRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+
+  // Viewport orientation & video source state
+  const [isMobilePortrait, setIsMobilePortrait] = useState<boolean>(getInitialMobilePortrait);
+  const [videoSrc, setVideoSrc] = useState<string>(() =>
+    resolveHeroVideoSource(getInitialMobilePortrait())
+  );
 
   // Motion and fallback states
   const [isReducedMotion, setIsReducedMotion] = useState<boolean>(getInitialReducedMotion);
@@ -86,6 +107,47 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
       return () => mediaQuery.removeListener(handler);
     }
   }, []);
+
+  // Media query listener for dual video switching: (orientation: portrait) and (max-width: 768px)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mediaQuery = window.matchMedia(MOBILE_PORTRAIT_MEDIA_QUERY);
+
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => {
+      const isPortrait = e.matches;
+      setIsMobilePortrait(isPortrait);
+      const nextSrc = resolveHeroVideoSource(isPortrait);
+      setVideoSrc((prev) => {
+        if (prev !== nextSrc) {
+          setVideoReady(false);
+          return nextSrc;
+        }
+        return prev;
+      });
+    };
+
+    // Initial check
+    handler(mediaQuery);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handler);
+      return () => mediaQuery.removeEventListener('change', handler);
+    } else if (mediaQuery.addListener) {
+      mediaQuery.addListener(handler);
+      return () => mediaQuery.removeListener(handler);
+    }
+  }, []);
+
+  // Keep <video> element in sync when videoSrc changes (e.g. orientation or window resize)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.getAttribute('src') !== videoSrc) {
+      setVideoReady(false);
+      video.src = videoSrc;
+      video.load();
+    }
+  }, [videoSrc]);
 
   /**
    * Apply code-driven opacities and transforms aligned with the genuine footage:
@@ -472,13 +534,19 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
   }, [isReducedMotion, videoFailed, handleMediaReady, handleLoadedMetadata]);
 
   const handleVideoError = useCallback(() => {
+    // If mobile video fails, fallback to desktop video source before switching to static fallback
+    if (videoSrc === MOBILE_VIDEO_SRC) {
+      console.warn('[CinematicHero] hero-scrub-mobile.mp4 unavailable, falling back to desktop video');
+      setVideoSrc(DESKTOP_VIDEO_SRC);
+      return;
+    }
     setVideoFailed(true);
     if (rafIdRef.current) {
       cancelAnimationFrame(rafIdRef.current);
       rafIdRef.current = null;
     }
     pendingSeekRef.current = null;
-  }, []);
+  }, [videoSrc]);
 
   // Replay helper: smoothly scrolls back to the beginning of the track
   const handleReplay = () => {
@@ -518,8 +586,20 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm">
+          <div className={`max-w-3xl space-y-6 ${isMobilePortrait ? 'text-center mx-auto' : ''}`}>
+            {/* Mobile Centered Logo with width between 240px and 320px */}
+            {isMobilePortrait && (
+              <div className="flex justify-center items-center w-full mb-3">
+                <img
+                  src="/logo-horizontal-original.png"
+                  alt="Vapt Vupt Remoção de Veículos"
+                  className="w-[270px] max-w-[320px] min-w-[240px] h-auto object-contain select-none drop-shadow-md"
+                  draggable={false}
+                />
+              </div>
+            )}
+
+            <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm ${isMobilePortrait ? 'mx-auto' : ''}`}>
               <span className="w-2 h-2 rounded-full bg-[#B43034]" />
               <span>{COMPANY_CONFIG.badge}</span>
             </div>
@@ -603,7 +683,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         <div className="absolute inset-0 w-full h-full">
           <video
             ref={videoRef}
-            src="/hero-scrub.mp4"
+            src={videoSrc}
             poster="/hero-poster.jpg"
             playsInline
             muted
@@ -617,7 +697,8 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               // Enforce strictly scroll-driven playback without autonomous autoplay
               e.currentTarget.pause();
             }}
-            className="w-full h-full object-cover object-center select-none pointer-events-none"
+            style={{ objectPosition: 'center' }}
+            className="w-full h-full object-cover [object-position:center] select-none pointer-events-none"
             aria-hidden="true"
           />
 
@@ -628,7 +709,8 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               alt="Caminhões Vapt Vupt"
               onLoad={() => setPosterLoaded(true)}
               onError={() => setPosterFailed(true)}
-              className="absolute inset-0 w-full h-full object-cover object-[30%_center] sm:object-center select-none"
+              style={{ objectPosition: 'center' }}
+              className="absolute inset-0 w-full h-full object-cover [object-position:center] select-none"
             />
           )}
           {!videoReady && posterFailed && (
@@ -679,40 +761,74 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
             }}
           />
           {/* Top subtle vignette ensuring Header contrast */}
-          <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-black/85 via-black/45 to-transparent" />
-          {/* Main directional vignette keeping left-side text sharp and cinematic */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/25 sm:to-transparent" />
-          {/* Bottom vignette */}
-          <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/80 to-transparent" />
+          <div className="absolute top-0 inset-x-0 h-28 sm:h-36 bg-gradient-to-b from-black/85 via-black/45 to-transparent" />
+          
+          {/* Main directional vignette: on mobile portrait provides contrast in the lower third for text */}
+          {isMobilePortrait ? (
+            <div className="absolute inset-x-0 bottom-0 h-[70vh] bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none" />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/25 sm:to-transparent" />
+          )}
+
+          {/* Bottom vignette for desktop */}
+          {!isMobilePortrait && (
+            <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/80 to-transparent" />
+          )}
         </div>
 
         {/* =========================================================================
             STAGE 1: EDITORIAL VALUE PROPOSITION (Fades out smoothly between 0.10 & 0.45)
+            On mobile portrait, positioned in lower third with centered logo (240px - 320px)
             ========================================================================= */}
         <div
           ref={contentOverlayRef}
-          className="absolute inset-0 z-20 flex items-center pt-24 sm:pt-28 pb-12 transition-transform duration-100 ease-out"
+          className={`absolute inset-0 z-20 flex ${
+            isMobilePortrait
+              ? 'flex-col justify-end pb-8 sm:pb-12 pt-0'
+              : 'items-center pt-24 sm:pt-28 pb-12'
+          } transition-transform duration-100 ease-out`}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div className="max-w-3xl space-y-5 sm:space-y-6">
+          <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full ${isMobilePortrait ? 'max-w-xl' : ''}`}>
+            <div className={`${isMobilePortrait ? 'space-y-3 text-center' : 'max-w-3xl space-y-5 sm:space-y-6'}`}>
+              
+              {/* Mobile Hero Centered Logo with width between 240px and 320px (270px) */}
+              {isMobilePortrait && (
+                <div className="flex justify-center items-center w-full mb-1">
+                  <img
+                    src="/logo-horizontal-original.png"
+                    alt="Vapt Vupt Remoção de Veículos"
+                    className="w-[270px] max-w-[320px] min-w-[240px] h-auto object-contain drop-shadow-lg select-none"
+                    draggable={false}
+                  />
+                </div>
+              )}
+
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg">
+              <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg ${isMobilePortrait ? 'mx-auto' : ''}`}>
                 <span className="w-2 h-2 rounded-full bg-[#B43034] animate-pulse" />
                 <span>{COMPANY_CONFIG.badge}</span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-black text-white tracking-tight uppercase leading-[1.06] font-heading drop-shadow-md">
+              <h1 className={`${
+                isMobilePortrait
+                  ? 'text-2xl sm:text-3xl font-black text-white tracking-tight uppercase leading-[1.08] font-heading drop-shadow-lg'
+                  : 'text-3xl sm:text-5xl lg:text-[54px] font-black text-white tracking-tight uppercase leading-[1.06] font-heading drop-shadow-md'
+              }`}>
                 Estrutura e Soluções em <span className="text-[#B43034]">Remoção de Veículos</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-base md:text-lg text-neutral-200 leading-relaxed max-w-2xl drop-shadow">
+              <p className={`${
+                isMobilePortrait
+                  ? 'text-xs sm:text-sm text-neutral-200 leading-snug max-w-md mx-auto drop-shadow'
+                  : 'text-sm sm:text-base md:text-lg text-neutral-200 leading-relaxed max-w-2xl drop-shadow'
+              }`}>
                 Atuação dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Fale diretamente com nossa equipe pelo WhatsApp oficial para consultar disponibilidade.
               </p>
 
               {/* Primary Call to Action Buttons */}
-              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+              <div className={`pt-1 flex ${isMobilePortrait ? 'flex-col gap-2.5 max-w-xs mx-auto' : 'flex-col sm:flex-row items-stretch sm:items-center gap-3.5'}`}>
                 <a
                   href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
                     COMPANY_CONFIG.whatsapp.defaultMessage
@@ -734,44 +850,46 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
                 </a>
               </div>
 
-              {/* Quick Differentiation Cards: Leves e Pesados */}
-              <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl border-t border-white/15">
-                <Link
-                  to="/servicos/remocao-veiculos-leves"
-                  className="group p-3 rounded-xl bg-black/60 hover:bg-black/80 border border-white/10 hover:border-[#B43034]/70 transition-all flex items-start gap-3 backdrop-blur-md shadow-md"
-                >
-                  <div className="p-2 rounded-lg bg-red-950/80 border border-red-900/60 text-[#B43034] shrink-0 mt-0.5">
-                    <Car className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                      <span>Atendimento Leve</span>
-                      <ArrowRight className="w-3 h-3 text-[#B43034] transition-transform group-hover:translate-x-0.5" />
+              {/* Quick Differentiation Cards: Leves e Pesados (Desktop) */}
+              {!isMobilePortrait && (
+                <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl border-t border-white/15">
+                  <Link
+                    to="/servicos/remocao-veiculos-leves"
+                    className="group p-3 rounded-xl bg-black/60 hover:bg-black/80 border border-white/10 hover:border-[#B43034]/70 transition-all flex items-start gap-3 backdrop-blur-md shadow-md"
+                  >
+                    <div className="p-2 rounded-lg bg-red-950/80 border border-red-900/60 text-[#B43034] shrink-0 mt-0.5">
+                      <Car className="w-4 h-4" />
                     </div>
-                    <p className="text-[11px] text-neutral-300 mt-0.5 leading-tight">
-                      Automóveis e utilitários em caminhão plataforma sob consulta.
-                    </p>
-                  </div>
-                </Link>
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                        <span>Atendimento Leve</span>
+                        <ArrowRight className="w-3 h-3 text-[#B43034] transition-transform group-hover:translate-x-0.5" />
+                      </div>
+                      <p className="text-[11px] text-neutral-300 mt-0.5 leading-tight">
+                        Automóveis e utilitários em caminhão plataforma sob consulta.
+                      </p>
+                    </div>
+                  </Link>
 
-                <Link
-                  to="/servicos/remocao-veiculos-pesados"
-                  className="group p-3 rounded-xl bg-black/60 hover:bg-black/80 border border-white/10 hover:border-[#B43034]/70 transition-all flex items-start gap-3 backdrop-blur-md shadow-md"
-                >
-                  <div className="p-2 rounded-lg bg-red-950/80 border border-red-900/60 text-[#B43034] shrink-0 mt-0.5">
-                    <Truck className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                      <span>Atendimento Pesado</span>
-                      <ArrowRight className="w-3 h-3 text-[#B43034] transition-transform group-hover:translate-x-0.5" />
+                  <Link
+                    to="/servicos/remocao-veiculos-pesados"
+                    className="group p-3 rounded-xl bg-black/60 hover:bg-black/80 border border-white/10 hover:border-[#B43034]/70 transition-all flex items-start gap-3 backdrop-blur-md shadow-md"
+                  >
+                    <div className="p-2 rounded-lg bg-red-950/80 border border-red-900/60 text-[#B43034] shrink-0 mt-0.5">
+                      <Truck className="w-4 h-4" />
                     </div>
-                    <p className="text-[11px] text-neutral-300 mt-0.5 leading-tight">
-                      Cavalo mecânico e estrutura para caminhões sob consulta.
-                    </p>
-                  </div>
-                </Link>
-              </div>
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                        <span>Atendimento Pesado</span>
+                        <ArrowRight className="w-3 h-3 text-[#B43034] transition-transform group-hover:translate-x-0.5" />
+                      </div>
+                      <p className="text-[11px] text-neutral-300 mt-0.5 leading-tight">
+                        Cavalo mecânico e estrutura para caminhões sob consulta.
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -779,7 +897,9 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         {/* Scroll Instruction Indicator (Disappears when user starts scrolling) */}
         <div
           ref={scrollIndicatorRef}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-1.5 transition-opacity duration-200"
+          className={`absolute ${
+            isMobilePortrait ? 'bottom-2' : 'bottom-6'
+          } left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-1.5 transition-opacity duration-200`}
         >
           <span className="text-[10px] font-bold uppercase tracking-widest text-white/80 bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm border border-white/15">
             Role para explorar
@@ -800,8 +920,10 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
           {/* Logo Assembly Container (Symbol on Left, Wordmark on Right in horizontal lockup) */}
           <div className="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full text-center">
-            {/* The Horizontal Logo Lockup */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-5 mb-5 sm:mb-6">
+            {/* The Horizontal Logo Lockup - centered with width between 240px and 320px on mobile */}
+            <div className={`flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-5 mb-5 sm:mb-6 ${
+              isMobilePortrait ? 'w-[270px] max-w-[320px] min-w-[240px] mx-auto' : ''
+            }`}>
               {/* Stage A: Official Vapt Vupt Speed Symbol */}
               <div
                 ref={symbolRef}
