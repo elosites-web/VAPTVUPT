@@ -6,10 +6,19 @@ import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const WhatsAppFloating: React.FC = () => {
   const [tooltipDismissed, setTooltipDismissed] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const { mobileMenuOpen } = useNav();
 
-  // O botão flutuante não deve aparecer quando o menu hambúrguer estiver aberto
-  if (mobileMenuOpen) {
+  // O botão flutuante só deve aparecer 60 segundos após o site carregar
+  React.useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setIsVisible(true);
+    }, 60000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // Não renderiza antes dos 60 segundos ou quando o menu móvel estiver aberto
+  if (!isVisible || mobileMenuOpen) {
     return null;
   }
 

@@ -13,9 +13,27 @@ export const Header: React.FC = () => {
   const { isDarkMode } = useTheme();
   const location = useLocation();
 
+  const headerRef = useRef<HTMLElement>(null);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const wasOpenRef = useRef(false);
+  const [headerHeight, setHeaderHeight] = useState(78);
+
+  // Monitor dynamic header height on mount, resize, scroll, and orientation change
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      if (headerRef.current) {
+        setHeaderHeight(headerRef.current.offsetHeight);
+      }
+    };
+    updateHeaderHeight();
+    window.addEventListener('resize', updateHeaderHeight);
+    window.addEventListener('orientationchange', updateHeaderHeight);
+    return () => {
+      window.removeEventListener('resize', updateHeaderHeight);
+      window.removeEventListener('orientationchange', updateHeaderHeight);
+    };
+  }, [mobileMenuOpen, isScrolled]);
 
   // Detect scroll offset for adaptive glass blur & height
   useEffect(() => {
@@ -106,14 +124,15 @@ export const Header: React.FC = () => {
   return (
     <>
       <header
+        ref={headerRef}
         className={`fixed top-0 left-0 right-0 z-50 w-full max-w-[100vw] overflow-x-clip box-border transition-colors duration-300 animate-header-entrance ${
           isDarkMode
             ? isScrolled
-              ? 'glass-header-dark-scrolled border-b border-neutral-800/80 shadow-2xl pb-2 sm:pb-2.5'
-              : 'glass-header-dark border-b border-white/[0.06] shadow-lg shadow-black/20 pb-2.5 sm:pb-3.5'
+              ? 'glass-header-dark-scrolled border-b border-neutral-800/80 shadow-2xl pb-2 sm:pb-2.5 landscape:pb-1.5'
+              : 'glass-header-dark border-b border-white/[0.06] shadow-lg shadow-black/20 pb-2.5 sm:pb-3.5 landscape:pb-1.5'
             : isScrolled
-              ? 'glass-header-light-scrolled border-b border-neutral-200/90 shadow-xl pb-2 sm:pb-2.5'
-              : 'glass-header-light border-b border-neutral-200/60 shadow-md pb-2.5 sm:pb-3.5'
+              ? 'glass-header-light-scrolled border-b border-neutral-200/90 shadow-xl pb-2 sm:pb-2.5 landscape:pb-1.5'
+              : 'glass-header-light border-b border-neutral-200/60 shadow-md pb-2.5 sm:pb-3.5 landscape:pb-1.5'
         }`}
       >
         {/* Top Institutional Gradient Accent Line */}
@@ -124,7 +143,7 @@ export const Header: React.FC = () => {
 
         {/* Identificação Discreta e Consistente de Protótipo Visual e Proposta Comercial */}
         <div
-          className={`w-full border-b px-2.5 sm:px-4 py-1 text-[10px] sm:text-[11px] leading-tight transition-colors ${
+          className={`w-full border-b px-2.5 sm:px-4 py-1 landscape:py-0.5 text-[10px] sm:text-[11px] landscape:text-[9.5px] leading-tight transition-colors ${
             isDarkMode
               ? 'bg-neutral-950/80 border-neutral-800/80 text-neutral-300'
               : 'bg-slate-900/[0.04] border-slate-200/80 text-slate-700'
@@ -157,8 +176,8 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-full max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-4 xl:px-6 pt-2 sm:pt-2.5 box-border">
-          <div className="relative flex items-center justify-between gap-1.5 sm:gap-2.5 xl:gap-3 w-full min-w-0 min-h-[40px] sm:min-h-[44px]">
+        <div className="w-full max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-4 xl:px-6 pt-2 sm:pt-2.5 landscape:pt-1.5 box-border">
+          <div className="relative flex items-center justify-between gap-1.5 sm:gap-2.5 xl:gap-3 w-full min-w-0 min-h-[40px] sm:min-h-[44px] landscape:min-h-[38px]">
             {/* Brand Logo with adaptive theme and true horizontal centering when mobile menu is open (ignoring the X button) */}
             <Link
               to="/"
@@ -176,7 +195,7 @@ export const Header: React.FC = () => {
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
                 alt="Vapt Vupt Remoção de Veículos"
-                className="block mx-auto h-8 sm:h-9 lg:h-9 xl:h-10 w-auto max-w-[135px] sm:max-w-[160px] lg:max-w-[160px] xl:max-w-[185px] 2xl:max-w-[205px] object-contain object-center shrink-0 transition-opacity duration-300"
+                className="block mx-auto h-8 sm:h-9 landscape:h-7.5 lg:h-9 xl:h-10 w-auto max-w-[135px] sm:max-w-[160px] lg:max-w-[160px] xl:max-w-[185px] 2xl:max-w-[205px] object-contain object-center shrink-0 transition-opacity duration-300"
               />
             </Link>
 
@@ -222,29 +241,13 @@ export const Header: React.FC = () => {
                 </div>
               )}
 
-              {/* Direct WhatsApp Call CTA - Apenas o ícone para liberar espaço e não cortar os nomes das seções */}
-              {!mobileMenuOpen && (
-                <a
-                  href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
-                    COMPANY_CONFIG.whatsapp.defaultMessage
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group button-3d relative inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white rounded-lg border border-red-500/30 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-[#B43034] focus:ring-offset-2 focus:ring-offset-neutral-900"
-                  aria-label="Atendimento via WhatsApp"
-                  title="Atendimento via WhatsApp"
-                >
-                  <WhatsAppIcon className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-white fill-white shrink-0" />
-                </a>
-              )}
-
               {/* Mobile Menu Toggle Button (Hamburguer / Fechar) */}
               <div className="inline-flex lg:hidden shrink-0 relative z-30 items-center justify-center">
                 <button
                   ref={toggleButtonRef}
                   type="button"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className={`h-8 w-8 sm:h-9 sm:w-9 p-0 inline-flex items-center justify-center transition-colors rounded-lg border shrink-0 relative z-30 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
+                  className={`h-8 w-8 sm:h-9 sm:w-9 landscape:h-8 landscape:w-8 p-0 inline-flex items-center justify-center transition-colors rounded-lg border shrink-0 relative z-30 focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
                     isDarkMode
                       ? 'text-neutral-300 hover:text-white bg-neutral-900/90 border-neutral-800 hover:bg-neutral-800'
                       : 'text-neutral-700 hover:text-neutral-900 bg-white/90 border-neutral-300 hover:bg-neutral-100'
@@ -275,15 +278,16 @@ export const Header: React.FC = () => {
             aria-hidden="true"
           />
 
-          {/* Menu Hambúrguer Mobile Fullscreen (sobre o véu, z-50) */}
+          {/* Menu Hambúrguer Mobile/Tablet (dinamicamente posicionado abaixo do cabeçalho) */}
           <div
             id="mobile-navigation-drawer"
             ref={drawerRef}
-            className={`lg:hidden fixed inset-x-0 top-[74px] sm:top-[84px] bottom-0 z-50 overflow-y-auto flex flex-col justify-between ${
+            style={{ top: `${headerHeight}px` }}
+            className={`lg:hidden fixed inset-x-0 bottom-0 z-50 overflow-y-auto flex flex-col justify-between ${
               isDarkMode
                 ? 'bg-[#141416] border-neutral-800/80 text-white'
                 : 'bg-white border-slate-200 text-slate-900'
-            } border-t px-4 pt-4 pb-8 shadow-2xl`}
+            } border-t px-4 pt-4 pb-8 landscape:px-5 landscape:pt-2.5 landscape:pb-4 shadow-2xl`}
             role="dialog"
             aria-modal="true"
             aria-label="Menu de Navegação Mobile"
@@ -292,7 +296,7 @@ export const Header: React.FC = () => {
             <div>
               {/* Quick status bar inside mobile menu */}
               <div
-                className={`flex items-center justify-between px-3 py-2 mb-3 rounded-lg text-xs ${
+                className={`flex items-center justify-between px-3 py-2 mb-3 landscape:py-1 landscape:px-2.5 landscape:mb-2 rounded-lg text-xs landscape:text-[11px] ${
                   isDarkMode
                     ? 'bg-neutral-900/80 border border-neutral-800/70 text-neutral-300'
                     : 'bg-slate-100 border border-slate-200 text-slate-700'
@@ -312,7 +316,7 @@ export const Header: React.FC = () => {
               </div>
 
               {/* Mobile Theme Toggle (3-state segmented pill: Claro / Escuro / Automático) */}
-              <div className="mb-4 px-0.5">
+              <div className="mb-4 landscape:mb-2 px-0.5">
                 <p
                   className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 px-1 ${
                     isDarkMode ? 'text-neutral-400' : 'text-slate-500'
@@ -323,8 +327,8 @@ export const Header: React.FC = () => {
                 <ThemeToggle variant="segmented" />
               </div>
 
-              {/* Navigation links */}
-              <nav className="flex flex-col space-y-1" aria-label="Menu Mobile">
+              {/* Navigation links - em formato grid de 2 colunas no modo paisagem de mobile e tablet */}
+              <nav className="flex flex-col space-y-1 landscape:grid landscape:grid-cols-2 landscape:gap-1.5 landscape:space-y-0" aria-label="Menu Mobile">
                 {navLinks.map((link) => (
                   <NavLink
                     key={link.path}
@@ -332,7 +336,7 @@ export const Header: React.FC = () => {
                     end={link.path === '/'}
                     onClick={() => setMobileMenuOpen(false)}
                     className={({ isActive }) =>
-                      `px-4 py-3 text-sm font-semibold rounded-lg transition-colors flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
+                      `px-4 py-3 landscape:px-3 landscape:py-2 text-sm landscape:text-xs font-semibold rounded-lg transition-colors flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#B43034] ${
                         isActive
                           ? isDarkMode
                             ? 'bg-gradient-to-r from-[#B43034]/25 to-transparent text-white font-bold border-l-4 border-[#B43034]'
@@ -352,9 +356,9 @@ export const Header: React.FC = () => {
 
             {/* Mobile CTA section */}
             <div
-              className={`pt-4 mt-4 border-t ${
+              className={`pt-4 mt-4 landscape:pt-2 landscape:mt-2 border-t ${
                 isDarkMode ? 'border-neutral-800/80' : 'border-slate-200'
-              } space-y-2.5`}
+              } space-y-2.5 landscape:space-y-1.5`}
             >
               <a
                 href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
@@ -363,14 +367,14 @@ export const Header: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMobileMenuOpen(false)}
-                className="whatsapp-cta-button button-3d w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white font-bold uppercase tracking-wider py-3.5 rounded-lg text-xs shadow-xl focus:outline-none focus:ring-2 focus:ring-[#B43034] text-center"
+                className="whatsapp-cta-button button-3d w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#B43034] via-[#C7383D] to-[#982226] text-white font-bold uppercase tracking-wider py-3.5 landscape:py-2.5 rounded-lg text-xs shadow-xl focus:outline-none focus:ring-2 focus:ring-[#B43034] text-center"
               >
                 <WhatsAppIcon className="w-4 h-4 text-white fill-white shrink-0" />
                 <span className="whitespace-nowrap">CHAMAR NO WHATSAPP</span>
               </a>
 
               <div
-                className={`flex items-center justify-center gap-3 pt-2 text-xs ${
+                className={`flex items-center justify-center gap-3 pt-2 landscape:pt-1 text-xs landscape:text-[11px] ${
                   isDarkMode ? 'text-neutral-400' : 'text-slate-500'
                 }`}
               >

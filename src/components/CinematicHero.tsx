@@ -568,7 +568,7 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     return (
       <section
         id="inicio"
-        className="relative min-h-[92vh] flex items-center pt-28 sm:pt-32 pb-16 bg-[#141416] overflow-hidden keep-dark"
+        className="relative min-h-[85vh] sm:min-h-[92vh] flex items-center pt-28 sm:pt-36 pb-12 sm:pb-16 bg-[#141416] overflow-hidden keep-dark"
         data-keep-dark="true"
       >
         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -587,23 +587,8 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className={`max-w-3xl space-y-6 ${isMobilePortrait ? 'text-center mx-auto' : ''}`}>
-            {/* Mobile Centered Logo with width between 240px and 320px */}
-            {isMobilePortrait && (
-              <div className="flex justify-center items-center w-full mb-3">
-                <img
-                  src="/logo-horizontal-branco.png"
-                  alt="Vapt Vupt Remoção de Veículos"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = '/logo-horizontal-original.png';
-                  }}
-                  className="w-[270px] max-w-[320px] min-w-[240px] h-auto object-contain select-none drop-shadow-md"
-                  draggable={false}
-                />
-              </div>
-            )}
-
-            <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm ${isMobilePortrait ? 'mx-auto' : ''}`}>
+          <div className={`max-w-3xl space-y-5 sm:space-y-6 ${isMobilePortrait ? 'text-center mx-auto pt-2 sm:pt-0' : ''}`}>
+            <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-sm shadow-md ${isMobilePortrait ? 'mx-auto mb-1' : ''}`}>
               <span className="w-2 h-2 rounded-full bg-[#B43034]" />
               <span>{COMPANY_CONFIG.badge}</span>
             </div>
@@ -683,43 +668,60 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
     >
       {/* Sticky Fullscreen Stage pinned to viewport while user scrolls down the track */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-black">
-        {/* Cinematic Scrubbed Video Element */}
-        <div className="absolute inset-0 w-full h-full">
-          <video
-            key={videoSrc}
-            ref={videoRef}
-            src={videoSrc}
-            poster={posterSrc}
-            playsInline
-            muted
-            preload="auto"
-            onLoadedMetadata={handleLoadedMetadata}
-            onLoadedData={handleMediaReady}
-            onCanPlay={handleMediaReady}
-            onError={handleVideoError}
-            onSeeked={handleSeeked}
-            onPlay={(e) => {
-              // Enforce strictly scroll-driven playback without autonomous autoplay
-              e.currentTarget.pause();
-            }}
-            style={{ objectPosition: 'center' }}
-            className="w-full h-full object-cover [object-position:center] select-none pointer-events-none"
-            aria-hidden="true"
-          />
-
-          {/* Fallback poster while video initializes metadata */}
-          {!videoReady && !posterFailed && (
+        {/* Cinematic Scrubbed Video Element & Persistent Static Poster Fallback */}
+        <div className="absolute inset-0 w-full h-full bg-[#141416]">
+          {/* 1. Underlying Persistent Static Poster Fallback
+              Always rendered so that during video initialization, buffering or in case of playback errors,
+              the visitor immediately sees the authentic hero frame and never an empty or blank space. */}
+          {!posterFailed ? (
             <img
               src={posterSrc}
-              alt="Caminhões Vapt Vupt"
+              alt="Caminhões de remoção Vapt Vupt"
               onLoad={() => setPosterLoaded(true)}
-              onError={() => setPosterFailed(true)}
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.src.includes('caminhao-cavalo-1635.jpg')) {
+                  target.src = '/assets/vaptvupt/caminhao-cavalo-1635.jpg';
+                } else {
+                  setPosterFailed(true);
+                }
+              }}
               style={{ objectPosition: 'center' }}
-              className="absolute inset-0 w-full h-full object-cover [object-position:center] select-none"
+              className="absolute inset-0 w-full h-full object-cover [object-position:center] select-none pointer-events-none"
             />
-          )}
-          {!videoReady && posterFailed && (
+          ) : (
             <div className="absolute inset-0 w-full h-full bg-[#141416] industrial-grid" />
+          )}
+
+          {/* 2. Interactive Scrubbed Video Layer
+              Renders over the static poster. Kept at opacity 0 while decoding first frames,
+              fading in with a smooth transition once ready. Disappears gracefully on error so
+              the static poster remains visible. */}
+          {!videoFailed && (
+            <video
+              key={videoSrc}
+              ref={videoRef}
+              src={videoSrc}
+              poster={posterSrc}
+              playsInline
+              muted
+              preload="auto"
+              onLoadedMetadata={handleLoadedMetadata}
+              onLoadedData={handleMediaReady}
+              onCanPlay={handleMediaReady}
+              onError={handleVideoError}
+              onSeeked={handleSeeked}
+              onPlay={(e) => {
+                // Enforce strictly scroll-driven playback without autonomous autoplay
+                e.currentTarget.pause();
+              }}
+              style={{
+                objectPosition: 'center',
+                opacity: videoReady ? 1 : 0,
+              }}
+              className="absolute inset-0 w-full h-full object-cover [object-position:center] select-none pointer-events-none transition-opacity duration-300 ease-out"
+              aria-hidden="true"
+            />
           )}
         </div>
 
@@ -783,36 +785,19 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
 
         {/* =========================================================================
             STAGE 1: EDITORIAL VALUE PROPOSITION (Fades out smoothly between 0.10 & 0.45)
-            On mobile portrait, positioned in lower third with centered logo (240px - 320px)
             ========================================================================= */}
         <div
           ref={contentOverlayRef}
           className={`absolute inset-0 z-20 flex ${
             isMobilePortrait
-              ? 'flex-col justify-end pb-8 sm:pb-12 pt-0'
+              ? 'flex-col justify-center pt-28 sm:pt-32 pb-8 sm:pb-12'
               : 'items-center pt-24 sm:pt-28 pb-12'
           } transition-transform duration-100 ease-out`}
         >
           <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full ${isMobilePortrait ? 'max-w-xl' : ''}`}>
-            <div className={`${isMobilePortrait ? 'space-y-3 text-center' : 'max-w-3xl space-y-5 sm:space-y-6'}`}>
-              
-              {/* Mobile Hero Centered Logo with width between 240px and 320px (270px) */}
-              {isMobilePortrait && (
-                <div className="flex justify-center items-center w-full mb-1">
-                  <img
-                    src="/logo-horizontal-branco.png"
-                    alt="Vapt Vupt Remoção de Veículos"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/logo-horizontal-original.png';
-                    }}
-                    className="w-[270px] max-w-[320px] min-w-[240px] h-auto object-contain drop-shadow-lg select-none"
-                    draggable={false}
-                  />
-                </div>
-              )}
-
+            <div className={`${isMobilePortrait ? 'space-y-3.5 text-center' : 'max-w-3xl space-y-5 sm:space-y-6'}`}>
               {/* Badge */}
-              <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg ${isMobilePortrait ? 'mx-auto' : ''}`}>
+              <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg ${isMobilePortrait ? 'mx-auto mb-0.5' : ''}`}>
                 <span className="w-2 h-2 rounded-full bg-[#B43034] animate-pulse" />
                 <span>{COMPANY_CONFIG.badge}</span>
               </div>
