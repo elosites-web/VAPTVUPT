@@ -90,15 +90,15 @@ export const COMPANY_CONFIG = {
     url: 'https://facebook.com/vaptvuptremocao',
   },
 
-  // Logos from provided official assets package
+  // Logos from provided official assets package in public
   logos: {
-    horizontalWhite: '/assets/aistudio/logo-horizontal-texto-branco-para-fundo-escuro_e2ba3663.png',
-    horizontalOriginal: '/assets/aistudio/logo-horizontal-original_7d8e0be3.png',
-    verticalWhite: '/assets/aistudio/logo-vertical-texto-branco-para-fundo-escuro_fb8b8f34.png',
-    verticalOriginal: '/assets/aistudio/logo-vertical-original_878e1737.png',
-    symbolOriginal: '/assets/aistudio/logo-simbolo-original_894a5d86.png',
-    symbolWhite: '/assets/aistudio/logo-simbolo-texto-branco-para-fundo-escuro_46c4d6d1.png',
-    favicon: '/assets/aistudio/favicon-32_b115d75d.png',
+    horizontalWhite: '/assets/logo-horizontal-branco.png',
+    horizontalOriginal: '/assets/logo-horizontal-original.png',
+    verticalWhite: '/assets/logo-horizontal-branco.png',
+    verticalOriginal: '/logo-vertical-original.png',
+    symbolOriginal: '/assets/brand/favicons/vaptvupt-light.png',
+    symbolWhite: '/assets/brand/favicons/vaptvupt-dark.png',
+    favicon: '/assets/brand/favicons/favicon-32x32.png',
   },
 
   // Key primary real photos provided in the official package

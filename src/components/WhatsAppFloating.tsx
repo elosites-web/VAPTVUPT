@@ -1,55 +1,123 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { useNav } from '../context/NavContext';
 import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const WhatsAppFloating: React.FC = () => {
-  const [tooltipDismissed, setTooltipDismissed] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [buttonReady, setButtonReady] = useState(false);
+  const [isInHero, setIsInHero] = useState(true);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
   const { mobileMenuOpen } = useNav();
+  const location = useLocation();
 
-  // O botão flutuante só deve aparecer 60 segundos após o site carregar
-  React.useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setIsVisible(true);
-    }, 60000);
-    return () => window.clearTimeout(timer);
+  const scrollTimerStartedRef = useRef(false);
+  const popupDelayTimerRef = useRef<number | null>(null);
+  const reopenTimerRef = useRef<number | null>(null);
+
+  // Monitora a rolagem para:
+  // 1. Iniciar o cronômetro de 35s no primeiro scroll da Hero
+  // 2. Detectar se o usuário está ou não dentro da Hero
+  useEffect(() => {
+    const checkScrollAndHero = () => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+
+      // Inicia a contagem de 35 segundos assim que o usuário começa a rolar
+      if (scrollY > 15 && !scrollTimerStartedRef.current) {
+        scrollTimerStartedRef.current = true;
+        window.setTimeout(() => {
+          setButtonReady(true);
+        }, 35000); // 35 segundos após começar a rolar o scroll
+      }
+
+      // Verifica se a Hero ainda está visível na tela (somente na Home '/')
+      if (location.pathname === '/') {
+        const heroEl = document.getElementById('inicio');
+        if (heroEl) {
+          const rect = heroEl.getBoundingClientRect();
+          // Hero ainda está cobrindo a viewport se o fundo dela estiver visível abaixo do cabeçalho
+          setIsInHero(rect.bottom > 120);
+        } else {
+          setIsInHero(scrollY < 500);
+        }
+      } else {
+        // Em subpáginas, o botão é liberado assim que o cronômetro completar
+        setIsInHero(false);
+      }
+    };
+
+    checkScrollAndHero();
+    window.addEventListener('scroll', checkScrollAndHero, { passive: true });
+    window.addEventListener('resize', checkScrollAndHero, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', checkScrollAndHero);
+      window.removeEventListener('resize', checkScrollAndHero);
+    };
+  }, [location.pathname]);
+
+  // Dispara o balão de popup exatamente 15 segundos após a aparição do botão flutuante
+  useEffect(() => {
+    if (buttonReady && !isInHero && !tooltipVisible) {
+      if (popupDelayTimerRef.current === null) {
+        popupDelayTimerRef.current = window.setTimeout(() => {
+          setTooltipVisible(true);
+        }, 15000); // 15 segundos após a aparição do botão
+      }
+    }
+  }, [buttonReady, isInHero, tooltipVisible]);
+
+  // Limpeza de timers ao desmontar
+  useEffect(() => {
+    return () => {
+      if (popupDelayTimerRef.current) clearTimeout(popupDelayTimerRef.current);
+      if (reopenTimerRef.current) clearTimeout(reopenTimerRef.current);
+    };
   }, []);
 
-  // Não renderiza antes dos 60 segundos ou quando o menu móvel estiver aberto
-  if (!isVisible || mobileMenuOpen) {
+  const handleDismissTooltip = () => {
+    setTooltipVisible(false);
+    // Reaparece sempre 2 minutos (120.000 ms) após ser fechado pelo usuário
+    if (reopenTimerRef.current) clearTimeout(reopenTimerRef.current);
+    reopenTimerRef.current = window.setTimeout(() => {
+      setTooltipVisible(true);
+    }, 120000);
+  };
+
+  // O botão não pode aparecer na Hero, nem antes dos 35s de scroll, nem com menu mobile aberto
+  if (!buttonReady || isInHero || mobileMenuOpen) {
     return null;
   }
 
   return (
-    <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end gap-2.5 pointer-events-none">
-      {/* Estrutura envolvente do balão de diálogo com seta CSS apontando exatamente para o centro do botão flutuante */}
-      {!tooltipDismissed && (
-        <div className="hidden sm:flex flex-col items-end pointer-events-auto relative">
+    <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end gap-2.5 pointer-events-none transition-all duration-300">
+      {/* Balão de diálogo com texto centralizado e reabertura após 2 minutos */}
+      {tooltipVisible && (
+        <div className="hidden sm:flex flex-col items-end pointer-events-auto relative animate-fade-in-up">
           <div
             role="status"
             aria-live="polite"
-            className="relative bg-white dark:bg-[#1b1b1f] border-2 border-[#B43034] dark:border-[#B43034] text-slate-900 dark:text-white px-3.5 py-2.5 rounded-2xl shadow-2xl max-w-[235px] text-xs"
+            className="relative bg-white dark:bg-[#1b1b1f] border-2 border-[#B43034] dark:border-[#B43034] text-slate-900 dark:text-white px-4 py-3 rounded-2xl shadow-2xl max-w-[240px] text-xs text-center flex flex-col items-center justify-center"
           >
             <button
               type="button"
-              onClick={() => setTooltipDismissed(true)}
-              className="absolute top-1.5 right-1.5 text-slate-400 hover:text-slate-700 dark:text-neutral-400 dark:hover:text-white p-0.5 rounded-full transition-colors"
+              onClick={handleDismissTooltip}
+              className="absolute top-1.5 right-1.5 text-slate-400 hover:text-slate-700 dark:text-neutral-400 dark:hover:text-white p-0.5 rounded-full transition-colors cursor-pointer"
               aria-label="Fechar balão de diálogo"
             >
               <X className="w-3.5 h-3.5" />
             </button>
 
-            <div className="font-bold text-[#B43034] uppercase tracking-wider mb-0.5 pr-4 flex items-center gap-1.5">
+            <div className="font-bold text-[#B43034] uppercase tracking-wider mb-1 flex items-center justify-center gap-1.5">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>Atendimento WhatsApp</span>
             </div>
-            <div className="text-slate-600 dark:text-neutral-300 text-[11px] leading-snug">
+            <div className="text-slate-600 dark:text-neutral-300 text-[11px] leading-snug text-center">
               Fale conosco e consulte o suporte para o seu veículo.
             </div>
 
-            {/* Seta / Ponteiro CSS alinhado exatamente ao eixo central do botão flutuante (28px a partir da direita em sm:w-14) */}
+            {/* Seta / Ponteiro CSS alinhado ao centro do botão flutuante */}
             <span
               aria-hidden="true"
               className="
@@ -62,7 +130,7 @@ export const WhatsAppFloating: React.FC = () => {
         </div>
       )}
 
-      {/* Botão Flutuante com Halo de Pulso Gradiente Vermelho e Prata */}
+      {/* Botão Flutuante com Halo de Pulso Gradiente */}
       <div className="relative flex items-center justify-center pointer-events-auto">
         <span
           className="absolute -inset-1 rounded-full animate-floating-pulse-1 pointer-events-none"

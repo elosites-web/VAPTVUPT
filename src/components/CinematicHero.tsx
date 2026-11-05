@@ -593,8 +593,11 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               <span>{COMPANY_CONFIG.badge}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight uppercase leading-[1.08] font-heading">
-              Estrutura e Soluções em <span className="text-[#B43034]">Remoção de Veículos</span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight uppercase leading-[1.08] font-heading">
+              <span className={isMobilePortrait ? "bg-gradient-to-b from-white via-slate-100 to-slate-300 bg-clip-text text-transparent" : "text-white"}>
+                Estrutura e Soluções em{' '}
+              </span>
+              <span className="text-[#B43034]">Remoção de Veículos</span>
             </h1>
 
             <p className="text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl">
@@ -786,65 +789,111 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         {/* =========================================================================
             STAGE 1: EDITORIAL VALUE PROPOSITION (Fades out smoothly between 0.10 & 0.45)
             ========================================================================= */}
+        {/* =========================================================================
+            STAGE 1: EDITORIAL VALUE PROPOSITION (Fades out smoothly between 0.10 & 0.45)
+            ========================================================================= */}
         <div
           ref={contentOverlayRef}
           className={`absolute inset-0 z-20 flex ${
             isMobilePortrait
-              ? 'flex-col justify-center pt-28 sm:pt-32 pb-8 sm:pb-12'
-              : 'items-center pt-24 sm:pt-28 pb-12'
+              ? 'flex-col justify-between h-full pt-[88px] sm:pt-[94px] pb-14 px-4 sm:px-6'
+              : 'items-center pt-24 sm:pt-28 pb-12 landscape:pt-16 landscape:pb-4'
           } transition-transform duration-100 ease-out`}
         >
-          <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full ${isMobilePortrait ? 'max-w-xl' : ''}`}>
-            <div className={`${isMobilePortrait ? 'space-y-3.5 text-center' : 'max-w-3xl space-y-5 sm:space-y-6'}`}>
-              {/* Badge */}
-              <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg ${isMobilePortrait ? 'mx-auto mb-0.5' : ''}`}>
-                <span className="w-2 h-2 rounded-full bg-[#B43034] animate-pulse" />
-                <span>{COMPANY_CONFIG.badge}</span>
+          {isMobilePortrait ? (
+            /* Layout Mobile Vertical: Topo próximo ao cabeçalho (selo + frase), centro livre para o caminhão, base com frase e botões */
+            <div className="flex flex-col justify-between h-full w-full max-w-md mx-auto text-center pointer-events-auto">
+              {/* Topo: Selo + Frase Principal subiram próximos ao cabeçalho com espaçamento proporcional */}
+              <div className="space-y-2 pt-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-[11px] font-bold uppercase tracking-widest backdrop-blur-md shadow-lg mx-auto">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B43034] animate-pulse" />
+                  <span>{COMPANY_CONFIG.badge}</span>
+                </div>
+
+                <h1 className="text-2xl sm:text-3xl font-black tracking-tight uppercase leading-[1.08] font-heading drop-shadow-lg mx-auto">
+                  <span className="bg-gradient-to-b from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
+                    Estrutura e Soluções em{' '}
+                  </span>
+                  <span className="text-[#B43034]">Remoção de Veículos</span>
+                </h1>
               </div>
 
-              {/* Main Headline */}
-              <h1 className={`${
-                isMobilePortrait
-                  ? 'text-2xl sm:text-3xl font-black text-white tracking-tight uppercase leading-[1.08] font-heading drop-shadow-lg'
-                  : 'text-3xl sm:text-5xl lg:text-[54px] font-black text-white tracking-tight uppercase leading-[1.06] font-heading drop-shadow-md'
-              }`}>
-                Estrutura e Soluções em <span className="text-[#B43034]">Remoção de Veículos</span>
-              </h1>
+              {/* Centro: Espaço aberto liberando a visão do vídeo e arte da Hero */}
+              <div className="flex-1 min-h-[60px]" aria-hidden="true" />
 
-              {/* Subtitle */}
-              <p className={`${
-                isMobilePortrait
-                  ? 'text-xs sm:text-sm text-neutral-200 leading-snug max-w-md mx-auto drop-shadow'
-                  : 'text-sm sm:text-base md:text-lg text-neutral-200 leading-relaxed max-w-2xl drop-shadow'
-              }`}>
-                Atuação dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Fale diretamente com nossa equipe pelo WhatsApp oficial para consultar disponibilidade.
-              </p>
+              {/* Base: Frase explicativa, botão CHAMAR NO WHATSAPP e PREENCHER SOLICITAÇÃO acima do 'role para explorar' */}
+              <div className="space-y-2.5 pb-2 max-w-xs mx-auto w-full">
+                <p className="text-xs text-neutral-200 leading-snug drop-shadow font-medium">
+                  Atuação dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Fale diretamente com nossa equipe pelo Whatsapp oficial para consultar disponibilidade.
+                </p>
 
-              {/* Primary Call to Action Buttons */}
-              <div className={`pt-1 flex ${isMobilePortrait ? 'flex-col gap-2.5 max-w-xs mx-auto' : 'flex-col sm:flex-row items-stretch sm:items-center gap-3.5'}`}>
-                <a
-                  href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
-                    COMPANY_CONFIG.whatsapp.defaultMessage
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg shadow-2xl font-heading"
-                >
-                  <WhatsAppIcon className="w-5 h-5 shrink-0" />
-                  <span>CHAMAR NO WHATSAPP</span>
-                </a>
+                <div className="flex flex-col gap-2 w-full">
+                  <a
+                    href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
+                      COMPANY_CONFIG.whatsapp.defaultMessage
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs font-bold uppercase tracking-wider py-3 px-4 rounded-lg shadow-xl font-heading"
+                  >
+                    <WhatsAppIcon className="w-4 h-4 shrink-0" />
+                    <span>CHAMAR NO WHATSAPP</span>
+                  </a>
 
-                <a
-                  href="#solicitar-atendimento"
-                  className="inline-flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg border border-white/30 transition-all backdrop-blur-md shadow-lg text-center"
-                >
-                  <span>Preencher Solicitação</span>
-                  <ArrowRight className="w-4 h-4 text-[#B43034] shrink-0" />
-                </a>
+                  <a
+                    href="#solicitar-atendimento"
+                    className="inline-flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-lg border border-white/30 transition-all backdrop-blur-md shadow-md text-center"
+                  >
+                    <span>Preencher Solicitação</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#B43034] shrink-0" />
+                  </a>
+                </div>
               </div>
+            </div>
+          ) : (
+            /* Layout Desktop & Landscape */
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full landscape:pt-1">
+              <div className="max-w-3xl space-y-4 sm:space-y-6 landscape:space-y-2">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/85 border border-red-800/80 text-red-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg">
+                  <span className="w-2 h-2 rounded-full bg-[#B43034] animate-pulse" />
+                  <span>{COMPANY_CONFIG.badge}</span>
+                </div>
 
-              {/* Quick Differentiation Cards: Leves e Pesados (Desktop) */}
-              {!isMobilePortrait && (
+                {/* Main Headline */}
+                <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-black text-white tracking-tight uppercase leading-[1.06] font-heading drop-shadow-md">
+                  Estrutura e Soluções em <span className="text-[#B43034]">Remoção de Veículos</span>
+                </h1>
+
+                {/* Subtitle */}
+                <p className="text-sm sm:text-base md:text-lg text-neutral-200 leading-relaxed max-w-2xl drop-shadow">
+                  Atuação dedicada ao transporte, guincho e remoção de <strong className="text-white">veículos leves e pesados</strong>. Fale diretamente com nossa equipe pelo WhatsApp oficial para consultar disponibilidade.
+                </p>
+
+                {/* Primary Call to Action Buttons */}
+                <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                  <a
+                    href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
+                      COMPANY_CONFIG.whatsapp.defaultMessage
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg shadow-2xl font-heading"
+                  >
+                    <WhatsAppIcon className="w-5 h-5 shrink-0" />
+                    <span>CHAMAR NO WHATSAPP</span>
+                  </a>
+
+                  <a
+                    href="#solicitar-atendimento"
+                    className="inline-flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg border border-white/30 transition-all backdrop-blur-md shadow-lg text-center"
+                  >
+                    <span>Preencher Solicitação</span>
+                    <ArrowRight className="w-4 h-4 text-[#B43034] shrink-0" />
+                  </a>
+                </div>
+
+                {/* Quick Differentiation Cards: Leves e Pesados (Desktop) */}
                 <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl border-t border-white/15">
                   <Link
                     to="/servicos/remocao-veiculos-leves"
@@ -882,9 +931,9 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
                     </div>
                   </Link>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Scroll Instruction Indicator (Disappears when user starts scrolling) */}
@@ -901,20 +950,26 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
         </div>
 
         {/* =========================================================================
-            STAGE 2: OFFICIAL LOGO REVEAL (Symbol first, Wordmark second on genuine white scene)
+            STAGE 2: OFFICIAL LOGO REVEAL (Selo acima, Logotipo centralizado, botões abaixo)
             ========================================================================= */}
         <div
           ref={logoStageRef}
-          className="absolute inset-0 z-30 flex flex-col items-center justify-center pt-20 sm:pt-24 pb-8 px-4 sm:px-6 pointer-events-none"
+          className="absolute inset-0 z-30 flex flex-col items-center justify-center pt-16 sm:pt-20 pb-8 px-4 sm:px-6 pointer-events-none"
           style={{ opacity: 0, visibility: 'hidden' }}
         >
           {/* Subtle white-to-light-slate background wash ensuring 100% pure contrast */}
           <div className="absolute inset-0 bg-white/95 backdrop-blur-[2px] pointer-events-none" />
 
-          {/* Logo Assembly Container (Symbol on Left, Wordmark on Right in horizontal lockup) */}
+          {/* Logo Assembly Container */}
           <div className="relative z-10 flex flex-col items-center justify-center max-w-4xl w-full text-center">
-            {/* The Horizontal Logo Lockup - centered with width between 240px and 320px on mobile */}
-            <div className={`flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-5 mb-5 sm:mb-6 ${
+            {/* 1. O selo 'atendimento e remoção de veículos' posicionado no início dessa seção, acima do logotipo */}
+            <div className="mb-3 sm:mb-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-300 text-slate-800 text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#B43034]" />
+              <span>Atendimento e Remoção de Veículos</span>
+            </div>
+
+            {/* 2. O LOGOTIPO CENTRALIZADO e posicionado ao centro da animação da hero no último frame */}
+            <div className={`flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-5 mb-4 sm:mb-6 ${
               isMobilePortrait ? 'w-[270px] max-w-[320px] min-w-[240px] mx-auto' : ''
             }`}>
               {/* Stage A: Official Vapt Vupt Speed Symbol */}
@@ -946,41 +1001,33 @@ export const CinematicHero: React.FC<CinematicHeroProps> = () => {
               </div>
             </div>
 
-            {/* Stage C: Conversion Climax Card on White Finale */}
+            {/* 3. Abaixo do logotipo: os botões 'CHAMAR NO WHATSAPP', 'VER SERVIÇOS' e 'REVER INÍCIO' */}
             <div
               ref={finalCardRef}
-              className="space-y-4 max-w-xl transition-transform duration-150 ease-out"
+              className="space-y-3.5 max-w-xl transition-transform duration-150 ease-out"
               style={{ opacity: 0, transform: 'translateY(12px)' }}
             >
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-300 text-slate-800 text-[11px] font-bold uppercase tracking-wider shadow-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#B43034]" />
-                <span>Atendimento e Remoção de Veículos</span>
-              </div>
-
-              <p className="text-slate-700 text-xs sm:text-sm md:text-base leading-relaxed font-medium">
-                Prontidão operacional e estrutura especializada para automóveis, utilitários e caminhões pesados.
-              </p>
-
-              <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+              <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5">
                 <a
                   href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
                     COMPANY_CONFIG.whatsapp.defaultMessage
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2.5 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg shadow-xl font-heading"
+                  className="whatsapp-cta-button button-3d inline-flex items-center justify-center gap-2 bg-[#B43034] hover:bg-[#8F2428] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-5 sm:px-7 py-3 sm:py-3.5 rounded-lg shadow-xl font-heading"
                 >
                   <WhatsAppIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                   <span>CHAMAR NO WHATSAPP</span>
                 </a>
 
-                <a
-                  href="#servicos"
-                  className="inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300 text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3.5 rounded-lg shadow-xs transition-colors"
+                {/* Botão VER SERVIÇOS ancorando para a página SERVIÇOS */}
+                <Link
+                  to="/servicos"
+                  className="inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300 text-xs sm:text-sm font-bold uppercase tracking-wider px-5 py-3 rounded-lg shadow-xs transition-colors"
                 >
                   <span>Ver Serviços</span>
                   <ArrowRight className="w-4 h-4 text-[#B43034]" />
-                </a>
+                </Link>
 
                 <button
                   type="button"

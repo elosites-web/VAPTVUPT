@@ -46,7 +46,7 @@ export const FleetViewer3D: React.FC = () => {
   );
 
   // Platform operation cycle progress (0 to 100%) for Guincho Leve
-  const [cycleProgress, setCycleProgress] = useState<number>(65);
+  const [cycleProgress, setCycleProgress] = useState<number>(0);
   const [isRotating, setIsRotating] = useState<boolean>(true);
   const [isAutoCycle, setIsAutoCycle] = useState<boolean>(false);
 
@@ -77,7 +77,7 @@ export const FleetViewer3D: React.FC = () => {
   const selectedModelRef = useRef<TruckModelType>('guincho-leve');
   const isRotatingRef = useRef<boolean>(true);
   const isAutoCycleRef = useRef<boolean>(false);
-  const cycleProgressRef = useRef<number>(65);
+  const cycleProgressRef = useRef<number>(0);
   const autoCycleDirRef = useRef<1 | -1>(1);
   const activePresetRef = useRef<CameraPresetType>('geral');
   const isCameraTransitioningRef = useRef<boolean>(false);
@@ -659,44 +659,44 @@ export const FleetViewer3D: React.FC = () => {
 
     guinchoGroup.add(cabGroup1);
 
-    // Tilting Subframe Pivot (Rear Hinge at X = -3.6, Y = 1.02)
+    // Tilting Subframe Pivot (Rear Hinge at X = -3.5, Y = 1.02)
     const platformPivot = new THREE.Group();
-    platformPivot.position.set(-3.6, 1.02, 0);
+    platformPivot.position.set(-3.5, 1.02, 0);
     platformPivotRef.current = platformPivot;
 
     const subframeGroup = new THREE.Group();
-    subframeGroup.position.set(3.6, -1.02, 0);
+    subframeGroup.position.set(3.5, -1.02, 0);
 
-    const subframeRailGeo = trackGeo(new THREE.BoxGeometry(7.6, 0.22, 0.2));
+    const subframeRailGeo = trackGeo(new THREE.BoxGeometry(6.4, 0.22, 0.2));
     const railL = new THREE.Mesh(subframeRailGeo, darkSteelMat);
-    railL.position.set(-0.1, 1.15, 0.75);
+    railL.position.set(-1.55, 1.15, 0.75);
     subframeGroup.add(railL);
 
     const railR = new THREE.Mesh(subframeRailGeo, darkSteelMat);
-    railR.position.set(-0.1, 1.15, -0.75);
+    railR.position.set(-1.55, 1.15, -0.75);
     subframeGroup.add(railR);
 
-    // Sliding Platform Deck
+    // Sliding Platform Deck (posicionada em X = 1.65 na Posição de Trânsito, logo atrás da cabine em X = 1.80)
     const platformDeck = new THREE.Group();
-    platformDeck.position.set(3.6, 0, 0);
+    platformDeck.position.set(1.65, 0, 0);
     platformDeckRef.current = platformDeck;
 
-    const deckGeo = trackGeo(new THREE.BoxGeometry(7.5, 0.16, 2.36));
+    const deckGeo = trackGeo(new THREE.BoxGeometry(7.2, 0.16, 2.36));
     const deck = new THREE.Mesh(deckGeo, redMat);
-    deck.position.set(-3.7, 1.35, 0);
+    deck.position.set(-3.6, 1.35, 0);
     deck.castShadow = !isSoftwareGl;
     deck.receiveShadow = !isSoftwareGl;
     platformDeck.add(deck);
 
     // Silver side safety trim on deck
-    const sideTrimGeo = trackGeo(new THREE.BoxGeometry(7.52, 0.08, 2.4));
+    const sideTrimGeo = trackGeo(new THREE.BoxGeometry(7.22, 0.08, 2.4));
     const sideTrim = new THREE.Mesh(sideTrimGeo, chromeMat);
-    sideTrim.position.set(-3.7, 1.29, 0);
+    sideTrim.position.set(-3.6, 1.29, 0);
     platformDeck.add(sideTrim);
 
-    // Headboard rack & winch
+    // Headboard rack & winch (situados na extremidade frontal da prancha, logo atrás da cabine)
     const rack = new THREE.Mesh(trackGeo(new THREE.BoxGeometry(0.2, 1.3, 2.34)), darkSteelMat);
-    rack.position.set(0.05, 2.05, 0);
+    rack.position.set(-0.05, 2.05, 0);
     platformDeck.add(rack);
 
     const winch = new THREE.Mesh(
@@ -704,7 +704,7 @@ export const FleetViewer3D: React.FC = () => {
       chromeMat
     );
     winch.rotation.x = Math.PI / 2;
-    winch.position.set(0.05, 1.55, 0);
+    winch.position.set(-0.05, 1.55, 0);
     platformDeck.add(winch);
 
     subframeGroup.add(platformDeck);
@@ -931,10 +931,10 @@ export const FleetViewer3D: React.FC = () => {
     let currentTilt = 0;
     let heavyTourElapsed = 0;
 
-    // Initialize platform kinematics to match default 65%
+    // Initialize platform kinematics (recuo se move horizontalmente no sentido oposto à cabine)
     const applyPlatformKinematics = (slide: number, tilt: number) => {
       if (platformDeckRef.current) {
-        platformDeckRef.current.position.x = 3.6 - slide;
+        platformDeckRef.current.position.x = 1.65 - slide;
       }
       const rad = THREE.MathUtils.degToRad(tilt);
       if (platformPivotRef.current) {
@@ -944,8 +944,8 @@ export const FleetViewer3D: React.FC = () => {
       const baseX = -1.8;
       const baseY = 0.85;
       const R = 2.4;
-      const topX = -3.6 + R * Math.cos(rad);
-      const topY = 1.1 + R * Math.sin(rad);
+      const topX = -3.5 + R * Math.cos(rad);
+      const topY = 1.02 + R * Math.sin(rad);
       const dx = topX - baseX;
       const dy = topY - baseY;
       const len = Math.hypot(dx, dy);
@@ -1135,10 +1135,10 @@ export const FleetViewer3D: React.FC = () => {
     };
     controls.addEventListener('change', handleControlChange);
 
-    // Apply initial platform pose, render first frame, and start loop
-    applyPlatformKinematics(2.5, ((0.65 - 0.35) / 0.65) * 16.0);
-    currentSlide = 2.5;
-    currentTilt = ((0.65 - 0.35) / 0.65) * 16.0;
+    // Apply initial platform pose (Posição de Trânsito recolhida atrás da cabine), render first frame, and start loop
+    applyPlatformKinematics(0, 0);
+    currentSlide = 0;
+    currentTilt = 0;
     renderer.render(scene, camera);
     setIsSceneReady(true);
     wakeLoop();

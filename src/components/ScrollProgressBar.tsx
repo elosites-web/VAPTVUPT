@@ -79,7 +79,7 @@ export const ScrollProgressBar: React.FC = () => {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-[60] h-[3.5px] pointer-events-none overflow-hidden"
+      className="fixed top-[24px] sm:top-[25px] left-0 right-0 z-[60] h-[3.5px] pointer-events-none overflow-hidden"
       role="progressbar"
       aria-label="Progresso de leitura da página"
       aria-valuenow={Math.round(progress)}

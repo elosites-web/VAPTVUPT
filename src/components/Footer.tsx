@@ -26,15 +26,15 @@ export const Footer: React.FC = () => {
     <footer
       className={`border-t transition-colors duration-300 text-sm ${
         isDarkMode
-          ? 'bg-[#111113] border-neutral-800 text-neutral-400'
-          : 'bg-slate-100 border-slate-200 text-slate-600'
+          ? 'bg-[#121214] border-neutral-800/80 text-neutral-400'
+          : 'bg-slate-50 border-slate-200 text-slate-600'
       }`}
     >
       <div
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-28 sm:pb-16"
-        style={{ paddingBottom: 'max(6.5rem, calc(4rem + env(safe-area-inset-bottom, 0px)))' }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 sm:pb-16"
+        style={{ paddingBottom: 'max(6rem, calc(3.5rem + env(safe-area-inset-bottom, 0px)))' }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 mb-10">
           {/* Brand & Summary */}
           <div className="lg:col-span-5 space-y-4">
             <Link
@@ -45,6 +45,14 @@ export const Footer: React.FC = () => {
             >
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.includes('branco')) {
+                    target.src = '/assets/logo-horizontal-original.png';
+                  } else {
+                    target.src = '/assets/logo-horizontal-branco.png';
+                  }
+                }}
                 alt="Vapt Vupt Remoção de Veículos"
                 className="h-10 w-auto object-contain shrink-0 transition-opacity duration-300"
               />
@@ -70,8 +78,8 @@ export const Footer: React.FC = () => {
                 onClick={handleScrollToTop}
                 className={`btn-3d inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors duration-200 border cursor-pointer ${
                   isDarkMode
-                    ? 'bg-neutral-900/90 hover:bg-neutral-800 text-neutral-200 hover:text-white border-neutral-800 hover:border-neutral-700 shadow-sm'
-                    : 'bg-white hover:bg-slate-50 text-slate-800 hover:text-slate-950 border-slate-300 shadow-xs'
+                    ? 'bg-neutral-900 hover:bg-neutral-800 text-neutral-200 hover:text-white border-neutral-700/80 shadow-md'
+                    : 'bg-white hover:bg-slate-50 text-slate-800 hover:text-slate-950 border-slate-300 shadow-sm'
                 }`}
                 aria-label="Voltar ao topo da página"
               >
@@ -81,102 +89,123 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Institutional Navigation Links */}
-          <div className="lg:col-span-4 space-y-3">
-            <h4 className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-              Páginas Institucionais
+          {/* Navegação do Site Estilizada */}
+          <div id="component-container-id-h4" className="lg:col-span-4 space-y-3">
+            <h4
+              className={`text-xs font-bold uppercase tracking-wider ${
+                isDarkMode ? 'text-white max-md:text-[#cbd5e1]' : 'text-slate-900'
+              } flex items-center gap-2 transition-all duration-200 hover:font-extrabold hover:tracking-widest cursor-default select-none`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B43034]" />
+              <span>NAVEGAÇÃO DO SITE</span>
             </h4>
-            <div className={`grid grid-cols-2 gap-x-4 gap-y-2 text-xs ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>
-              <Link to="/" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Início
-              </Link>
-              <Link to="/empresa" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                A Empresa
-              </Link>
-              <Link to="/servicos" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Todos os Serviços
-              </Link>
-              <Link to="/servicos/remocao-veiculos-leves" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Veículos Leves
-              </Link>
-              <Link to="/servicos/remocao-veiculos-pesados" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Veículos Pesados
-              </Link>
-              <Link to="/servicos/solucoes-em-remocao" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Soluções em Remoção
-              </Link>
-              <Link to="/frota" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Estrutura & Frota
-              </Link>
-              <Link to="/perguntas-frequentes" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Perguntas (FAQ)
-              </Link>
-              <Link to="/trabalhe-conosco" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Trabalhe Conosco
-              </Link>
-              <Link to="/contato" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Fale Conosco
-              </Link>
-              <Link to="/politica-de-privacidade" className="hover:text-[#B43034] transition-colors font-medium">
-                Privacidade (LGPD)
-              </Link>
-              <Link to="/termos-de-uso" className={`transition-colors ${isDarkMode ? 'hover:text-white' : 'hover:text-slate-950 font-medium'}`}>
-                Termos de Uso
-              </Link>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {[
+                { to: '/', label: 'Início' },
+                { to: '/empresa', label: 'A Empresa' },
+                { to: '/servicos', label: 'Todos os Serviços' },
+                { to: '/servicos/remocao-veiculos-leves', label: 'Veículos Leves' },
+                { to: '/servicos/remocao-veiculos-pesados', label: 'Veículos Pesados' },
+                { to: '/servicos/solucoes-em-remocao', label: 'Soluções' },
+                { to: '/frota', label: 'Estrutura & Frota' },
+                { to: '/perguntas-frequentes', label: 'Dúvidas (FAQ)' },
+                { to: '/trabalhe-conosco', label: 'Trabalhe Conosco' },
+                { to: '/contato', label: 'Fale Conosco' },
+              ].map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`px-3 py-2 rounded-lg border transition-all text-left flex items-center justify-between group ${
+                    isDarkMode
+                      ? 'bg-neutral-900/70 border-neutral-800 text-neutral-200 hover:text-white hover:border-[#B43034]/60 hover:bg-neutral-800/80 shadow-xs'
+                      : 'bg-white border-slate-200 text-slate-800 hover:text-slate-950 hover:border-[#B43034]/50 hover:bg-slate-50 shadow-xs'
+                  }`}
+                >
+                  <span className={`font-semibold ${isDarkMode ? 'text-neutral-200 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-950'}`}>
+                    {item.label}
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 text-[#B43034] shrink-0 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Official Channels & Careers */}
           <div className="lg:col-span-3 space-y-4">
-            <h4 className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-              Canais Oficiais Verificados
+            <h4 className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-white' : 'text-slate-900'} flex items-center gap-2`}>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span>Canais Oficiais Verificados</span>
             </h4>
 
             <div className="space-y-2.5 text-xs">
+              {/* WhatsApp com cor oficial #25D366 */}
               <a
                 href={`${COMPANY_CONFIG.whatsapp.link}?text=${encodeURIComponent(
                   COMPANY_CONFIG.whatsapp.defaultMessage
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center gap-2 transition-colors group ${
-                  isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
+                className={`flex items-center gap-2.5 p-2 rounded-lg border transition-all group ${
+                  isDarkMode
+                    ? 'bg-neutral-900/60 border-neutral-800/80 text-neutral-200 hover:text-white hover:bg-neutral-800/70 hover:border-emerald-500/40'
+                    : 'bg-white border-slate-200 text-slate-800 hover:text-slate-950 hover:bg-slate-50 hover:border-emerald-500/40 shadow-xs'
                 }`}
               >
-                <WhatsAppIcon className="w-4 h-4 text-current transition-colors shrink-0" />
-                <span className="font-medium">WhatsApp: {COMPANY_CONFIG.whatsapp.display}</span>
+                <div className="p-1 rounded-md bg-[#25D366]/15 text-[#25D366] shrink-0">
+                  <WhatsAppIcon className="w-4 h-4 text-[#25D366] fill-[#25D366]" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-semibold text-xs text-[#25D366]">WhatsApp Oficial</div>
+                  <div className={`text-[11px] truncate ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>{COMPANY_CONFIG.whatsapp.display}</div>
+                </div>
               </a>
 
+              {/* Instagram com cor oficial #E1306C */}
               <a
                 href={COMPANY_CONFIG.instagram.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center gap-2 transition-colors group ${
-                  isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
+                className={`flex items-center gap-2.5 p-2 rounded-lg border transition-all group ${
+                  isDarkMode
+                    ? 'bg-neutral-900/60 border-neutral-800/80 text-neutral-200 hover:text-white hover:bg-neutral-800/70 hover:border-[#E1306C]/40'
+                    : 'bg-white border-slate-200 text-slate-800 hover:text-slate-950 hover:bg-slate-50 hover:border-[#E1306C]/40 shadow-xs'
                 }`}
               >
-                <Instagram className="w-4 h-4 text-current transition-colors shrink-0" />
-                <span className="font-medium">Instagram: {COMPANY_CONFIG.instagram.handle}</span>
+                <div className="p-1 rounded-md bg-[#E1306C]/15 text-[#E1306C] shrink-0">
+                  <Instagram className="w-4 h-4 text-[#E1306C]" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-semibold text-xs text-[#E1306C]">Instagram</div>
+                  <div className={`text-[11px] truncate ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>{COMPANY_CONFIG.instagram.handle}</div>
+                </div>
               </a>
 
+              {/* Facebook com cor oficial #1877F2 */}
               <a
                 href={COMPANY_CONFIG.facebook.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center gap-2 transition-colors group ${
-                  isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
+                className={`flex items-center gap-2.5 p-2 rounded-lg border transition-all group ${
+                  isDarkMode
+                    ? 'bg-neutral-900/60 border-neutral-800/80 text-neutral-200 hover:text-white hover:bg-neutral-800/70 hover:border-[#1877F2]/40'
+                    : 'bg-white border-slate-200 text-slate-800 hover:text-slate-950 hover:bg-slate-50 hover:border-[#1877F2]/40 shadow-xs'
                 }`}
               >
-                <Facebook className="w-4 h-4 text-current transition-colors shrink-0" />
-                <span className="font-medium">Facebook: {COMPANY_CONFIG.facebook.handle}</span>
+                <div className="p-1 rounded-md bg-[#1877F2]/15 text-[#1877F2] shrink-0">
+                  <Facebook className="w-4 h-4 text-[#1877F2] fill-[#1877F2]" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-semibold text-xs text-[#1877F2]">Facebook</div>
+                  <div className={`text-[11px] truncate ${isDarkMode ? 'text-neutral-400' : 'text-slate-600'}`}>{COMPANY_CONFIG.facebook.handle}</div>
+                </div>
               </a>
             </div>
 
             {/* Direct Links to Careers and FAQ */}
-            <div className={`pt-3 border-t space-y-2 ${isDarkMode ? 'border-neutral-800' : 'border-slate-200'}`}>
+            <div className={`pt-2 border-t space-y-2 ${isDarkMode ? 'border-neutral-800' : 'border-slate-200'}`}>
               <Link
                 to="/trabalhe-conosco"
-                className={`flex items-center justify-between text-xs font-medium px-3 py-2 rounded border transition-colors ${
+                className={`flex items-center justify-between text-xs font-medium px-3 py-2 rounded-lg border transition-colors ${
                   isDarkMode
                     ? 'text-neutral-300 hover:text-[#B43034] bg-neutral-900/80 border-neutral-800'
                     : 'text-slate-800 hover:text-[#B43034] bg-white border-slate-300 shadow-xs'
@@ -191,14 +220,14 @@ export const Footer: React.FC = () => {
 
               <Link
                 to="/perguntas-frequentes"
-                className={`flex items-center justify-between text-xs font-medium px-3 py-2 rounded border transition-colors ${
+                className={`flex items-center justify-between text-xs font-medium px-3 py-2 rounded-lg border transition-colors ${
                   isDarkMode
                     ? 'text-neutral-300 hover:text-white bg-neutral-900/40 border-neutral-800/80'
                     : 'text-slate-800 hover:text-slate-950 bg-white border-slate-300 shadow-xs'
                 }`}
               >
                 <span className="flex items-center gap-2">
-                  <HelpCircle className={`w-3.5 h-3.5 ${isDarkMode ? 'text-neutral-400' : 'text-slate-500'}`} />
+                  <HelpCircle className="w-3.5 h-3.5 text-slate-400" />
                   <span>Dúvidas Frequentes</span>
                 </span>
                 <ChevronRight className={`w-3.5 h-3.5 ${isDarkMode ? 'text-neutral-500' : 'text-slate-400'}`} />
@@ -209,10 +238,10 @@ export const Footer: React.FC = () => {
 
         {/* Prototype Identification Notice in Footer */}
         <div
-          className={`mb-6 p-3.5 rounded-xl border text-center text-[11px] leading-relaxed yellow-border-glow ${
+          className={`mb-6 p-3 rounded-xl border text-center text-[11px] leading-relaxed ${
             isDarkMode
-              ? 'bg-neutral-900/60 border-neutral-800 text-neutral-400'
-              : 'bg-white/80 border-slate-200/90 text-slate-600'
+              ? 'bg-neutral-900/50 border-neutral-800/80 text-neutral-400'
+              : 'bg-white border-slate-200 text-slate-600 shadow-xs'
           }`}
         >
           <span
@@ -227,13 +256,12 @@ export const Footer: React.FC = () => {
           <span>{COMPANY_CONFIG.prototype.shortNotice}</span>
         </div>
 
-        {/* Bottom Bar: Main Company Credits with Legal Links & Monochromatic Adaptive Social Icons */}
+        {/* Bottom Bar: Main Company Credits with Legal Links (Sem o div redundante de 2 ícones de redes sociais excluído) */}
         <div
-          className={`pt-6 border-t flex flex-col lg:flex-row items-center justify-between gap-4 text-xs ${
+          className={`pt-5 border-t flex flex-col sm:flex-row items-center justify-between gap-3 text-xs ${
             isDarkMode ? 'border-neutral-800/80 text-neutral-400' : 'border-slate-200 text-slate-600'
           }`}
         >
-          {/* Main Company Credits and Legal Links positioned elegantly beside them */}
           <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 flex-wrap">
             <span className="font-normal">
               © {new Date().getFullYear()} {COMPANY_CONFIG.legalName}
@@ -258,42 +286,6 @@ export const Footer: React.FC = () => {
                 Termos de Uso
               </Link>
             </div>
-          </div>
-
-          {/* Row of Monochromatic Social Media Icons (Adapting to Theme) */}
-          <div
-            className="inline-flex flex-nowrap items-center justify-center whitespace-nowrap gap-2.5 shrink-0"
-            aria-label="Redes Sociais e Canais Oficiais"
-          >
-            <a
-              href={COMPANY_CONFIG.instagram.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram Oficial"
-              title="Instagram Oficial"
-              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200 ease-out transform hover:-translate-y-0.5 active:translate-y-0 shrink-0 ${
-                isDarkMode
-                  ? 'bg-neutral-900 border-neutral-800 text-neutral-200 hover:text-white hover:border-neutral-700 hover:bg-neutral-800'
-                  : 'bg-white border-slate-300 text-slate-700 hover:text-slate-950 hover:border-slate-400 hover:bg-slate-100'
-              }`}
-            >
-              <Instagram className="w-4 h-4 text-current shrink-0" />
-            </a>
-
-            <a
-              href={COMPANY_CONFIG.facebook.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook Oficial"
-              title="Facebook Oficial"
-              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border transition-all duration-200 ease-out transform hover:-translate-y-0.5 active:translate-y-0 shrink-0 ${
-                isDarkMode
-                  ? 'bg-neutral-900 border-neutral-800 text-neutral-200 hover:text-white hover:border-neutral-700 hover:bg-neutral-800'
-                  : 'bg-white border-slate-300 text-slate-700 hover:text-slate-950 hover:border-slate-400 hover:bg-slate-100'
-              }`}
-            >
-              <Facebook className="w-4 h-4 text-current shrink-0" />
-            </a>
           </div>
         </div>
 

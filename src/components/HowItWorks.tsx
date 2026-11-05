@@ -93,7 +93,7 @@ export const HowItWorks: React.FC = () => {
               <span className="text-xs font-bold text-[#B43034] uppercase tracking-wider">
                 Agilize sua Mensagem
               </span>
-              <h4 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide mt-1">
+              <h4 className="text-xl sm:text-2xl font-bold text-white max-md:text-[#cbd5e1] max-md:[text-shadow:0_1px_2px_rgba(0,0,0,0.45)] max-md:opacity-95 uppercase tracking-wide mt-1">
                 Personalize sua Solicitação de Atendimento
               </h4>
             </div>

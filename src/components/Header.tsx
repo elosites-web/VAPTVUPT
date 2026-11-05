@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, ArrowUpRight, ShieldCheck, Clock } from 'lucide-react';
+import { Menu, X, Phone, ArrowUpRight, ShieldCheck, Clock, ChevronDown } from 'lucide-react';
 import { COMPANY_CONFIG } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { useTheme } from '../context/ThemeContext';
@@ -125,7 +125,7 @@ export const Header: React.FC = () => {
     <>
       <header
         ref={headerRef}
-        className={`fixed top-0 left-0 right-0 z-50 w-full max-w-[100vw] overflow-x-clip box-border transition-colors duration-300 animate-header-entrance ${
+        className={`fixed top-0 left-0 right-0 z-[70] w-full max-w-[100vw] overflow-x-clip box-border transition-colors duration-300 animate-header-entrance ${
           isDarkMode
             ? isScrolled
               ? 'glass-header-dark-scrolled border-b border-neutral-800/80 shadow-2xl pb-2 sm:pb-2.5 landscape:pb-1.5'
@@ -141,37 +141,34 @@ export const Header: React.FC = () => {
           aria-hidden="true"
         />
 
-        {/* Identificação Discreta e Consistente de Protótipo Visual e Proposta Comercial */}
+        {/* Identificação Minimalista de Protótipo Visual e Proposta Comercial (Sempre acima da Progress Bar) */}
         <div
-          className={`w-full border-b px-2.5 sm:px-4 py-1 landscape:py-0.5 text-[10px] sm:text-[11px] landscape:text-[9.5px] leading-tight transition-colors ${
+          className={`w-full border-b px-2 sm:px-4 py-0.5 text-[9.5px] sm:text-[10.5px] leading-tight transition-colors select-none ${
             isDarkMode
-              ? 'bg-neutral-950/80 border-neutral-800/80 text-neutral-300'
-              : 'bg-slate-900/[0.04] border-slate-200/80 text-slate-700'
+              ? 'bg-neutral-950/90 border-neutral-800/80 text-yellow-400'
+              : 'bg-amber-50/90 border-amber-200/80 text-amber-900'
           }`}
           role="region"
           aria-label="Aviso de Protótipo Comercial"
         >
-          <div className="max-w-[1440px] mx-auto px-3 py-0.5 rounded-lg border border-transparent yellow-border-glow flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-center">
+          <div className="max-w-[1440px] mx-auto flex items-center justify-center">
             <span
-              className={`inline-flex items-center gap-1.5 font-extrabold uppercase tracking-wider ${
+              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded border text-[9.5px] sm:text-[10px] font-extrabold uppercase tracking-wider transition-all ${
                 isDarkMode
-                  ? 'text-yellow-400'
-                  : 'bg-yellow-300/80 text-neutral-950 px-1.5 py-0.5 rounded-sm'
+                  ? 'border-yellow-400/40 bg-yellow-400/10 text-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.15)]'
+                  : 'border-yellow-500/50 bg-yellow-300/30 text-amber-950 shadow-xs'
               }`}
             >
-              <span
-                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                  isDarkMode ? 'bg-yellow-400' : 'bg-yellow-600'
-                }`}
-                aria-hidden="true"
-              />
+              {/* Bolinha pulsante antes da palavra 'PROTÓTIPO' */}
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-80" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-400" />
+              </span>
+
               <span>{COMPANY_CONFIG.prototype.badge}</span>
-            </span>
-            <span className="hidden md:inline text-neutral-500 dark:text-neutral-600" aria-hidden="true">
-              •
-            </span>
-            <span className="hidden sm:inline text-[10px] sm:text-[11px] opacity-90">
-              {COMPANY_CONFIG.prototype.shortNotice}
+
+              {/* Seta pulsante apontando para baixo após a palavra 'COMERCIAL' */}
+              <ChevronDown className="w-3.5 h-3.5 text-yellow-400 animate-pulse shrink-0" />
             </span>
           </div>
         </div>
@@ -194,6 +191,14 @@ export const Header: React.FC = () => {
             >
               <img
                 src={isDarkMode ? COMPANY_CONFIG.logos.horizontalWhite : COMPANY_CONFIG.logos.horizontalOriginal}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.includes('branco')) {
+                    target.src = '/assets/logo-horizontal-original.png';
+                  } else {
+                    target.src = '/assets/logo-horizontal-branco.png';
+                  }
+                }}
                 alt="Vapt Vupt Remoção de Veículos"
                 className="block mx-auto h-8 sm:h-9 landscape:h-7.5 lg:h-9 xl:h-10 w-auto max-w-[135px] sm:max-w-[160px] lg:max-w-[160px] xl:max-w-[185px] 2xl:max-w-[205px] object-contain object-center shrink-0 transition-opacity duration-300"
               />
