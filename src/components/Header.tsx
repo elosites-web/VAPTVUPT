@@ -24,7 +24,8 @@ export const Header: React.FC = () => {
   useEffect(() => {
     const updateHeaderHeight = () => {
       if (headerRef.current) {
-        setHeaderHeight(headerRef.current.offsetHeight);
+        const h = headerRef.current.offsetHeight;
+        setHeaderHeight((prev) => (prev !== h ? h : prev));
       }
     };
     updateHeaderHeight();
@@ -39,7 +40,8 @@ export const Header: React.FC = () => {
   // Detect scroll offset for adaptive glass blur & height
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
+      const scrolled = window.scrollY > 15;
+      setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

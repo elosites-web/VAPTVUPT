@@ -10,25 +10,41 @@
       content="Vapt Vupt Remoção de Veículos Ltda é uma empresa especializada em serviços de guincho e reboque 24 horas para veículos leves e pesados, atuando em parceria com grandes seguradoras."
     />
 
-    <!-- Inicialização Imediata do Modo de Tema (Sempre carrega em modo Automático por padrão: 06:00-17:59 Dia / 18:00-05:59 Noite) -->
+    <!-- Inicialização Imediata do Modo de Tema (Respeita preferência salva no localStorage ou preferência do sistema operacional em modo Automático) -->
     <script>
       (function() {
         try {
-          localStorage.removeItem('vaptvupt-theme-mode');
-          localStorage.removeItem('vaptvupt-theme');
-        } catch(e) {}
-        var hour = new Date().getHours();
-        var isDark = (hour >= 18 || hour < 6);
+          var savedMode = localStorage.getItem('vaptvupt-theme-mode') || localStorage.getItem('vaptvupt-theme');
+          var isDark = false;
 
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.remove('light');
-          document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-          document.documentElement.classList.add('light');
-          document.documentElement.classList.remove('dark');
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
+          if (savedMode === 'dark') {
+            isDark = true;
+          } else if (savedMode === 'light') {
+            isDark = false;
+          } else {
+            // Modo Automático: segue a preferência do sistema operacional com fallback para horário local
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+              isDark = true;
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+              isDark = false;
+            } else {
+              var hour = new Date().getHours();
+              isDark = (hour >= 18 || hour < 6);
+            }
+          }
+
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch(e) {}
       })();
     </script>
 

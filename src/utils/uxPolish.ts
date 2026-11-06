@@ -539,4 +539,22 @@ export function isLogoAspectRatioPreserved(params: {
   return relativeDiff <= maxRelativeError;
 }
 
+/**
+ * Resolves the effective dark mode boolean according to user preference,
+ * system OS preference, and hour fallback.
+ */
+export function resolveEffectiveTheme(params: {
+  mode: 'light' | 'dark' | 'auto';
+  systemDark?: boolean;
+  hour?: number;
+}): boolean {
+  if (params.mode === 'dark') return true;
+  if (params.mode === 'light') return false;
+  if (typeof params.systemDark === 'boolean') {
+    return params.systemDark;
+  }
+  const h = typeof params.hour === 'number' ? params.hour : new Date().getHours();
+  return h >= 18 || h < 6;
+}
+
 

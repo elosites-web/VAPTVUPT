@@ -48,7 +48,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       mode: 'auto',
       label: 'Automático',
       icon: <Laptop className="w-3.5 h-3.5 text-emerald-400" />,
-      desc: 'Dia (06h–17h59) e Noite (18h–05h59) pelo horário local',
+      desc: 'Segue a preferência do sistema operacional e horário local',
     },
     {
       mode: 'light',

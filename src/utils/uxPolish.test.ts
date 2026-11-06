@@ -27,6 +27,7 @@ import {
   resolveHeroVideoErrorAction,
   computeScrollProgressPercentage,
   isLogoAspectRatioPreserved,
+  resolveEffectiveTheme,
 } from './uxPolish';
 import {
   OFFICIAL_LOGO_SYMBOL_SRC,
@@ -746,6 +747,30 @@ test('isLogoAspectRatioPreserved validates proportional scaling and rejects squi
     }),
     true
   );
+});
+
+test('resolveEffectiveTheme handles manual dark, manual light, OS preference, and hour fallback', () => {
+  // Manual dark always resolves true regardless of system
+  assert.equal(resolveEffectiveTheme({ mode: 'dark', systemDark: false, hour: 12 }), true);
+  assert.equal(resolveEffectiveTheme({ mode: 'dark', systemDark: true, hour: 12 }), true);
+
+  // Manual light always resolves false regardless of system
+  assert.equal(resolveEffectiveTheme({ mode: 'light', systemDark: true, hour: 22 }), false);
+  assert.equal(resolveEffectiveTheme({ mode: 'light', systemDark: false, hour: 2 }), false);
+
+  // Auto with systemDark=true resolves true even at noon
+  assert.equal(resolveEffectiveTheme({ mode: 'auto', systemDark: true, hour: 12 }), true);
+
+  // Auto with systemDark=false resolves false even at midnight
+  assert.equal(resolveEffectiveTheme({ mode: 'auto', systemDark: false, hour: 23 }), false);
+
+  // Auto without systemDark falls back to hour (06:00-17:59 light / 18:00-05:59 dark)
+  assert.equal(resolveEffectiveTheme({ mode: 'auto', hour: 10 }), false);
+  assert.equal(resolveEffectiveTheme({ mode: 'auto', hour: 17 }), false);
+  assert.equal(resolveEffectiveTheme({ mode: 'auto', hour: 18 }), true);
+  assert.equal(resolveEffectiveTheme({ mode: 'auto', hour: 23 }), true);
+  assert.equal(resolveEffectiveTheme({ mode: 'auto', hour: 4 }), true);
+  assert.equal(resolveEffectiveTheme({ mode: 'auto', hour: 6 }), false);
 });
 
 

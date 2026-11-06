@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 /**
@@ -13,9 +13,10 @@ import { useTheme } from '../context/ThemeContext';
 export const CustomTruckCursor: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [enabled, setEnabled] = useState(false);
-  const [visible, setVisible] = useState(false);
   const [isInteractive, setIsInteractive] = useState(false);
-  const [pos, setPos] = useState({ x: -100, y: -100 });
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const isInteractiveRef = useRef(false);
+  const visibleRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -43,6 +44,8 @@ export const CustomTruckCursor: React.FC = () => {
     let rafId: number | null = null;
 
     const handleMouseMove = (e: MouseEvent) => {
+      const clientX = e.clientX;
+      const clientY = e.clientY;
       const target = e.target as HTMLElement | null;
       const interactive = Boolean(
         target?.closest('a, button, input, select, textarea, label, [role="button"]')
@@ -50,13 +53,26 @@ export const CustomTruckCursor: React.FC = () => {
 
       if (rafId !== null) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        setPos({ x: e.clientX, y: e.clientY });
-        setIsInteractive(interactive);
-        if (!visible) setVisible(true);
+        if (cursorRef.current) {
+          cursorRef.current.style.transform = `translate3d(${clientX - 16}px, ${clientY - 16}px, 0) scale(${interactive ? 1.15 : 1})`;
+          if (!visibleRef.current) {
+            visibleRef.current = true;
+            cursorRef.current.style.opacity = '1';
+          }
+        }
+        if (isInteractiveRef.current !== interactive) {
+          isInteractiveRef.current = interactive;
+          setIsInteractive(interactive);
+        }
       });
     };
 
-    const handleMouseLeave = () => setVisible(false);
+    const handleMouseLeave = () => {
+      if (cursorRef.current) {
+        cursorRef.current.style.opacity = '0';
+      }
+      visibleRef.current = false;
+    };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
@@ -66,9 +82,9 @@ export const CustomTruckCursor: React.FC = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [enabled, visible]);
+  }, [enabled]);
 
-  if (!enabled || !visible) return null;
+  if (!enabled) return null;
 
   // Paleta de cores do volante adaptada ao tema e ao estado interativo
   const primaryStroke = isInteractive
@@ -87,10 +103,11 @@ export const CustomTruckCursor: React.FC = () => {
 
   return (
     <div
+      ref={cursorRef}
       aria-hidden="true"
-      className="fixed top-0 left-0 pointer-events-none z-[80] hidden lg:block will-change-transform"
+      className="fixed top-0 left-0 pointer-events-none z-[80] hidden lg:block will-change-transform opacity-0"
       style={{
-        transform: `translate3d(${pos.x - 16}px, ${pos.y - 16}px, 0) scale(${isInteractive ? 1.15 : 1})`,
+        transform: 'translate3d(-100px, -100px, 0)',
         transition: 'transform 0.12s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.15s ease',
       }}
     >

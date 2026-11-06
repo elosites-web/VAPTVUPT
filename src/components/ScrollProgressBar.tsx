@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { computeScrollProgressPercentage } from '../utils/uxPolish';
@@ -17,8 +17,11 @@ export const ScrollProgressBar: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const { isDarkMode } = useTheme();
   const location = useLocation();
+  const barRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const progressStateRef = useRef(0);
 
-  // Cálculo da porcentagem de rolagem sincronizado com requestAnimationFrame
+  // Cálculo da porcentagem de rolagem sincronizado com requestAnimationFrame e atualização direta do DOM
   useEffect(() => {
     let rafId: number | null = null;
 
@@ -30,7 +33,24 @@ export const ScrollProgressBar: React.FC = () => {
         document.documentElement.scrollHeight,
         window.innerHeight
       );
-      setProgress(percent);
+
+      if (barRef.current) {
+        barRef.current.style.width = `${percent}%`;
+        barRef.current.style.opacity = percent > 0 ? '1' : '0';
+      }
+      if (containerRef.current) {
+        containerRef.current.setAttribute('aria-valuenow', Math.round(percent).toString());
+      }
+
+      const rounded = Math.round(percent);
+      if (
+        (rounded > 0 && progressStateRef.current === 0) ||
+        (rounded === 0 && progressStateRef.current > 0) ||
+        Math.abs(rounded - progressStateRef.current) >= 2
+      ) {
+        progressStateRef.current = rounded;
+        setProgress(rounded);
+      }
     };
 
     const handleScroll = () => {
@@ -80,6 +100,7 @@ export const ScrollProgressBar: React.FC = () => {
 
   return (
     <div
+      ref={containerRef}
       className="fixed top-[25px] left-0 right-0 z-[75] h-[3.5px] pointer-events-none overflow-hidden"
       role="progressbar"
       aria-label="Progresso de leitura da página"
@@ -96,6 +117,7 @@ export const ScrollProgressBar: React.FC = () => {
 
       {/* Barra de Progresso com Gradiente Tricolor Dinâmico */}
       <div
+        ref={barRef}
         className="relative h-full transition-[width] duration-75 ease-out will-change-[width]"
         style={{
           width: `${progress}%`,
