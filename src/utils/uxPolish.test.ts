@@ -773,4 +773,23 @@ test('resolveEffectiveTheme handles manual dark, manual light, OS preference, an
   assert.equal(resolveEffectiveTheme({ mode: 'auto', hour: 6 }), false);
 });
 
+test('global CSS defines font-display: swap for Inter, Montserrat, and Plus Jakarta Sans', () => {
+  const cssPath = path.resolve(process.cwd(), 'src/index.css');
+  assert.equal(fs.existsSync(cssPath), true, 'src/index.css must exist');
+
+  const cssContent = fs.readFileSync(cssPath, 'utf-8');
+
+  // Verify @font-face declarations exist
+  assert.equal(cssContent.includes("@font-face"), true, 'src/index.css must declare @font-face');
+
+  // Verify font-display: swap is present
+  const fontDisplayMatches = cssContent.match(/font-display:\s*swap;/g);
+  assert.ok(fontDisplayMatches && fontDisplayMatches.length >= 3, 'Must declare font-display: swap for all key web fonts');
+
+  // Verify specific font-family declarations
+  assert.equal(cssContent.includes("font-family: 'Inter';"), true, 'Must declare font-family: Inter in @font-face');
+  assert.equal(cssContent.includes("font-family: 'Montserrat';"), true, 'Must declare font-family: Montserrat in @font-face');
+  assert.equal(cssContent.includes("font-family: 'Plus Jakarta Sans';"), true, 'Must declare font-family: Plus Jakarta Sans in @font-face');
+});
+
 
