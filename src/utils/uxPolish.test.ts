@@ -792,4 +792,17 @@ test('global CSS defines font-display: swap for Inter, Montserrat, and Plus Jaka
   assert.equal(cssContent.includes("font-family: 'Plus Jakarta Sans';"), true, 'Must declare font-family: Plus Jakarta Sans in @font-face');
 });
 
+test('HeaderSearch correctly indexes official services and resolves keywords', () => {
+  const headerSearchPath = path.resolve(process.cwd(), 'src/components/HeaderSearch.tsx');
+  assert.equal(fs.existsSync(headerSearchPath), true, 'src/components/HeaderSearch.tsx must exist');
+
+  const content = fs.readFileSync(headerSearchPath, 'utf-8');
+  assert.equal(content.includes('remocao-veiculos-leves'), true, 'Must index light vehicle service route');
+  assert.equal(content.includes('remocao-veiculos-pesados'), true, 'Must index heavy vehicle service route');
+  assert.equal(content.includes('solucoes-em-remocao'), true, 'Must index towing solutions service route');
+  assert.equal(content.includes('COMPANY_CONFIG.services'), true, 'Must draw from centralized COMPANY_CONFIG.services');
+  assert.equal(content.includes('role="combobox"'), true, 'Must provide accessible combobox semantics');
+});
+
+
 

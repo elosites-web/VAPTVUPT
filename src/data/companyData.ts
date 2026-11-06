@@ -173,7 +173,7 @@ export const COMPANY_CONFIG = {
   },
 
   // Key primary real photos provided in the official package
-  heroImage: '/assets/vaptvupt/caminhao-cavalo-1635.jpg',
+  heroImage: '/fotos/caminhao-cavalo-1635.jpg',
 
   // Services documented in materials with specific subpage slugs
   services: [
