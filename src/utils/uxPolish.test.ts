@@ -792,16 +792,25 @@ test('global CSS defines font-display: swap for Inter, Montserrat, and Plus Jaka
   assert.equal(cssContent.includes("font-family: 'Plus Jakarta Sans';"), true, 'Must declare font-family: Plus Jakarta Sans in @font-face');
 });
 
-test('HeaderSearch correctly indexes official services and resolves keywords', () => {
-  const headerSearchPath = path.resolve(process.cwd(), 'src/components/HeaderSearch.tsx');
-  assert.equal(fs.existsSync(headerSearchPath), true, 'src/components/HeaderSearch.tsx must exist');
+test('fleet showcase items define technical specifications and interactive hover overlay component', () => {
+  // Verify all fleet items have complete technical specifications (capacity and mechanism/crane type)
+  assert.ok(COMPANY_CONFIG.fleet.length > 0, 'Fleet list must have items');
+  for (const item of COMPANY_CONFIG.fleet) {
+    assert.ok(item.techSpecs, `Fleet item ${item.id} must define techSpecs`);
+    assert.ok(item.techSpecs.capacity.length > 0, `Fleet item ${item.id} must define capacity spec`);
+    assert.ok(item.techSpecs.craneOrMechanism.length > 0, `Fleet item ${item.id} must define craneOrMechanism spec`);
+    assert.ok(item.techSpecs.traction.length > 0, `Fleet item ${item.id} must define traction spec`);
+  }
 
-  const content = fs.readFileSync(headerSearchPath, 'utf-8');
-  assert.equal(content.includes('remocao-veiculos-leves'), true, 'Must index light vehicle service route');
-  assert.equal(content.includes('remocao-veiculos-pesados'), true, 'Must index heavy vehicle service route');
-  assert.equal(content.includes('solucoes-em-remocao'), true, 'Must index towing solutions service route');
-  assert.equal(content.includes('COMPANY_CONFIG.services'), true, 'Must draw from centralized COMPANY_CONFIG.services');
-  assert.equal(content.includes('role="combobox"'), true, 'Must provide accessible combobox semantics');
+  // Verify FleetImageWithTechSpecs component file exists and contains interactive hover HUD overlay
+  const componentPath = path.resolve(process.cwd(), 'src/components/FleetImageWithTechSpecs.tsx');
+  assert.equal(fs.existsSync(componentPath), true, 'FleetImageWithTechSpecs.tsx must exist');
+
+  const content = fs.readFileSync(componentPath, 'utf-8');
+  assert.equal(content.includes('fleet-tech-specs-overlay'), true, 'Must include tech specs overlay test ID');
+  assert.equal(content.includes('group-hover/truck:opacity-100'), true, 'Must include hover transition for desktop');
+  assert.equal(content.includes('techSpecs.capacity'), true, 'Must render weight/capacity specification');
+  assert.equal(content.includes('techSpecs.craneOrMechanism'), true, 'Must render crane or mechanism specification');
 });
 
 

@@ -6,6 +6,7 @@ import { SEOHead } from '../components/SEOHead';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { BrandSpinner, useDelayedLoadingState } from '../components/BrandSpinner';
 import { RevealSection } from '../components/RevealSection';
+import { FleetImageWithTechSpecs } from '../components/FleetImageWithTechSpecs';
 
 export const FleetPage: React.FC = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<FleetItem | null>(null);
@@ -115,34 +116,8 @@ export const FleetPage: React.FC = () => {
                 key={item.id}
                 className="bg-slate-50 dark:bg-neutral-900 rounded-2xl border border-slate-200 dark:border-neutral-800 overflow-hidden flex flex-col group hover:border-red-400/50 dark:hover:border-neutral-700 transition-all duration-300 shadow-md hover:shadow-xl"
               >
-                {/* Photo with hover button */}
-                <div
-                  className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden bg-white dark:bg-neutral-950 cursor-pointer flex items-center justify-center"
-                  onClick={() => openPhotoModal(item)}
-                >
-                  <img
-                    src={item.image}
-                    srcSet={`${item.image} 480w, ${item.image} 800w, ${item.image} 1200w`}
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    loading="lazy"
-                    decoding="async"
-                    alt={item.title}
-                    className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
-                      item.id === 'cavalo-1635'
-                        ? 'object-cover object-[center_28%]'
-                        : 'object-contain p-3 sm:p-4 bg-white'
-                    }`}
-                  />
-                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-200">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-semibold border border-slate-700 shadow-lg">
-                      <Eye className="w-3.5 h-3.5 text-[#B43034]" />
-                      <span>Ampliar Fotografia</span>
-                    </span>
-                  </div>
-                  <div className="absolute top-3 left-3 bg-slate-900/90 dark:bg-neutral-900/90 text-[11px] font-bold uppercase tracking-wider text-[#B43034] px-2.5 py-1 rounded border border-slate-700 dark:border-neutral-800 shadow-sm">
-                    {item.badge}
-                  </div>
-                </div>
+                {/* Photo with interactive hover specifications and zoom modal trigger */}
+                <FleetImageWithTechSpecs item={item} onOpenZoom={openPhotoModal} />
 
                 {/* Details */}
                 <div className="p-6 flex-grow flex flex-col justify-between space-y-4">

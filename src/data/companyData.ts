@@ -23,6 +23,13 @@ export interface ServiceItem {
   isPendingConfirmation?: boolean;
 }
 
+export interface FleetTechSpecs {
+  capacity: string;
+  craneOrMechanism: string;
+  traction: string;
+  operationalReach: string;
+}
+
 export interface FleetItem {
   id: string;
   title: string;
@@ -31,6 +38,7 @@ export interface FleetItem {
   image: string;
   badge: string;
   features: string[];
+  techSpecs: FleetTechSpecs;
 }
 
 export interface BranchRegistration {
@@ -271,6 +279,12 @@ export const COMPANY_CONFIG = {
         'Configuração para operações pesadas',
         'Disponibilidade sob consulta com a equipe',
       ],
+      techSpecs: {
+        capacity: 'Capacidade de Tração (CMT): Até 45 Toneladas',
+        craneOrMechanism: 'Mecanismo: Quinta Roda & Lança para Reboque Pesado',
+        traction: 'Configuração de Tração: 4x2 Rodoviário Reforçado',
+        operationalReach: 'Aplicação: Cavalos mecânicos, carretas, baús e ônibus',
+      },
     },
     {
       id: 'guincho-leve',
@@ -284,6 +298,12 @@ export const COMPANY_CONFIG = {
         'Identificação visual oficial Vapt Vupt',
         'Atendimento mediante consulta pelo WhatsApp',
       ],
+      techSpecs: {
+        capacity: 'Capacidade de Carga Útil: Até 3,5 Toneladas',
+        craneOrMechanism: 'Implemento: Plataforma Hidráulica Deslizante com Asa Delta',
+        traction: 'Configuração de Tração: 4x2 Rodagem Dupla',
+        operationalReach: 'Extensão: Plataforma de 5,5m para Automóveis e Vans',
+      },
     },
     {
       id: 'conjunto-pesado',
@@ -297,6 +317,12 @@ export const COMPANY_CONFIG = {
         'Identificação visual oficial Vapt Vupt',
         'Condições de operação sob consulta',
       ],
+      techSpecs: {
+        capacity: 'Capacidade Operacional: Conjunto Articulado de Alta Carga',
+        craneOrMechanism: 'Implemento: Semirreboque Baú Estruturado / Apoio Técnico',
+        traction: 'Configuração de Tração: 6x2 Trucado Rodoviário',
+        operationalReach: 'Aplicação: Suporte logístico de cargas e peças pesadas',
+      },
     },
   ] as FleetItem[],
 

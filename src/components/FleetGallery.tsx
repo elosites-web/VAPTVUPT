@@ -3,6 +3,7 @@ import { ZoomIn, X, Check } from 'lucide-react';
 import { COMPANY_CONFIG, FleetItem } from '../data/companyData';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { RevealSection } from './RevealSection';
+import { FleetImageWithTechSpecs } from './FleetImageWithTechSpecs';
 
 export const FleetGallery: React.FC = () => {
   const [activeModalItem, setActiveModalItem] = useState<FleetItem | null>(null);
@@ -45,40 +46,8 @@ export const FleetGallery: React.FC = () => {
               key={item.id}
               className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl overflow-hidden hover:border-[#B43034]/70 transition-all duration-300 group flex flex-col justify-between shadow-sm"
             >
-              {/* Photo with Overlay */}
-              <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-neutral-950 flex items-center justify-center">
-                <img
-                  src={item.image}
-                  srcSet={`${item.image} 480w, ${item.image} 800w, ${item.image} 1200w`}
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  alt={item.title}
-                  className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
-                    item.id === 'cavalo-1635'
-                      ? 'object-cover object-[center_28%]'
-                      : 'object-contain p-3 sm:p-4 bg-white'
-                  }`}
-                  loading="lazy"
-                  decoding="async"
-                />
-                {item.id === 'cavalo-1635' && (
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent pointer-events-none" />
-                )}
-
-                {/* Badge */}
-                <div className="absolute top-3 left-3 bg-neutral-950/85 backdrop-blur-sm border border-neutral-700/80 text-[11px] font-bold text-neutral-100 uppercase tracking-wider px-3 py-1 rounded shadow-sm">
-                  {item.badge}
-                </div>
-
-                {/* Zoom Action Trigger */}
-                <button
-                  type="button"
-                  onClick={() => setActiveModalItem(item)}
-                  className="absolute bottom-3 right-3 bg-neutral-900/90 hover:bg-[#B43034] text-white p-2.5 rounded-lg border border-neutral-700 transition-colors shadow-lg"
-                  aria-label={`Ver detalhes de ${item.title}`}
-                >
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-              </div>
+              {/* Photo with interactive hover specifications and zoom modal trigger */}
+              <FleetImageWithTechSpecs item={item} onOpenZoom={setActiveModalItem} aspectRatioClass="aspect-[4/3]" />
 
               {/* Card Content */}
               <div className="p-6 flex-1 flex flex-col justify-between">

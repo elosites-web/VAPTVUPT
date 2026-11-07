@@ -7,7 +7,6 @@ import { useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
 import { useNav } from '../context/NavContext';
 import { BrandLogoHorizontal } from './BrandLogoHorizontal';
-import { HeaderSearch } from './HeaderSearch';
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -223,9 +222,6 @@ export const Header: React.FC = () => {
 
             {/* Action CTAs */}
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto lg:ml-0">
-              {/* Search Icon & Animated Input */}
-              <HeaderSearch isMobileDrawerOpen={mobileMenuOpen} />
-
               {/* Theme Toggle Component (Automático / Dia / Noite) - Oculto quando menu mobile estiver aberto */}
               {!mobileMenuOpen && (
                 <div className="shrink-0 transition-opacity duration-200" title="Alternar Modo de Tema">
